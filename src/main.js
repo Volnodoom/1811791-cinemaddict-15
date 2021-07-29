@@ -1,6 +1,7 @@
 import { createButtonShowMore } from './model/button-show-more';
 import { createLoadingTemplate, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate, createEmptyBlank, headerAvatar, createMovieCardFramework, createMovieCardFrameworkTop, createMovieCardFrameworkMost} from './model/menu';
 import { cardNumberOne } from './model/movie-card';
+import { createPopupTemplate, getUsersComments } from './model/movie-popup';
 
 const bodyPart = document.body;
 const footerPart = bodyPart.querySelector('.footer__statistics');
@@ -48,6 +49,14 @@ const operationalState = () => {
   render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
   render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
 };
+
+const popup = () => {
+  render(bodyPart, createPopupTemplate(), 'beforeend');
+
+  const containerForUserCom = bodyPart.querySelector('.film-details__comments-list');
+  render(containerForUserCom, getUsersComments(), 'afterbegin');
+};
+
 
 operationalState();
 
