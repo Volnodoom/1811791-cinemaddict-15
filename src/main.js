@@ -1,4 +1,5 @@
 import { createLoadingTemplate, footerTemplateForBlankWithoutMovie, createEmptyBlank, headerAvatar, createMovieCardFramework} from './model/menu';
+import { cardNumberOne } from './model/movie-card';
 
 const bodyPart = document.body;
 const footerPart = bodyPart.querySelector('.footer__statistics');
@@ -26,5 +27,18 @@ const avatar = () => {
 const operationalState = () => {
   render(mainOfBody, createMovieCardFramework(), 'beforeend');
 };
+
 operationalState();
-// console.log(loadState);
+const containerDiv = mainOfBody.querySelector('.films-list__container');
+
+const cardsInList = () => {
+  render(containerDiv, cardNumberOne,'beforeend');
+  render(containerDiv, cardNumberOne,'beforeend');
+  render(containerDiv, cardNumberOne,'beforeend');
+  render(containerDiv, cardNumberOne,'beforeend');
+  render(containerDiv, cardNumberOne,'beforeend');
+};
+
+cardsInList();
+
+console.log(cardNumberOne);
