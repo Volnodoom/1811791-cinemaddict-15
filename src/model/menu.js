@@ -7,9 +7,14 @@ const EMPTY_WATCHLIST = 0;
 const EMPTY_HISTORY = 0;
 const EMPTY_FAVORITES = 0;
 const NO_CARD_STATE = 'empty';
+const STANDARD = 'standard';
+const EXTRA = 'extra';
 const LOADING_STATEMENT = 'Loading...';
 const UPCOMING = 'All movies. Upcoming';
+const TOP_EXTRA = 'Top rated';
+const MOST_COM_EXTRA = 'Most commented';
 const FOOTER_STATEMENT_EMPTY = '0 movies inside';
+const FOOTER_STATEMENT_UP_TO_DATE = '130 291 movies inside';
 const EMPTY_STATEMENT_F_ALL_MOVIES = 'There are no movies in our database';
 const EMPTY_STATEMENT_F_WATCHLIST = 'There are no movies to watch now';
 const EMPTY_STATEMENT_F_HISTORY = 'There are no watched movies now';
@@ -23,6 +28,8 @@ const SORT_BUTTON3 = 'Sort by rating';
 const NUMBER_WATCHLIST = 13;
 const NUMBER_HISTORY = 4;
 const NUMBER_FAVORITES = 8;
+
+const CLASS_EXTRA_FOR_MOVIES = 'films-list--extra';
 
 const createNavigationBlank = (watchlist, history, favorites) => (
   `<nav class="main-navigation">
@@ -44,29 +51,55 @@ const createSortMovies = () => (
   </ul>`
 );
 
-const createContainerForCardsOrMessage = (state = '', statusMessage = '') => {
-  if (state === 'empty') { return (
-    `<section class="films">
-    <section class="films-list">
-      <h2 class="films-list__title">${statusMessage}</h2>
+const createContainerForCardsOrMessage = (state = '', statusMessage = '', extraClass = '') => {
+  const core = (difference) => {
+    if (extraClass === '') {
+      return (
+        `<section class="films">
+    <section class="films-list ${extraClass}">
+     ${difference}
     </section>
-    </section>`);
-  } else {
-    return (
-      `<section class="films">
-      <section class="films-list">
-        <h2 class="films-list__title visually-hidden">${statusMessage}</h2>
-        <div class="films-list__container"></div>
-      </section>
     </section>`
-    );
+      );
+    }
+    return (`<section class="films-list ${extraClass}">
+     ${difference}
+    </section>`);
+  };
+
+  let result;
+  switch (state) {
+    case NO_CARD_STATE:
+      result = core(`<h2 class="films-list__title">${statusMessage}</h2>`);
+      break;
+    case STANDARD:
+      result = core(`
+      <h2 class="films-list__title visually-hidden">${statusMessage}</h2>
+      <div class="films-list__container"></div>
+      `);
+      break;
+    case EXTRA:
+      result = core(`
+      <h2 class="films-list__title">${statusMessage}</h2>
+      <div class="films-list__container"></div>
+      `);
+      break;
   }
+  return (`${result}`);
 };
 
 const createMovieCardFramework = () => (
   `${createNavigationBlank(NUMBER_WATCHLIST, NUMBER_HISTORY, NUMBER_FAVORITES)}
    ${createSortMovies()}
-   ${createContainerForCardsOrMessage('', UPCOMING)}`
+   ${createContainerForCardsOrMessage(STANDARD, UPCOMING)}`
+);
+
+const createMovieCardFrameworkTop = () => (
+  `${createContainerForCardsOrMessage(EXTRA, TOP_EXTRA, CLASS_EXTRA_FOR_MOVIES)}`
+);
+
+const createMovieCardFrameworkMost = () => (
+  `${createContainerForCardsOrMessage(EXTRA, MOST_COM_EXTRA, CLASS_EXTRA_FOR_MOVIES)}`
 );
 
 const createLoadingTemplate = () => (
@@ -117,5 +150,7 @@ const createHeaderAvatar = (rank,avatarUrl) => (
 
 const headerAvatar = createHeaderAvatar (USER_RANK, USER_AVATAR_URL);
 const footerTemplateForBlankWithoutMovie = `<p>${FOOTER_STATEMENT_EMPTY}</p>`;
+const footerTemplateForUpToDate = `<p>${FOOTER_STATEMENT_UP_TO_DATE}</p>`;
 
-export {createLoadingTemplate, footerTemplateForBlankWithoutMovie, createEmptyBlank, headerAvatar, createMovieCardFramework};
+
+export {createLoadingTemplate, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate, createEmptyBlank, headerAvatar, createMovieCardFramework, createMovieCardFrameworkTop, createMovieCardFrameworkMost};

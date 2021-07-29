@@ -1,4 +1,5 @@
-import { createLoadingTemplate, footerTemplateForBlankWithoutMovie, createEmptyBlank, headerAvatar, createMovieCardFramework} from './model/menu';
+import { createButtonShowMore } from './model/button-show-more';
+import { createLoadingTemplate, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate, createEmptyBlank, headerAvatar, createMovieCardFramework, createMovieCardFrameworkTop, createMovieCardFrameworkMost} from './model/menu';
 import { cardNumberOne } from './model/movie-card';
 
 const bodyPart = document.body;
@@ -10,7 +11,7 @@ const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const loadState = () => {
+const loadingState = () => {
   render(mainOfBody, createLoadingTemplate(), 'beforeend');
   render(footerPart, footerTemplateForBlankWithoutMovie, 'beforeend');
 };
@@ -20,25 +21,33 @@ const emptyState = () => {
   render(footerPart, footerTemplateForBlankWithoutMovie, 'beforeend');
 };
 
-const avatar = () => {
-  render(headerOfBody, headerAvatar, 'beforeend');
-};
-
 const operationalState = () => {
   render(mainOfBody, createMovieCardFramework(), 'beforeend');
+  render(footerPart, footerTemplateForUpToDate, 'beforeend');
+  render(headerOfBody, headerAvatar, 'beforeend');
+
+  const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
+
+  render(containerDivInMovies, cardNumberOne, 'beforeend');
+  render(containerDivInMovies, cardNumberOne, 'beforeend');
+  render(containerDivInMovies, cardNumberOne, 'beforeend');
+  render(containerDivInMovies, cardNumberOne, 'beforeend');
+  render(containerDivInMovies, cardNumberOne, 'beforeend');
+
+  render(containerDivInMovies, createButtonShowMore(), 'afterend');
+
+  const sectionMovies = mainOfBody.querySelector('.films-list');
+
+  render(sectionMovies, createMovieCardFrameworkMost(), 'afterend');
+  render(sectionMovies, createMovieCardFrameworkTop(), 'afterend');
+
+  const containerSectionExtraMovies = mainOfBody.querySelectorAll('.films-list__container');
+
+  render(containerSectionExtraMovies[1], cardNumberOne, 'beforeend');
+  render(containerSectionExtraMovies[1], cardNumberOne, 'beforeend');
+  render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
+  render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
 };
 
 operationalState();
-const containerDiv = mainOfBody.querySelector('.films-list__container');
 
-const cardsInList = () => {
-  render(containerDiv, cardNumberOne,'beforeend');
-  render(containerDiv, cardNumberOne,'beforeend');
-  render(containerDiv, cardNumberOne,'beforeend');
-  render(containerDiv, cardNumberOne,'beforeend');
-  render(containerDiv, cardNumberOne,'beforeend');
-};
-
-cardsInList();
-
-console.log(cardNumberOne);
