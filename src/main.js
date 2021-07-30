@@ -59,4 +59,6 @@ const popup = () => {
 
 
 operationalState();
-
+loadingState();
+popup();
+emptyState();
