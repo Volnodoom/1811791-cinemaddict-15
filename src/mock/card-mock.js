@@ -32,19 +32,18 @@ const generateTitle = () => {
 
 const generatePoster = () => {
   const poster = [
-    '../../markup/images/posters/made-for-each-other.png',
-    '../../markup/images/posters/popeye-meets-sinbad.png',
-    '../../markup/images/posters/sagebrush-trail.png',
-    '../../markup/images/posters/santa-claus-conquers-the-martians.png',
-    '../../markup/images/posters/the-dance-of-life.png',
+    './images/posters/made-for-each-other.png',
+    './images/posters/popeye-meets-sinbad.png',
+    './images/posters/sagebrush-trail.jpg',
+    './images/posters/santa-claus-conquers-the-martians.jpg',
+    './images/posters/the-dance-of-life.jpg',
+    './images/posters/the-great-flamarion.jpg',
+    './images/posters/the-man-with-the-golden-arm.jpg',
   ];
 
   const randomIndex =  getRandomInteger(0, poster.length-1);
   return poster[randomIndex];
 };
-
-const ageRating = `${getRandomInteger(6,18)}+`;
-const totalRating = getRandomPositiveFloat(1,10,2);
 
 const generateDirector = () => {
   const director = [
@@ -85,8 +84,18 @@ const generateActors = () => {
   return actors[randomIndex];
 };
 
-const data = 'xxxDAYJSxxx';
-const runtime = `${getRandomInteger(10,280)}m`;
+const generateData = () => {
+  const data = [
+    '2019-04-12T16:12:32.554Z',
+    '2019-05-11T00:00:00.000Z',
+    '2020-07-09T00:00:00.276Z',
+    '2020-12-17T00:00:00.000Z',
+    '2021-01-18T00:00:00.000Z',
+  ];
+
+  const randomIndex =  getRandomInteger(0, data.length-1);
+  return data[randomIndex];
+};
 
 const generateReleaseCountry = () => {
   const releaseCountry = [
@@ -144,42 +153,12 @@ const generateDescription = () => {
   return finaleState.join(' ');
 };
 
-const generateFilmInfo = () => {
-  const titleValue = generateTitle();
-  const alternativeTitle = `${titleValue} random`;
-
-  return {
-    title: titleValue,
-    alternativeTitle,
-    poster: generatePoster(),
-    ageRating,
-    totalRating,
-    director: generateDirector(),
-    writers: generateWriters(),
-    actors: generateActors(),
-    release: {
-      data,
-      releaseCountry: generateReleaseCountry(),
-    },
-    runtime,
-    genre: generateGenre(),
-    description: generateDescription(),
-    userDetails: {
-      watchlist: false,
-      alreadyWatched: false,
-      watchingDate: 'xxxDAYJSxxx',
-      favorite: false,
-    },
-  };
-};
-
-const numberOfCom = getRandomInteger(0,5);
 const generateEmojiUrl = () => {
   const emojiUrl = [
-    '../../markup/images/emoji/smile.png ',
-    '../../markup/images/emoji/sleeping.png ',
-    '../../markup/images/emoji/puke.png ',
-    '../../markup/images/emoji/angry.png ',
+    './images/emoji/smile.png ',
+    './images/emoji/sleeping.png ',
+    './images/emoji/puke.png ',
+    './images/emoji/angry.png ',
   ];
 
   const randomIndex =  getRandomInteger(0, emojiUrl.length-1);
@@ -196,6 +175,18 @@ const generateAltEmojiUrl = () => {
 
   const randomIndex =  getRandomInteger(0, altEmojiUrl.length-1);
   return altEmojiUrl[randomIndex];
+};
+
+const generateEmotion = () => {
+  const emotion = [
+    'smile',
+    'sleeping',
+    'puke',
+    'angry',
+  ];
+
+  const randomIndex =  getRandomInteger(0, emotion.length-1);
+  return emotion[randomIndex];
 };
 
 const generateCommentItself = () => {
@@ -224,29 +215,64 @@ const generateComAuthor = () => {
   return comAuthor[randomIndex];
 };
 
-const comDayTime = 'xxxDAYJSxxx';
-
-// eslint-disable-next-line arrow-body-style
 const generateFilmComments = () => {
-  return {
-    numberOfCom,
-    emojiUrl: generateEmojiUrl(),
-    altEmojiUrl: generateAltEmojiUrl(),
-    commentItself: generateCommentItself(),
-    comAuthor: generateComAuthor(),
-    comDayTime,
-  };
+  const randomNumberComments =  getRandomInteger(0, 4);
+
+  const finaleNumberOfComments = [];
+  for (let ind = 0; ind <= randomNumberComments; ind++) {
+    finaleNumberOfComments.push(
+      {
+        commentItself: generateCommentItself(),
+        comAuthor: generateComAuthor(),
+        comDayTime: generateData(),
+        emotion: generateEmotion(),
+      },
+    );
+  }
+  return finaleNumberOfComments;
 };
 
+// -----> generate FILM card
+const generateFilmInfo = () => {
+  const titleValue = generateTitle();
+  const alternativeTitle = `${titleValue} random`;
+
+  return {
+    title: titleValue,
+    alternativeTitle,
+    poster: generatePoster(),
+    ageRating: `${getRandomInteger(6,18)}+`,
+    totalRating: getRandomPositiveFloat(1,10,2),
+    director: generateDirector(),
+    writers: generateWriters(),
+    actors: generateActors(),
+    release: {
+      data: generateData(),
+      releaseCountry: generateReleaseCountry(),
+    },
+    runtime: getRandomInteger(10,280),
+    genre: generateGenre(),
+    description: generateDescription(),
+    userDetails: {
+      watchlist: Boolean(getRandomInteger(0,1)),
+      alreadyWatched: Boolean(getRandomInteger(0,1)),
+      watchingDate: generateData(),
+      favorite: Boolean(getRandomInteger(0,1)),
+    },
+    comments: generateFilmComments(),
+  };
+};
+// ----- generate FILM card <------------
+
+
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
-const localEmotion = 'smile';
 
 // eslint-disable-next-line arrow-body-style
 const generateLocalFeedback =  () => {
   return {
     localComment,
-    localEmotion,
+    localEmotion: generateEmotion(),
   };
 };
 
-export {generateFilmInfo, generateFilmComments, generateLocalFeedback};
+export {generateFilmInfo, generateLocalFeedback};

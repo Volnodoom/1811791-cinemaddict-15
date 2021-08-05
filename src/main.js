@@ -1,7 +1,15 @@
+/* eslint-disable arrow-body-style */
+import { generateFilmInfo, generateLocalFeedback } from './mock/card-mock';
 import { createButtonShowMore } from './model/button-show-more';
 import { createLoadingTemplate, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate, createEmptyBlank, headerAvatar, createMovieCardFramework, createMovieCardFrameworkTop, createMovieCardFrameworkMost} from './model/menu';
-import { cardNumberOne } from './model/movie-card';
+import { creatCardTemplate } from './model/movie-card';
 import { createPopupTemplate, getUsersComments } from './model/movie-popup';
+
+const FILMS_CARDS_COUNT = 5;
+const TOP_FILMS_COUNT = 2;
+const MOST_COMMENTED_COUNT =2;
+
+const films = new Array (FILMS_CARDS_COUNT).fill(' ').map(generateFilmInfo);
 
 const bodyPart = document.body;
 const footerPart = bodyPart.querySelector('.footer__statistics');
@@ -29,12 +37,9 @@ const operationalState = () => {
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-
+  for (let ind = 0; ind <FILMS_CARDS_COUNT; ind++) {
+    render(containerDivInMovies, creatCardTemplate (films[ind]), 'beforeend');
+  }
   render(containerDivInMovies, createButtonShowMore(), 'afterend');
 
   const sectionMovies = mainOfBody.querySelector('.films-list');
@@ -43,12 +48,15 @@ const operationalState = () => {
   render(sectionMovies, createMovieCardFrameworkTop(), 'afterend');
 
   const containerSectionExtraMovies = mainOfBody.querySelectorAll('.films-list__container');
-
-  render(containerSectionExtraMovies[1], cardNumberOne, 'beforeend');
-  render(containerSectionExtraMovies[1], cardNumberOne, 'beforeend');
-  render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
-  render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
+  // ----> for TOP and MostCommented movies
+  for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
+    render(containerSectionExtraMovies[1], creatCardTemplate (films.slice().sort((aInd,bInd) => {return bInd.totalRating - aInd.totalRating;})[ind]), 'beforeend');
+  }
+  for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
+    render(containerSectionExtraMovies[2], creatCardTemplate (films.slice().sort((aInd,bInd) => {return bInd.comments.length - aInd.comments.length;})[ind]), 'beforeend');
+  }
 };
+console.log (films);
 
 const popup = () => {
   render(bodyPart, createPopupTemplate(), 'beforeend');
@@ -62,3 +70,5 @@ operationalState();
 // loadingState();
 // popup();
 // emptyState();
+
+export{films};
