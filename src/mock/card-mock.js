@@ -17,6 +17,40 @@ const getRandomPositiveFloat = function (valueA, valueB, digits = 1) {
   return result.toFixed (digits);
 };
 
+const giveFewPositionsFromArrayNames = (array) => {
+  const copyAr = array.slice();
+  const randomNumberSentences =  getRandomInteger(0, 4);
+  let reduction = 0;
+
+  const finaleState = [];
+  for (let ind = 0; ind <= randomNumberSentences; ind++) {
+    const removeInd =  getRandomInteger(0, copyAr.length-1-reduction);
+    finaleState.push(copyAr[removeInd]);
+    copyAr.splice(removeInd,1);
+    reduction += 1;
+    console.log(`0. RESULT WITH ITERATIONS about: ${finaleState}`);
+  }
+
+  return finaleState.join(', ');
+};
+
+const giveFewPositionsFromArraySentences = (array) => {
+  const copyAr = array.slice();
+  const randomNumberSentences =  getRandomInteger(0, 4);
+
+  const finaleState = [];
+  for (let ind = 0; ind <= randomNumberSentences; ind++) {
+    let reduction = ind+1;
+    const randomIndex =  getRandomInteger(0, copyAr.length-reduction);
+    const removeInd = randomIndex;
+    finaleState.push(copyAr[removeInd]);
+    copyAr.splice(removeInd,1);
+    reduction += 1;
+  }
+  return finaleState.join(' ');
+};
+
+
 const generateTitle = () => {
   const titles = [
     'Made-for-each-other',
@@ -67,8 +101,7 @@ const generateWriters = () => {
     'Jen Johans',
   ];
 
-  const randomIndex =  getRandomInteger(0, writers.length-1);
-  return writers[randomIndex];
+  return giveFewPositionsFromArrayNames(writers);
 };
 
 const generateActors = () => {
@@ -80,8 +113,7 @@ const generateActors = () => {
     'Liam Neeson',
   ];
 
-  const randomIndex =  getRandomInteger(0, actors.length-1);
-  return actors[randomIndex];
+  return giveFewPositionsFromArrayNames(actors);
 };
 
 const generateData = () => {
@@ -119,8 +151,7 @@ const generateGenre = () => {
     'Horror',
   ];
 
-  const randomIndex =  getRandomInteger(0, genre.length-1);
-  return genre[randomIndex];
+  return giveFewPositionsFromArrayNames(genre);
 };
 
 const generateDescription = () => {
@@ -138,19 +169,7 @@ const generateDescription = () => {
     'In rutrum ac purus sit amet tempus.',
   ];
 
-  const copyAr = description.slice();
-  const randomNumberSentences =  getRandomInteger(0, 4);
-
-  const finaleState = [];
-  for (let ind = 0; ind <= randomNumberSentences; ind++) {
-    let reduction = ind+1;
-    const randomIndex =  getRandomInteger(0, copyAr.length-reduction);
-    const removeInd = randomIndex;
-    finaleState.push(description[removeInd]);
-    copyAr.splice(removeInd,1);
-    reduction += ind;
-  }
-  return finaleState.join(' ');
+  return giveFewPositionsFromArraySentences(description);
 };
 
 const generateEmojiUrl = () => {

@@ -1,40 +1,47 @@
 import dayjs from 'dayjs';
-const MINUTES = 60;
 
-const creatCardTemplate = (film) => {
-  const {title, totalRating, runtime, genre, poster, description} = film;
-  const {data} = film.release;
-
-  const year = dayjs(data).format('YYYY');
-  const hours = Math.trunc(runtime/MINUTES);
+const calculateTime = (movieDuration) => {
+  const MINUTES = 60;
+  const hours = Math.trunc(movieDuration/MINUTES);
   let duration = '';
   const timeConditions = [
-    runtime < MINUTES,
-    runtime === MINUTES,
-    runtime > MINUTES,
+    movieDuration < MINUTES,
+    movieDuration === MINUTES,
+    movieDuration > MINUTES,
   ];
 
   switch (true) {
     case timeConditions[0]:
-      duration = `${runtime}m`;
+      duration = `${movieDuration}m`;
       break;
     case timeConditions[1]:
       duration = '1h';
       break;
     case timeConditions[2]:
-      duration = `${hours}h ${runtime-hours*MINUTES}m`;
+      duration = `${hours}h ${movieDuration-hours*MINUTES}m`;
       break;
   }
+  return duration;
+};
+
+const creatCardTemplate = (film) => {
+  const {title, totalRating, runtime, genre, poster, description} = film;
+  const {data} = film.release;
+
+  const altPoster = title;
+  const year = dayjs(data).format('YYYY');
+
+
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
   <p class="film-card__rating">${totalRating}</p>
   <p class="film-card__info">
     <span class="film-card__year">${year}</span>
-    <span class="film-card__duration">${duration}</span>
+    <span class="film-card__duration">${calculateTime(runtime)}</span>
     <span class="film-card__genre">${genre}</span>
   </p>
-  <img src="${poster}" alt="" class="film-card__poster">
+  <img src="${poster}" alt="${altPoster}" class="film-card__poster">
   <p class="film-card__description">${description}</p>
   <a class="film-card__comments">${film.comments.length} comments</a>
   <div class="film-card__controls">
@@ -45,4 +52,4 @@ const creatCardTemplate = (film) => {
 </article>`;
 };
 
-export {creatCardTemplate};
+export {creatCardTemplate, calculateTime};

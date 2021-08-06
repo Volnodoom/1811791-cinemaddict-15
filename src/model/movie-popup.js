@@ -1,27 +1,16 @@
-const imgUrl = './images/posters/the-great-flamarion.jpg';
-const altImg = '';
-const ageLimits = '18+';
-const title = 'title';
-const titleOriginal = 'titleOriginal';
-const rating = 'rating';
-const directorName = 'directorName';
-const writersNames = 'writersNames';
-const actors = 'actors';
-const release = 'release';
-const runTime = 'runTime';
-const country = 'country';
-const genreDetail = 'genreDetail';
-const description = 'description';
-const numberOfCom = 'numberOfCom';
-const emojiUrl = './images/emoji/puke.png';
-const altEmojiUrl = 'altEmojiUrl';
-const commentItself = 'commentItself';
-const comAuthor = 'comAuthor';
-const comDayTime = 'comDayTime';
+import dayjs from 'dayjs';
+import { calculateTime } from './movie-card';
+
 const localComment = 'localComment';
 
-const createPopupTemplate = () => (
-  `<section class="film-details">
+const createPopupTemplate = (film) => {
+  const {poster, ageRating, title, alternativeTitle, totalRating, director, writers, actors, runtime, genre, description} = film;
+  const {data, releaseCountry} = film.release;
+
+  const altPoster = title;
+  const dataInfo = dayjs(data).format('DD MMMM YYYY');
+
+  return `<section class="film-details">
 <form class="film-details__inner" action="" method="get">
   <div class="film-details__top-container">
     <div class="film-details__close">
@@ -29,31 +18,27 @@ const createPopupTemplate = () => (
     </div>
     <div class="film-details__info-wrap">
       <div class="film-details__poster">
-        <img class="film-details__poster-img" src="${imgUrl}" alt="${altImg}">
-
-        <p class="film-details__age">${ageLimits}</p>
+        <img class="film-details__poster-img" src="${poster}" alt="${altPoster}">
+        <p class="film-details__age">${ageRating}</p>
       </div>
-
       <div class="film-details__info">
         <div class="film-details__info-head">
           <div class="film-details__title-wrap">
             <h3 class="film-details__title">${title}</h3>
-            <p class="film-details__title-original">${titleOriginal}</p>
+            <p class="film-details__title-original">Original: ${alternativeTitle}</p>
           </div>
-
           <div class="film-details__rating">
-            <p class="film-details__total-rating">${rating}</p>
+            <p class="film-details__total-rating">${totalRating}</p>
           </div>
         </div>
-
         <table class="film-details__table">
           <tr class="film-details__row">
             <td class="film-details__term">Director</td>
-            <td class="film-details__cell">${directorName}</td>
+            <td class="film-details__cell">${director}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Writers</td>
-            <td class="film-details__cell">${writersNames}</td>
+            <td class="film-details__cell">${writers}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Actors</td>
@@ -61,20 +46,20 @@ const createPopupTemplate = () => (
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Release Date</td>
-            <td class="film-details__cell">${release}</td>
+            <td class="film-details__cell">${dataInfo}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
-            <td class="film-details__cell">${runTime}</td>
+            <td class="film-details__cell">${calculateTime(runtime)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Country</td>
-            <td class="film-details__cell">${country}</td>
+            <td class="film-details__cell">${releaseCountry}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Genres</td>
             <td class="film-details__cell">
-              <span class="film-details__genre">${genreDetail}</span>
+              <span class="film-details__genre">${genre}</span>
               </td>
           </tr>
         </table>
@@ -93,7 +78,7 @@ const createPopupTemplate = () => (
 
   <div class="film-details__bottom-container">
 <section class="film-details__comments-wrap">
-  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${numberOfCom}</span></h3>
+  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${film.comments.length}</span></h3>
 
   <ul class="film-details__comments-list">
 
@@ -132,23 +117,31 @@ const createPopupTemplate = () => (
 </div>
 
 </form>
-</section>`
-);
+</section>`;
+};
 
-const getUsersComments = () => (
-  `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="${emojiUrl}" width="55" height="55" alt="${altEmojiUrl}">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${commentItself}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${comAuthor}</span>
-          <span class="film-details__comment-day">${comDayTime}</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>`
-);
+const getUsersComments = (film) => {
+
+  let allComments = ``;
+  for (let ind = 0; ind < film.comments.length; ind++) {
+    const {commentItself, comAuthor, comDayTime, emotion} = film.comments[ind];
+    allComments += `<li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="" width="55" height="55" alt="${emotion}">
+    </span>
+    <div>
+      <p class="film-details__comment-text">${commentItself}</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">${comAuthor}</span>
+        <span class="film-details__comment-day">${comDayTime}</span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>`;
+  }
+
+  return allComments;
+};
 
 export {createPopupTemplate, getUsersComments};
+

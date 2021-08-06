@@ -5,7 +5,7 @@ import { createLoadingTemplate, footerTemplateForBlankWithoutMovie, footerTempla
 import { creatCardTemplate } from './model/movie-card';
 import { createPopupTemplate, getUsersComments } from './model/movie-popup';
 
-const FILMS_CARDS_COUNT = 5;
+const FILMS_CARDS_COUNT = 20;
 const TOP_FILMS_COUNT = 2;
 const MOST_COMMENTED_COUNT =2;
 
@@ -59,16 +59,16 @@ const operationalState = () => {
 console.log (films);
 
 const popup = () => {
-  render(bodyPart, createPopupTemplate(), 'beforeend');
+  render(bodyPart, createPopupTemplate(films[0]), 'beforeend');
 
   const containerForUserCom = bodyPart.querySelector('.film-details__comments-list');
-  render(containerForUserCom, getUsersComments(), 'afterbegin');
+  render(containerForUserCom, getUsersComments(films[0]), 'beforeend');
 };
 
 
 operationalState();
 // loadingState();
-// popup();
+popup();
 // emptyState();
 
 export{films};
