@@ -1,4 +1,3 @@
-/* eslint-disable arrow-body-style */
 import { generateFilmInfo } from './mock/card-mock';
 import { generateFilter } from './mock/filter-mock';
 import { createButtonShowMore } from './model/button-show-more';
@@ -7,6 +6,7 @@ import { creatCardTemplate } from './model/movie-card';
 import { createPopupTemplate, getUsersComments } from './model/movie-popup';
 
 const FILMS_CARDS_COUNT = 20;
+const FILMS_CARDS_PER_STEP = 5;
 const TOP_FILMS_COUNT = 2;
 const MOST_COMMENTED_COUNT =2;
 
@@ -34,8 +34,31 @@ const operationalState = () => {
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
-  for (let ind = 0; ind <FILMS_CARDS_COUNT; ind++) {render(containerDivInMovies, creatCardTemplate (films[ind]), 'beforeend');}
-  render(containerDivInMovies, createButtonShowMore(), 'afterend');
+  for (let ind = 0; ind <Math.min(films.length, FILMS_CARDS_PER_STEP); ind++) {
+    render(containerDivInMovies, creatCardTemplate (films[ind]), 'beforeend');
+  }
+
+  if (films.length > FILMS_CARDS_PER_STEP) {
+    let renderFilmsCount = FILMS_CARDS_PER_STEP;
+
+    render(containerDivInMovies, createButtonShowMore(), 'afterend');
+
+    const showMoreButton = mainOfBody.querySelector('.films-list__show-more');
+
+    showMoreButton.addEventListener('click', (evt) => {
+      evt.preventDefault();
+
+      films
+        .slice(renderFilmsCount, renderFilmsCount + FILMS_CARDS_PER_STEP)
+        .forEach((film) => render(containerDivInMovies, creatCardTemplate (film), 'beforeend'));
+
+      renderFilmsCount += FILMS_CARDS_PER_STEP;
+
+      if (renderFilmsCount >= films.length) {
+        showMoreButton.remove();
+      }
+    });
+  }
 
   const sectionMovies = mainOfBody.querySelector('.films-list');
 
@@ -45,10 +68,10 @@ const operationalState = () => {
   const containerSectionExtraMovies = mainOfBody.querySelectorAll('.films-list__container');
   // ----> for TOP and MostCommented movies
   for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
-    render(containerSectionExtraMovies[1], creatCardTemplate (films.slice().sort((aInd,bInd) => {return bInd.totalRating - aInd.totalRating;})[ind]), 'beforeend');
+    render(containerSectionExtraMovies[1], creatCardTemplate (films.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating)[ind]), 'beforeend');
   }
   for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
-    render(containerSectionExtraMovies[2], creatCardTemplate (films.slice().sort((aInd,bInd) => {return bInd.comments.length - aInd.comments.length;})[ind]), 'beforeend');
+    render(containerSectionExtraMovies[2], creatCardTemplate (films.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length)[ind]), 'beforeend');
   }
 };
 
@@ -59,10 +82,8 @@ const popup = () => {
   render(containerForUserCom, getUsersComments(films[0]), 'beforeend');
 };
 
-
 operationalState();
-// nonOperationalStateLoading();
-//popup();
-// emptyState();
+nonOperationalStateLoading();
+popup();
 
 export{films};
