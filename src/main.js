@@ -1,7 +1,17 @@
+import { generateFilmInfo } from './mock/card-mock';
+import { generateFilter } from './mock/filter-mock';
 import { createButtonShowMore } from './model/button-show-more';
-import { createLoadingTemplate, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate, createEmptyBlank, headerAvatar, createMovieCardFramework, createMovieCardFrameworkTop, createMovieCardFrameworkMost} from './model/menu';
-import { cardNumberOne } from './model/movie-card';
+import { createOperationalFramework, createFrameworkForExtraTop, createFrameworkForExtraMostComments, createEmptyTemplate, createHeaderAvatar, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate} from './model/menu';
+import { creatCardTemplate } from './model/movie-card';
 import { createPopupTemplate, getUsersComments } from './model/movie-popup';
+
+const FILMS_CARDS_COUNT = 20;
+const FILMS_CARDS_PER_STEP = 5;
+const TOP_FILMS_COUNT = 2;
+const MOST_COMMENTED_COUNT =2;
+
+const films = new Array (FILMS_CARDS_COUNT).fill(' ').map(generateFilmInfo);
+const filter = generateFilter(films);
 
 const bodyPart = document.body;
 const footerPart = bodyPart.querySelector('.footer__statistics');
@@ -12,53 +22,68 @@ const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const loadingState = () => {
-  render(mainOfBody, createLoadingTemplate(), 'beforeend');
-  render(footerPart, footerTemplateForBlankWithoutMovie, 'beforeend');
-};
-
-const emptyState = () => {
-  render(mainOfBody, createEmptyBlank(), 'beforeend');
+const nonOperationalStateLoading = () => {
+  render(mainOfBody, createEmptyTemplate(filter, 'loading'), 'beforeend');
   render(footerPart, footerTemplateForBlankWithoutMovie, 'beforeend');
 };
 
 const operationalState = () => {
-  render(mainOfBody, createMovieCardFramework(), 'beforeend');
+  render(mainOfBody, createOperationalFramework(filter), 'beforeend');
   render(footerPart, footerTemplateForUpToDate, 'beforeend');
-  render(headerOfBody, headerAvatar, 'beforeend');
+  render(headerOfBody, createHeaderAvatar(), 'beforeend');
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
-  render(containerDivInMovies, cardNumberOne, 'beforeend');
+  for (let ind = 0; ind <Math.min(films.length, FILMS_CARDS_PER_STEP); ind++) {
+    render(containerDivInMovies, creatCardTemplate (films[ind]), 'beforeend');
+  }
 
-  render(containerDivInMovies, createButtonShowMore(), 'afterend');
+  if (films.length > FILMS_CARDS_PER_STEP) {
+    let renderFilmsCount = FILMS_CARDS_PER_STEP;
+
+    render(containerDivInMovies, createButtonShowMore(), 'afterend');
+
+    const showMoreButton = mainOfBody.querySelector('.films-list__show-more');
+
+    showMoreButton.addEventListener('click', (evt) => {
+      evt.preventDefault();
+
+      films
+        .slice(renderFilmsCount, renderFilmsCount + FILMS_CARDS_PER_STEP)
+        .forEach((film) => render(containerDivInMovies, creatCardTemplate (film), 'beforeend'));
+
+      renderFilmsCount += FILMS_CARDS_PER_STEP;
+
+      if (renderFilmsCount >= films.length) {
+        showMoreButton.remove();
+      }
+    });
+  }
 
   const sectionMovies = mainOfBody.querySelector('.films-list');
 
-  render(sectionMovies, createMovieCardFrameworkMost(), 'afterend');
-  render(sectionMovies, createMovieCardFrameworkTop(), 'afterend');
+  render(sectionMovies, createFrameworkForExtraMostComments(), 'afterend');
+  render(sectionMovies, createFrameworkForExtraTop(), 'afterend');
 
   const containerSectionExtraMovies = mainOfBody.querySelectorAll('.films-list__container');
-
-  render(containerSectionExtraMovies[1], cardNumberOne, 'beforeend');
-  render(containerSectionExtraMovies[1], cardNumberOne, 'beforeend');
-  render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
-  render(containerSectionExtraMovies[2], cardNumberOne, 'beforeend');
+  // ----> for TOP and MostCommented movies
+  for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
+    render(containerSectionExtraMovies[1], creatCardTemplate (films.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating)[ind]), 'beforeend');
+  }
+  for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
+    render(containerSectionExtraMovies[2], creatCardTemplate (films.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length)[ind]), 'beforeend');
+  }
 };
 
 const popup = () => {
-  render(bodyPart, createPopupTemplate(), 'beforeend');
+  render(bodyPart, createPopupTemplate(films[0]), 'beforeend');
 
   const containerForUserCom = bodyPart.querySelector('.film-details__comments-list');
-  render(containerForUserCom, getUsersComments(), 'afterbegin');
+  render(containerForUserCom, getUsersComments(films[0]), 'beforeend');
 };
 
-
 operationalState();
-loadingState();
+nonOperationalStateLoading();
 popup();
-emptyState();
+
+export{films};
