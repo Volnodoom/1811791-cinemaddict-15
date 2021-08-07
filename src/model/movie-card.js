@@ -1,7 +1,8 @@
-import dayjs from 'dayjs';
+import { dateYear } from '../other/utils';
+
+const MINUTES = 60;
 
 const calculateTime = (movieDuration) => {
-  const MINUTES = 60;
   const hours = Math.trunc(movieDuration/MINUTES);
   let duration = '';
   const timeConditions = [
@@ -28,21 +29,25 @@ const creatCardTemplate = (film) => {
   const {title, totalRating, runtime, genre, poster, description} = film;
   const {data} = film.release;
 
+  const genreLine = genre.join(', ');
   const altPoster = title;
-  const year = dayjs(data).format('YYYY');
 
-
+  let descriptionLine = '';
+  if (description.length >= 140) {
+    descriptionLine += description.slice().substring(0, 139);
+    descriptionLine += '...';
+  } else {descriptionLine = description;}
 
   return `<article class="film-card">
   <h3 class="film-card__title">${title}</h3>
   <p class="film-card__rating">${totalRating}</p>
   <p class="film-card__info">
-    <span class="film-card__year">${year}</span>
+    <span class="film-card__year">${dateYear(data)}</span>
     <span class="film-card__duration">${calculateTime(runtime)}</span>
-    <span class="film-card__genre">${genre}</span>
+    <span class="film-card__genre">${genreLine}</span>
   </p>
   <img src="${poster}" alt="${altPoster}" class="film-card__poster">
-  <p class="film-card__description">${description}</p>
+  <p class="film-card__description">${descriptionLine}</p>
   <a class="film-card__comments">${film.comments.length} comments</a>
   <div class="film-card__controls">
     <button class="film-card__controls-item film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>

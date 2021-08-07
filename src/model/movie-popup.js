@@ -1,17 +1,32 @@
-import dayjs from 'dayjs';
+import { dateDayMonthYear, dateYearMonthDayTime } from '../other/utils';
 import { calculateTime } from './movie-card';
 
-const localComment = 'localComment';
+const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
+
+const createGenre = (genreData) => {
+  let genreLine = '';
+  if (genreData.length >= 2) {
+    for (let ind = 0; ind < genreData.length; ind++) {
+      if (genreData[ind] === undefined) { genreData[ind] = ''; } else {
+        genreLine += `<span class="film-details__genre">${genreData[ind]}</span>`;}
+    }
+  } else {genreLine += `<span class="film-details__genre">${genreData[0]}</span>`;}
+
+  return genreLine;
+};
 
 const createPopupTemplate = (film) => {
   const {poster, ageRating, title, alternativeTitle, totalRating, director, writers, actors, runtime, genre, description} = film;
   const {data, releaseCountry} = film.release;
 
+  let termGenre ='';
+  if (genre.length >= 2) {termGenre = 'Genres';} else {termGenre = 'Genre';}
+  const writersLine = writers.join(', ');
+  const actorsLine = actors.join(', ');
   const altPoster = title;
-  const dataInfo = dayjs(data).format('DD MMMM YYYY');
 
   return `<section class="film-details">
-<form class="film-details__inner" action="" method="get">
+  <form class="film-details__inner" action="" method="get">
   <div class="film-details__top-container">
     <div class="film-details__close">
       <button class="film-details__close-btn" type="button">close</button>
@@ -38,15 +53,15 @@ const createPopupTemplate = (film) => {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Writers</td>
-            <td class="film-details__cell">${writers}</td>
+            <td class="film-details__cell">${writersLine}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Actors</td>
-            <td class="film-details__cell">${actors}</td>
+            <td class="film-details__cell">${actorsLine}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Release Date</td>
-            <td class="film-details__cell">${dataInfo}</td>
+            <td class="film-details__cell">${dateDayMonthYear(data)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
@@ -57,9 +72,9 @@ const createPopupTemplate = (film) => {
             <td class="film-details__cell">${releaseCountry}</td>
           </tr>
           <tr class="film-details__row">
-            <td class="film-details__term">Genres</td>
+            <td class="film-details__term">${termGenre}</td>
             <td class="film-details__cell">
-              <span class="film-details__genre">${genre}</span>
+              ${createGenre(genre)}
               </td>
           </tr>
         </table>
@@ -75,17 +90,17 @@ const createPopupTemplate = (film) => {
     </section>
   </div>
 
-
   <div class="film-details__bottom-container">
 <section class="film-details__comments-wrap">
   <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${film.comments.length}</span></h3>
 
   <ul class="film-details__comments-list">
-
-
   </ul>
+
   <div class="film-details__new-comment">
-  <div class="film-details__add-emoji-label"></div>
+  <div class="film-details__add-emoji-label">
+  <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
+  </div>
 
   <label class="film-details__comment-label">
     <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${localComment}</textarea>
@@ -120,20 +135,33 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-const getUsersComments = (film) => {
+const getEmojiUrl = (datum) => {
+  const emojiUrl = {
+    smile: './images/emoji/smile.png ',
+    sleeping: './images/emoji/sleeping.png ',
+    puke: './images/emoji/puke.png ',
+    angry: './images/emoji/angry.png ',
+  };
 
+  return emojiUrl[datum];
+};
+
+const getUsersComments = (film) => {
+  // eslint-disable-next-line quotes
   let allComments = ``;
+
   for (let ind = 0; ind < film.comments.length; ind++) {
     const {commentItself, comAuthor, comDayTime, emotion} = film.comments[ind];
+
     allComments += `<li class="film-details__comment">
-    <span class="film-details__comment-emoji">
-      <img src="" width="55" height="55" alt="${emotion}">
-    </span>
+      <span class="film-details__comment-emoji">
+        <img src="${getEmojiUrl(emotion)}" width="55" height="55" alt="${emotion}">
+      </span>
     <div>
       <p class="film-details__comment-text">${commentItself}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comAuthor}</span>
-        <span class="film-details__comment-day">${comDayTime}</span>
+        <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>

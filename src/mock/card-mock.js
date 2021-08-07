@@ -1,21 +1,5 @@
+import { getRandomInteger, getRandomPositiveFloat } from '../other/utils.js';
 /* eslint-disable quotes */
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
-// Функция взята из интернета и доработана
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-const getRandomPositiveFloat = function (valueA, valueB, digits = 1) {
-  const lower = Math.min (Math.abs(valueA), Math.abs(valueB));
-  const upper = Math.max (Math.abs(valueA), Math.abs(valueB));
-  const result = Math.random () * (upper - lower) + lower;
-  return result.toFixed (digits);
-};
 
 const giveFewPositionsFromArrayNames = (array) => {
   const copyAr = array.slice();
@@ -28,10 +12,9 @@ const giveFewPositionsFromArrayNames = (array) => {
     finaleState.push(copyAr[removeInd]);
     copyAr.splice(removeInd,1);
     reduction += 1;
-    console.log(`0. RESULT WITH ITERATIONS about: ${finaleState}`);
   }
 
-  return finaleState.join(', ');
+  return finaleState;
 };
 
 const giveFewPositionsFromArraySentences = (array) => {
@@ -172,30 +155,6 @@ const generateDescription = () => {
   return giveFewPositionsFromArraySentences(description);
 };
 
-const generateEmojiUrl = () => {
-  const emojiUrl = [
-    './images/emoji/smile.png ',
-    './images/emoji/sleeping.png ',
-    './images/emoji/puke.png ',
-    './images/emoji/angry.png ',
-  ];
-
-  const randomIndex =  getRandomInteger(0, emojiUrl.length-1);
-  return emojiUrl[randomIndex];
-};
-
-const generateAltEmojiUrl = () => {
-  const altEmojiUrl = [
-    'smile',
-    'sleeping',
-    'puke',
-    'angry',
-  ];
-
-  const randomIndex =  getRandomInteger(0, altEmojiUrl.length-1);
-  return altEmojiUrl[randomIndex];
-};
-
 const generateEmotion = () => {
   const emotion = [
     'smile',
@@ -251,7 +210,6 @@ const generateFilmComments = () => {
   return finaleNumberOfComments;
 };
 
-// -----> generate FILM card
 const generateFilmInfo = () => {
   const titleValue = generateTitle();
   const alternativeTitle = `${titleValue} random`;
@@ -281,17 +239,5 @@ const generateFilmInfo = () => {
     comments: generateFilmComments(),
   };
 };
-// ----- generate FILM card <------------
 
-
-const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
-
-// eslint-disable-next-line arrow-body-style
-const generateLocalFeedback =  () => {
-  return {
-    localComment,
-    localEmotion: generateEmotion(),
-  };
-};
-
-export {generateFilmInfo, generateLocalFeedback};
+export {generateFilmInfo};
