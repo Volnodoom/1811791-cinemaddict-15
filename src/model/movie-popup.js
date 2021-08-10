@@ -1,4 +1,4 @@
-import { dateDayMonthYear, dateYearMonthDayTime, calculateTime } from '../other/utils';
+import { dateDayMonthYear, calculateTime, createElement } from '../other/utils';
 
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
 
@@ -134,41 +134,28 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-const getEmojiUrl = (datum) => {
-  const emojiUrl = {
-    smile: './images/emoji/smile.png ',
-    sleeping: './images/emoji/sleeping.png ',
-    puke: './images/emoji/puke.png ',
-    angry: './images/emoji/angry.png ',
-  };
-
-  return emojiUrl[datum];
-};
-
-const getUsersComments = (film) => {
-  // eslint-disable-next-line quotes
-  let allComments = ``;
-
-  for (let ind = 0; ind < film.comments.length; ind++) {
-    const {commentItself, comAuthor, comDayTime, emotion} = film.comments[ind];
-
-    allComments += `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="${getEmojiUrl(emotion)}" width="55" height="55" alt="${emotion}">
-      </span>
-    <div>
-      <p class="film-details__comment-text">${commentItself}</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${comAuthor}</span>
-        <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>
-        <button class="film-details__comment-delete">Delete</button>
-      </p>
-    </div>
-  </li>`;
+class MoviePopup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
   }
 
-  return allComments;
-};
+  getTemplate () {
+    return createPopupTemplate(this._film);
+  }
 
-export {createPopupTemplate, getUsersComments};
+  getElement () {
+    if (!this._element){
+      this._element = createElement (this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement () {
+    this._element = null;
+  }
+}
+
+export default MoviePopup;
 

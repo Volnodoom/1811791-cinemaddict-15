@@ -1,9 +1,10 @@
 import { generateFilmInfo } from './mock/card-mock';
 import { generateFilter } from './mock/filter-mock';
 import { createButtonShowMore } from './model/button-show-more';
+import CommentsPopupView from './model/comments-popup';
 import { createOperationalFramework, createFrameworkForExtraTop, createFrameworkForExtraMostComments, createEmptyTemplate, createHeaderAvatar, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate} from './model/menu';
 import MovieCardView from './model/movie-card.js';
-import { createPopupTemplate, getUsersComments } from './model/movie-popup';
+import MoviePopupView from './model/movie-popup';
 import { renderTemplate, renderElement, RenderPosition } from './other/utils.js';
 
 //console.log (MovieCardView.getElement)
@@ -84,10 +85,10 @@ const operationalState = () => {
 };
 
 const popup = () => {
-  renderTemplate(bodyPart, createPopupTemplate(films[0]), 'beforeend');
+  renderElement(bodyPart, new MoviePopupView (films[0]).getElement(), RenderPosition.BEFOREEND);
 
   const containerForUserCom = bodyPart.querySelector('.film-details__comments-list');
-  renderTemplate(containerForUserCom, getUsersComments(films[0]), 'beforeend');
+  renderElement(containerForUserCom, new CommentsPopupView(films[0]).getElement(), RenderPosition.BEFOREEND);
 };
 
 operationalState();
