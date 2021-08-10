@@ -1,3 +1,4 @@
+//import { createElement } from '../other/utils.js';
 const FOOTER_STATEMENT_EMPTY = '0 movies inside';
 const FOOTER_STATEMENT_UP_TO_DATE = '130 291 movies inside';
 const EMPTY_STATEMENT = {
@@ -11,6 +12,7 @@ const USER = {
   rank: 'Movie Buff',
   avatarUrl: 'images/bitmap@2x.png',
 };
+
 
 const firstLetterUpperCaseString = (string) => string[0].toUpperCase() + string.slice(1);
 const createSingleFilterItemTemplate = (filterData) => {

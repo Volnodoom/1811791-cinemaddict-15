@@ -1,5 +1,4 @@
-import { dateDayMonthYear, dateYearMonthDayTime } from '../other/utils';
-import { calculateTime } from './movie-card';
+import { dateDayMonthYear, dateYearMonthDayTime, calculateTime } from '../other/utils';
 
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
 

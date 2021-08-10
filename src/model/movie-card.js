@@ -1,29 +1,4 @@
-import { dateYear } from '../other/utils';
-
-const MINUTES = 60;
-
-const calculateTime = (movieDuration) => {
-  const hours = Math.trunc(movieDuration/MINUTES);
-  let duration = '';
-  const timeConditions = [
-    movieDuration < MINUTES,
-    movieDuration === MINUTES,
-    movieDuration > MINUTES,
-  ];
-
-  switch (true) {
-    case timeConditions[0]:
-      duration = `${movieDuration}m`;
-      break;
-    case timeConditions[1]:
-      duration = '1h';
-      break;
-    case timeConditions[2]:
-      duration = `${hours}h ${movieDuration-hours*MINUTES}m`;
-      break;
-  }
-  return duration;
-};
+import { dateYear, createElement, calculateTime } from '../other/utils';
 
 const creatCardTemplate = (film) => {
   const {title, totalRating, runtime, genre, poster, description} = film;
@@ -66,4 +41,27 @@ const creatCardTemplate = (film) => {
 </article>`;
 };
 
-export {creatCardTemplate, calculateTime};
+class MovieCard {
+  constructor (film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate () {
+    return creatCardTemplate(this._film);
+  }
+
+  getElement () {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement () {
+    this._element = null;
+  }
+}
+
+export default MovieCard;
