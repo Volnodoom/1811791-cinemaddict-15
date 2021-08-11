@@ -1,18 +1,21 @@
 import { createElement } from '../other/utils.js';
 
-const BUTTON_CALL = 'Show more';
+const createFrameworkForExtraMostComments = () => (
+  `<section class="films-list films-list--extra">
+    <h2 class="films-list__title">Most commented</h2>
+    <div class="films-list__container">
 
-const createButtonShowMore = () => (
-  `<button class="films-list__show-more">${BUTTON_CALL}</button>`
+    </div>
+  </section>`
 );
 
-class ButtonShowMore {
+class TopComments {
   constructor() {
     this._element = null;
   }
 
   getTemplate () {
-    return createButtonShowMore();
+    return createFrameworkForExtraMostComments();
   }
 
   getElement () {
@@ -28,4 +31,4 @@ class ButtonShowMore {
   }
 }
 
-export default ButtonShowMore;
+export default TopComments;

@@ -1,13 +1,19 @@
 import { generateFilmInfo } from './mock/card-mock';
 import { generateFilter } from './mock/filter-mock';
-//import { createButtonShowMore } from './model/button-show-more';
+import AvatarView from './model/avatar';
+import ButtonShowMoreView from './model/button-show-more';
+import CardsContainerView from './model/cards-container';
 import CommentsPopupView from './model/comments-popup';
-import MenuView from './model/menu';
+import EmptyConditionView from './model/empty-condition';
+import TopCommentsView from './model/extra-comments-cards';
+import TopCardsView from './model/extra-top-cards';
+import FilterView from './model/filters';
+import FooterView from './model/footer';
 import MovieCardView from './model/movie-card.js';
 import MoviePopupView from './model/movie-popup';
-import { renderElement, RenderPosition, EmptyStatement } from './other/utils.js';
+import SortView from './model/sort';
+import { renderElement, RenderPosition, EmptyStatement, FooterCondition } from './other/utils.js';
 
-console.log (MovieCardView.getElement)
 
 const FILMS_CARDS_COUNT = 20;
 const FILMS_CARDS_PER_STEP = 5;
@@ -23,14 +29,17 @@ const headerOfBody =bodyPart.querySelector('.header');
 const mainOfBody = bodyPart.querySelector('.main');
 
 const nonOperationalStateLoading = () => {
-  renderElement(mainOfBody, new MenuView(filter, EmptyStatement.LOADING).getElementEmpty(), RenderPosition.BEFOREEND);
-  renderElement(mainOfBody, new MenuView().getElementFooterEmpty(), RenderPosition.BEFOREEND);
+  renderElement(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
+  renderElement(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING).getElement(), RenderPosition.BEFOREEND);
+  renderElement(footerPart, new FooterView(FooterCondition.empty).getElement(), RenderPosition.BEFOREEND);
 };
 
 const operationalState = () => {
-  renderElement(mainOfBody, new MenuView(filter).getElementFramework(), RenderPosition.BEFOREEND);
-  renderElement(footerPart, new MenuView().getElementFooterFull(), RenderPosition.BEFOREEND);
-  renderElement(headerOfBody, new MenuView().getElementAvatar(), RenderPosition.BEFOREEND);
+  renderElement(headerOfBody, new AvatarView().getElement(), RenderPosition.BEFOREEND);
+  renderElement(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
+  renderElement(mainOfBody, new SortView().getElement(), RenderPosition.BEFOREEND);
+  renderElement(mainOfBody, new CardsContainerView().getElement(), RenderPosition.BEFOREEND);
+  renderElement(footerPart, new FooterView(FooterCondition.upToDate).getElement(), RenderPosition.BEFOREEND);
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
@@ -38,10 +47,12 @@ const operationalState = () => {
     renderElement(containerDivInMovies, new MovieCardView(films[ind]).getElement(), RenderPosition.BEFOREEND);
   }
 
+  const placeForButtonElement = mainOfBody.querySelector('.films-list');
+
   if (films.length > FILMS_CARDS_PER_STEP) {
     let renderTemplateFilmsCount = FILMS_CARDS_PER_STEP;
 
-    //renderTemplate(containerDivInMovies, createButtonShowMore(), 'afterend');
+    renderElement(placeForButtonElement, new ButtonShowMoreView().getElement(), RenderPosition.BEFOREEND);
 
     const showMoreButton = mainOfBody.querySelector('.films-list__show-more');
 
@@ -50,7 +61,7 @@ const operationalState = () => {
 
       films
         .slice(renderTemplateFilmsCount, renderTemplateFilmsCount + FILMS_CARDS_PER_STEP)
-        .forEach((film) => renderElement(containerDivInMovies, new MovieCardView(film), RenderPosition.BEFOREEND));
+        .forEach((film) => renderElement(containerDivInMovies, new MovieCardView(film).getElement(), RenderPosition.BEFOREEND));
 
       renderTemplateFilmsCount += FILMS_CARDS_PER_STEP;
 
@@ -60,10 +71,11 @@ const operationalState = () => {
     });
   }
 
-  const sectionMovies = mainOfBody.querySelector('.films-list');
+  const sectionMovies = mainOfBody.querySelector('.films');
 
-  renderElement(sectionMovies, new MenuView().getElementExtraComments(), RenderPosition.AFTERBEGIN);
-  renderElement(sectionMovies, new MenuView().getElementExtraExtraTop(), RenderPosition.AFTERBEGIN);
+  renderElement(sectionMovies, new TopCardsView().getElement(), RenderPosition.BEFOREEND);
+  renderElement(sectionMovies, new TopCommentsView().getElement(), RenderPosition.BEFOREEND);
+
 
   const containerSectionExtraMovies = mainOfBody.querySelectorAll('.films-list__container');
   // ----> for TOP and MostCommented movies

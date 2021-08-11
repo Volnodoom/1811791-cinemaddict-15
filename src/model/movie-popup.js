@@ -1,4 +1,4 @@
-import { dateDayMonthYear, calculateTime, createElement } from '../other/utils';
+import { dateDayMonthYear, calculateTime, createElement, movieButtonActivation } from '../other/utils';
 
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
 
@@ -17,12 +17,21 @@ const createGenre = (genreData) => {
 const createPopupTemplate = (film) => {
   const {poster, ageRating, title, alternativeTitle, totalRating, director, writers, actors, runtime, genre, description} = film;
   const {data, releaseCountry} = film.release;
+  const {watchlist, alreadyWatched, favorite} = film.userDetails;
 
   let termGenre ='';
   if (genre.length >= 2) {termGenre = 'Genres';} else {termGenre = 'Genre';}
   const writersLine = writers.join(', ');
   const actorsLine = actors.join(', ');
   const altPoster = title;
+
+  let watchlistClassName = '';
+  let historyClassName = '';
+  let favoriteClassName = '';
+
+  if (watchlist) {watchlistClassName = 'film-details__control-button--active';} else {watchlistClassName = '';}
+  if (alreadyWatched) {historyClassName = 'film-details__control-button--active';} else {historyClassName = '';}
+  if (favorite) {favoriteClassName = 'film-details__control-button--active';} else {favoriteClassName = '';}
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -83,9 +92,9 @@ const createPopupTemplate = (film) => {
     </div>
 
     <section class="film-details__controls">
-      <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-      <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-      <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+      <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
+      <button type="button" class="film-details__control-button film-details__control-button--watched ${historyClassName}" id="watched" name="watched">Already watched</button>
+      <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
     </section>
   </div>
 
