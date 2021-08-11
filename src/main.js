@@ -1,13 +1,14 @@
 import { generateFilmInfo } from './mock/card-mock';
 import { generateFilter } from './mock/filter-mock';
-import { createButtonShowMore } from './model/button-show-more';
+//import { createButtonShowMore } from './model/button-show-more';
 import CommentsPopupView from './model/comments-popup';
-import { createOperationalFramework, createFrameworkForExtraTop, createFrameworkForExtraMostComments, createEmptyTemplate, createHeaderAvatar, footerTemplateForBlankWithoutMovie, footerTemplateForUpToDate} from './model/menu';
+import MenuView from './model/menu';
 import MovieCardView from './model/movie-card.js';
 import MoviePopupView from './model/movie-popup';
-import { renderTemplate, renderElement, RenderPosition } from './other/utils.js';
+import { renderElement, RenderPosition, EmptyStatement } from './other/utils.js';
 
-//console.log (MovieCardView.getElement)
+console.log (MovieCardView.getElement)
+
 const FILMS_CARDS_COUNT = 20;
 const FILMS_CARDS_PER_STEP = 5;
 const TOP_FILMS_COUNT = 2;
@@ -22,14 +23,14 @@ const headerOfBody =bodyPart.querySelector('.header');
 const mainOfBody = bodyPart.querySelector('.main');
 
 const nonOperationalStateLoading = () => {
-  renderTemplate(mainOfBody, createEmptyTemplate(filter, 'loading'), 'beforeend');
-  renderTemplate(footerPart, footerTemplateForBlankWithoutMovie, 'beforeend');
+  renderElement(mainOfBody, new MenuView(filter, EmptyStatement.LOADING).getElementEmpty(), RenderPosition.BEFOREEND);
+  renderElement(mainOfBody, new MenuView().getElementFooterEmpty(), RenderPosition.BEFOREEND);
 };
 
 const operationalState = () => {
-  renderTemplate(mainOfBody, createOperationalFramework(filter), 'beforeend');
-  renderTemplate(footerPart, footerTemplateForUpToDate, 'beforeend');
-  renderTemplate(headerOfBody, createHeaderAvatar(), 'beforeend');
+  renderElement(mainOfBody, new MenuView(filter).getElementFramework(), RenderPosition.BEFOREEND);
+  renderElement(footerPart, new MenuView().getElementFooterFull(), RenderPosition.BEFOREEND);
+  renderElement(headerOfBody, new MenuView().getElementAvatar(), RenderPosition.BEFOREEND);
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
@@ -40,7 +41,7 @@ const operationalState = () => {
   if (films.length > FILMS_CARDS_PER_STEP) {
     let renderTemplateFilmsCount = FILMS_CARDS_PER_STEP;
 
-    renderTemplate(containerDivInMovies, createButtonShowMore(), 'afterend');
+    //renderTemplate(containerDivInMovies, createButtonShowMore(), 'afterend');
 
     const showMoreButton = mainOfBody.querySelector('.films-list__show-more');
 
@@ -61,8 +62,8 @@ const operationalState = () => {
 
   const sectionMovies = mainOfBody.querySelector('.films-list');
 
-  renderTemplate(sectionMovies, createFrameworkForExtraMostComments(), 'afterend');
-  renderTemplate(sectionMovies, createFrameworkForExtraTop(), 'afterend');
+  renderElement(sectionMovies, new MenuView().getElementExtraComments(), RenderPosition.AFTERBEGIN);
+  renderElement(sectionMovies, new MenuView().getElementExtraExtraTop(), RenderPosition.AFTERBEGIN);
 
   const containerSectionExtraMovies = mainOfBody.querySelectorAll('.films-list__container');
   // ----> for TOP and MostCommented movies
@@ -92,7 +93,7 @@ const popup = () => {
 };
 
 operationalState();
-//nonOperationalStateLoading();
-//popup();
+nonOperationalStateLoading();
+popup();
 
 export{films};

@@ -43,7 +43,7 @@ class CommentsPopup {
   }
 
   getTemplate () {
-    return getUsersCommentsTemplate (this._film)
+    return getUsersCommentsTemplate (this._film);
   }
 
   getElement () {

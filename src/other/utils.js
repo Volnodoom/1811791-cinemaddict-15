@@ -5,6 +5,14 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
+const EmptyStatement = {
+  LOADING: 'Loading...',
+  ALL_MOVIES: 'There are no movies in our database',
+  WHATCHLIST: 'There are no movies to watch now',
+  HISTORY: 'There are no watched movies now',
+  FAVORITES: 'There are no favorite movies now',
+};
+
 const renderElement = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
@@ -74,4 +82,4 @@ const calculateTime = (movieDuration) => {
   return duration;
 };
 
-export {getRandomInteger, getRandomPositiveFloat, dateYearMonthDayTime, dateDayMonthYear, dateYear, renderTemplate, calculateTime, renderElement, createElement, RenderPosition};
+export {getRandomInteger, getRandomPositiveFloat, dateYearMonthDayTime, dateDayMonthYear, dateYear, renderTemplate, calculateTime, renderElement, createElement, RenderPosition, EmptyStatement};
