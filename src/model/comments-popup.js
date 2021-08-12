@@ -13,12 +13,12 @@ const getEmojiUrl = (datum) => {
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
-  let allComments = ``;
+  let filmComments = ``;
 
   for (let ind = 0; ind < film.comments.length; ind++) {
     const {commentItself, comAuthor, comDayTime, emotion} = film.comments[ind];
 
-    allComments += `<li class="film-details__comment">
+    filmComments += `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
         <img src="${getEmojiUrl(emotion)}" width="55" height="55" alt="${emotion}">
       </span>
@@ -32,7 +32,7 @@ const getUsersCommentsTemplate = (film) => {
     </div>
   </li>`;
   }
-
+  const allComments = `<ul class="film-details__comments-list">${filmComments}</ul>`;
   return allComments;
 };
 
