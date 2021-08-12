@@ -1,4 +1,4 @@
-import { dateDayMonthYear, calculateTime, createElement, movieButtonActivation } from '../other/utils';
+import { dateDayMonthYear, calculateTime, createElement } from '../other/utils';
 
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
 

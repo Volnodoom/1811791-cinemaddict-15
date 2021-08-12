@@ -12,8 +12,7 @@ import FooterView from './model/footer';
 import MovieCardView from './model/movie-card.js';
 import MoviePopupView from './model/movie-popup';
 import SortView from './model/sort';
-import { renderElement, RenderPosition, EmptyStatement, FooterCondition } from './other/utils.js';
-
+import { render, RenderPosition, EmptyStatement, FooterCondition } from './other/utils.js';
 
 const FILMS_CARDS_COUNT = 20;
 const FILMS_CARDS_PER_STEP = 5;
@@ -29,22 +28,22 @@ const headerOfBody =bodyPart.querySelector('.header');
 const mainOfBody = bodyPart.querySelector('.main');
 
 const nonOperationalStateLoading = () => {
-  renderElement(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
-  renderElement(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING).getElement(), RenderPosition.BEFOREEND);
-  renderElement(footerPart, new FooterView(FooterCondition.empty).getElement(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING).getElement(), RenderPosition.BEFOREEND);
+  render(footerPart, new FooterView(FooterCondition.empty).getElement(), RenderPosition.BEFOREEND);
 };
 
 const operationalState = () => {
-  renderElement(headerOfBody, new AvatarView().getElement(), RenderPosition.BEFOREEND);
-  renderElement(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
-  renderElement(mainOfBody, new SortView().getElement(), RenderPosition.BEFOREEND);
-  renderElement(mainOfBody, new CardsContainerView().getElement(), RenderPosition.BEFOREEND);
-  renderElement(footerPart, new FooterView(FooterCondition.upToDate).getElement(), RenderPosition.BEFOREEND);
+  render(headerOfBody, new AvatarView().getElement(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new SortView().getElement(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new CardsContainerView().getElement(), RenderPosition.BEFOREEND);
+  render(footerPart, new FooterView(FooterCondition.upToDate).getElement(), RenderPosition.BEFOREEND);
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
   for (let ind = 0; ind <Math.min(films.length, FILMS_CARDS_PER_STEP); ind++) {
-    renderElement(containerDivInMovies, new MovieCardView(films[ind]).getElement(), RenderPosition.BEFOREEND);
+    render(containerDivInMovies, new MovieCardView(films[ind]).getElement(), RenderPosition.BEFOREEND);
   }
 
   const placeForButtonElement = mainOfBody.querySelector('.films-list');
@@ -52,7 +51,7 @@ const operationalState = () => {
   if (films.length > FILMS_CARDS_PER_STEP) {
     let renderTemplateFilmsCount = FILMS_CARDS_PER_STEP;
 
-    renderElement(placeForButtonElement, new ButtonShowMoreView().getElement(), RenderPosition.BEFOREEND);
+    render(placeForButtonElement, new ButtonShowMoreView().getElement(), RenderPosition.BEFOREEND);
 
     const showMoreButton = mainOfBody.querySelector('.films-list__show-more');
 
@@ -61,7 +60,7 @@ const operationalState = () => {
 
       films
         .slice(renderTemplateFilmsCount, renderTemplateFilmsCount + FILMS_CARDS_PER_STEP)
-        .forEach((film) => renderElement(containerDivInMovies, new MovieCardView(film).getElement(), RenderPosition.BEFOREEND));
+        .forEach((film) => render(containerDivInMovies, new MovieCardView(film).getElement(), RenderPosition.BEFOREEND));
 
       renderTemplateFilmsCount += FILMS_CARDS_PER_STEP;
 
@@ -73,14 +72,14 @@ const operationalState = () => {
 
   const sectionMovies = mainOfBody.querySelector('.films');
 
-  renderElement(sectionMovies, new TopCardsView().getElement(), RenderPosition.BEFOREEND);
-  renderElement(sectionMovies, new TopCommentsView().getElement(), RenderPosition.BEFOREEND);
+  render(sectionMovies, new TopCardsView().getElement(), RenderPosition.BEFOREEND);
+  render(sectionMovies, new TopCommentsView().getElement(), RenderPosition.BEFOREEND);
 
 
-  const containerSectionExtraMovies = mainOfBody.querySelectorAll('.films-list__container');
+  const containerForMovieCards = mainOfBody.querySelectorAll('.films-list__container');
   // ----> for TOP and MostCommented movies
   for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
-    renderElement(containerSectionExtraMovies[1],
+    render(containerForMovieCards[1],
       new MovieCardView(films
         .slice()
         .sort((aInd,bInd) => bInd.totalRating - aInd.totalRating)[ind])
@@ -88,7 +87,7 @@ const operationalState = () => {
       RenderPosition.BEFOREEND);
   }
   for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
-    renderElement(containerSectionExtraMovies[2],
+    render(containerForMovieCards[2],
       new MovieCardView(films
         .slice()
         .sort((aInd,bInd) => bInd.comments.length - aInd.comments.length)[ind])
@@ -97,15 +96,37 @@ const operationalState = () => {
   }
 };
 
-const popup = () => {
-  renderElement(bodyPart, new MoviePopupView (films[0]).getElement(), RenderPosition.BEFOREEND);
+const popup = (chosenMovie) => {
+  render(bodyPart, new MoviePopupView (chosenMovie).getElement(), RenderPosition.BEFOREEND);
 
   const containerForUserCom = bodyPart.querySelector('.film-details__comments-list');
-  renderElement(containerForUserCom, new CommentsPopupView(films[0]).getElement(), RenderPosition.BEFOREEND);
+  render(containerForUserCom, new CommentsPopupView(chosenMovie).getElement(), RenderPosition.BEFOREEND);
 };
 
 operationalState();
-nonOperationalStateLoading();
-popup();
+
+
+//nonOperationalStateLoading();
+// popup();
+
+//const handler
+//title, comments,
+
+console.log (new MovieCardView(films[0]).getElement())
+
+const posterA = new MovieCardView(films[0]);
+
+// const addThumbnailsClickHandler = () => {
+  posterA.getElement().querySelector('.film-card__poster').addEventListener('click', () => {
+    //popup(chosenMovie);
+    console.log ("click CLICK CLICK!!!");
+  });
+// };
+
+
+// for (let ind = 0; ind < films.length; ind++) {
+  // addThumbnailsClickHandler(new MovieCardView(films[0]).getElement().children[0]);
+// }
+
 
 export{films};

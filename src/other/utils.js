@@ -18,21 +18,7 @@ const FooterCondition = {
   upToDate: '130 291 movies inside',
 };
 
-const movieButtonActivation = (watchlist, alreadyWatched, favorite) => {
-  let watchlistClassName = '';
-  let historyClassName = '';
-  let favoriteClassName = '';
-
-  if (watchlist) {watchlistClassName = 'film-card__controls-item--active';} else {watchlistClassName = '';}
-  if (alreadyWatched) {historyClassName = 'film-card__controls-item--active';} else { historyClassName = '';}
-  if (favorite) {favoriteClassName = 'film-card__controls-item--active';} else {favoriteClassName = '';}
-
-  watchlistClassName = '';
-  historyClassName = '';
-  favoriteClassName = '';
-};
-
-const renderElement = (container, element, place) => {
+const render = (container, element, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -104,5 +90,5 @@ const calculateTime = (movieDuration) => {
 export {getRandomInteger,
   getRandomPositiveFloat,
   dateYearMonthDayTime, dateDayMonthYear, dateYear, calculateTime,
-  renderTemplate, renderElement, createElement, RenderPosition,
-  EmptyStatement, FooterCondition, movieButtonActivation};
+  renderTemplate, render, createElement, RenderPosition,
+  EmptyStatement, FooterCondition};
