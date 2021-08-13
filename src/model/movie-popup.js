@@ -1,5 +1,4 @@
-import { dateDayMonthYear, dateYearMonthDayTime } from '../other/utils';
-import { calculateTime } from './movie-card';
+import { dateDayMonthYear, calculateTime, createElement } from '../other/utils';
 
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
 
@@ -18,12 +17,21 @@ const createGenre = (genreData) => {
 const createPopupTemplate = (film) => {
   const {poster, ageRating, title, alternativeTitle, totalRating, director, writers, actors, runtime, genre, description} = film;
   const {data, releaseCountry} = film.release;
+  const {watchlist, alreadyWatched, favorite} = film.userDetails;
 
   let termGenre ='';
   if (genre.length >= 2) {termGenre = 'Genres';} else {termGenre = 'Genre';}
   const writersLine = writers.join(', ');
   const actorsLine = actors.join(', ');
   const altPoster = title;
+
+  let watchlistClassName = '';
+  let historyClassName = '';
+  let favoriteClassName = '';
+
+  if (watchlist) {watchlistClassName = 'film-details__control-button--active';} else {watchlistClassName = '';}
+  if (alreadyWatched) {historyClassName = 'film-details__control-button--active';} else {historyClassName = '';}
+  if (favorite) {favoriteClassName = 'film-details__control-button--active';} else {favoriteClassName = '';}
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -84,9 +92,9 @@ const createPopupTemplate = (film) => {
     </div>
 
     <section class="film-details__controls">
-      <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-      <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-      <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+      <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
+      <button type="button" class="film-details__control-button film-details__control-button--watched ${historyClassName}" id="watched" name="watched">Already watched</button>
+      <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
     </section>
   </div>
 
@@ -94,8 +102,7 @@ const createPopupTemplate = (film) => {
 <section class="film-details__comments-wrap">
   <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${film.comments.length}</span></h3>
 
-  <ul class="film-details__comments-list">
-  </ul>
+
 
   <div class="film-details__new-comment">
   <div class="film-details__add-emoji-label">
@@ -135,41 +142,28 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-const getEmojiUrl = (datum) => {
-  const emojiUrl = {
-    smile: './images/emoji/smile.png ',
-    sleeping: './images/emoji/sleeping.png ',
-    puke: './images/emoji/puke.png ',
-    angry: './images/emoji/angry.png ',
-  };
-
-  return emojiUrl[datum];
-};
-
-const getUsersComments = (film) => {
-  // eslint-disable-next-line quotes
-  let allComments = ``;
-
-  for (let ind = 0; ind < film.comments.length; ind++) {
-    const {commentItself, comAuthor, comDayTime, emotion} = film.comments[ind];
-
-    allComments += `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="${getEmojiUrl(emotion)}" width="55" height="55" alt="${emotion}">
-      </span>
-    <div>
-      <p class="film-details__comment-text">${commentItself}</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">${comAuthor}</span>
-        <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>
-        <button class="film-details__comment-delete">Delete</button>
-      </p>
-    </div>
-  </li>`;
+class MoviePopup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
   }
 
-  return allComments;
-};
+  getTemplate () {
+    return createPopupTemplate(this._film);
+  }
 
-export {createPopupTemplate, getUsersComments};
+  getElement () {
+    if (!this._element){
+      this._element = createElement (this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement () {
+    this._element = null;
+  }
+}
+
+export default MoviePopup;
 

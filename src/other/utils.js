@@ -1,5 +1,45 @@
 import dayjs from 'dayjs';
 
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+const EmptyStatement = {
+  LOADING: 'Loading...',
+  ALL_MOVIES: 'There are no movies in our database',
+  WHATCHLIST: 'There are no movies to watch now',
+  HISTORY: 'There are no watched movies now',
+  FAVORITES: 'There are no favorite movies now',
+};
+
+const FooterCondition = {
+  empty: '0 movies inside',
+  upToDate: '130 291 movies inside',
+};
+
+const render = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
 const getRandomInteger = (a = 0, b = 1) => {
@@ -22,4 +62,33 @@ const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH
 const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
 const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
 
-export {getRandomInteger, getRandomPositiveFloat, dateYearMonthDayTime, dateDayMonthYear, dateYear};
+const MINUTES = 60;
+
+const calculateTime = (movieDuration) => {
+  const hours = Math.trunc(movieDuration/MINUTES);
+  let duration = '';
+  const timeConditions = [
+    movieDuration < MINUTES,
+    movieDuration === MINUTES,
+    movieDuration > MINUTES,
+  ];
+
+  switch (true) {
+    case timeConditions[0]:
+      duration = `${movieDuration}m`;
+      break;
+    case timeConditions[1]:
+      duration = '1h';
+      break;
+    case timeConditions[2]:
+      duration = `${hours}h ${movieDuration-hours*MINUTES}m`;
+      break;
+  }
+  return duration;
+};
+
+export {getRandomInteger,
+  getRandomPositiveFloat,
+  dateYearMonthDayTime, dateDayMonthYear, dateYear, calculateTime,
+  renderTemplate, render, createElement, RenderPosition,
+  EmptyStatement, FooterCondition};
