@@ -43,31 +43,17 @@ const operationalState = () => {
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
-  const addClosePopupButtonHandler = () =>{
-    const popupSection = document.querySelector('.film-details');
-    const closePopupButton = popupSection.querySelector('.film-details__close-btn');
-
-    closePopupButton.addEventListener('click', () => {
-      bodyPart.removeChild(popupSection);
-      bodyPart.classList.remove('hide-overflow');
-    });
-  };
-
-  const addThumbnailsCardClickHandler = function (cardData, film) {
-    cardData.getElement().querySelector('.film-card__poster').addEventListener('click', () => {
+  const addThumbnailsCardClickHandler = function (card, film) {
+    card.setClickPosterHandler(() => {
       popup(film);
-      addClosePopupButtonHandler();
       bodyPart.classList.add('hide-overflow');
     });
-    cardData.getElement().querySelector('.film-card__title').addEventListener('click', () => {
+    card.setClickTitleHandler(() => {
       popup(film);
-      addClosePopupButtonHandler();
       bodyPart.classList.add('hide-overflow');
     });
-    cardData.getElement().querySelector('.film-card__comments').addEventListener('click', (evt) => {
-      evt.preventDefault();
+    card.setClickCommentsHandler(() => {
       popup(film);
-      addClosePopupButtonHandler();
       bodyPart.classList.add('hide-overflow');
     });
   };
@@ -100,8 +86,8 @@ const operationalState = () => {
   if (films.length > FILMS_CARDS_PER_STEP) {
     let renderTemplateFilmsCount = FILMS_CARDS_PER_STEP;
     const placeForButtonElement = mainOfBody.querySelector('.films-list');
-
     const loadMoreButtonComponent = new ButtonShowMoreView();
+
     render(placeForButtonElement, loadMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
     loadMoreButtonComponent.setClickHandler(() => {
@@ -130,8 +116,15 @@ const operationalState = () => {
 };
 
 const popup = (chosenMovie) => {
-  bodyPart.appendChild(new MoviePopupView (chosenMovie).getElement());
+  const MoviePopupChosen = new MoviePopupView (chosenMovie);
+  bodyPart.appendChild(MoviePopupChosen.getElement());
   bodyPart.querySelector('.film-details__comments-title').appendChild(new CommentsPopupView(chosenMovie).getElement());
+
+  MoviePopupChosen.setClickHandler(() => {
+    MoviePopupChosen.getElement().remove();
+    MoviePopupChosen.removeElement();
+    bodyPart.classList.remove('hide-overflow');
+  });
 };
 
 operationalState();
