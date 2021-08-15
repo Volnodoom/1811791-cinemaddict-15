@@ -101,12 +101,10 @@ const operationalState = () => {
     let renderTemplateFilmsCount = FILMS_CARDS_PER_STEP;
     const placeForButtonElement = mainOfBody.querySelector('.films-list');
 
-    render(placeForButtonElement, new ButtonShowMoreView().getElement(), RenderPosition.BEFOREEND);
-    const showMoreButton = mainOfBody.querySelector('.films-list__show-more');
+    const loadMoreButtonComponent = new ButtonShowMoreView();
+    render(placeForButtonElement, loadMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
 
-    showMoreButton.addEventListener('click', (evt) => {
-      evt.preventDefault();
-
+    loadMoreButtonComponent.setClickHandler(() => {
       films
         .slice(renderTemplateFilmsCount, renderTemplateFilmsCount + FILMS_CARDS_PER_STEP)
         .forEach((film) => {renderCards(film);});
@@ -114,7 +112,8 @@ const operationalState = () => {
       renderTemplateFilmsCount += FILMS_CARDS_PER_STEP;
 
       if (renderTemplateFilmsCount >= films.length) {
-        showMoreButton.remove();
+        loadMoreButtonComponent.getElement().remove();
+        loadMoreButtonComponent.removeElement();
       }
     });
   }
