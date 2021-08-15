@@ -1,4 +1,5 @@
-import { dateDayMonthYear, calculateTime, createElement } from '../other/utils';
+import { dateDayMonthYear, calculateTime } from '../other/utils';
+import AbstractView from './abstract';
 
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
 
@@ -142,26 +143,14 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-class MoviePopup {
+class MoviePopup extends AbstractView {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate () {
     return createPopupTemplate(this._film);
-  }
-
-  getElement () {
-    if (!this._element){
-      this._element = createElement (this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 

@@ -1,4 +1,5 @@
-import { createElement, dateYearMonthDayTime } from '../other/utils';
+import { dateYearMonthDayTime } from '../other/utils';
+import AbstractView from './abstract';
 
 const getEmojiUrl = (datum) => {
   const emojiUrl = {
@@ -36,26 +37,14 @@ const getUsersCommentsTemplate = (film) => {
   return allComments;
 };
 
-class CommentsPopup {
+class CommentsPopup extends AbstractView{
   constructor (film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate () {
     return getUsersCommentsTemplate (this._film);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement (this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 

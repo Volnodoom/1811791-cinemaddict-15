@@ -1,4 +1,4 @@
-import { createElement } from '../other/utils.js';
+import AbstractView from './abstract.js';
 
 const createEmptyCondition = (message) => (
   `<section class="films">
@@ -8,26 +8,14 @@ const createEmptyCondition = (message) => (
   </section>`
 );
 
-class EmptyCondition {
+class EmptyCondition extends AbstractView{
   constructor(message) {
+    super();
     this._message = message;
-    this._element = null;
   }
 
   getTemplate () {
     return createEmptyCondition(this._message);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 

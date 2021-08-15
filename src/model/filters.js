@@ -1,4 +1,4 @@
-import { createElement } from '../other/utils.js';
+import AbstractView from './abstract.js';
 
 const firstLetterUpperCaseString = (string) => string[0].toUpperCase() + string.slice(1);
 const createSingleFilterItemTemplate = (filterData) => {
@@ -19,26 +19,14 @@ const createFiltersTemplate = (filtersData) => {
 </nav>`;
 };
 
-class Filter {
+class Filter extends AbstractView{
   constructor (filter) {
+    super();
     this._filter = filter;
-    this._element = null;
   }
 
   getTemplate () {
     return createFiltersTemplate(this._filter);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 

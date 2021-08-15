@@ -1,4 +1,4 @@
-import { createElement } from '../other/utils.js';
+import AbstractView from './abstract.js';
 
 const createFrameworkForExtraTop = () => (
   `<section class="films-list films-list--extra">
@@ -9,25 +9,9 @@ const createFrameworkForExtraTop = () => (
   </section>`
 );
 
-class TopCards {
-  constructor() {
-    this._element = null;
-  }
-
+class TopCards extends AbstractView{
   getTemplate () {
     return createFrameworkForExtraTop();
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 

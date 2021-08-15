@@ -1,4 +1,5 @@
-import { dateYear, createElement, calculateTime } from '../other/utils';
+import { dateYear, calculateTime } from '../other/utils';
+import AbstractView from './abstract';
 
 const creatCardTemplate = (film) => {
   const {title, totalRating, runtime, genre, poster, description} = film;
@@ -41,26 +42,14 @@ const creatCardTemplate = (film) => {
 </article>`;
 };
 
-class MovieCard {
+class MovieCard extends AbstractView{
   constructor (film) {
+    super();
     this._film = film;
-    this._element = null;
   }
 
   getTemplate () {
     return creatCardTemplate(this._film);
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 
