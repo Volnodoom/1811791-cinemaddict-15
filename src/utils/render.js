@@ -19,6 +19,10 @@ const FooterCondition = {
 };
 
 const render = (container, child, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
   if (child instanceof Abstract) {
     child = child.getElement();
   }
