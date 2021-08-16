@@ -1,4 +1,4 @@
-import { createElement } from '../other/utils.js';
+import AbstractView from './abstract.js';
 
 const USER = {
   rank: 'Movie Buff',
@@ -11,25 +11,9 @@ const createHeaderAvatar = () => (
     <img class="profile__avatar" src="${USER.avatarUrl}" alt="Avatar" width="35" height="35">
   </section>`);
 
-class Avatar {
-  constructor() {
-    this._element = null;
-  }
-
+class Avatar extends AbstractView {
   getTemplate () {
     return createHeaderAvatar();
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 

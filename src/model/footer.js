@@ -1,12 +1,13 @@
-import { createElement, FooterCondition } from '../other/utils.js';
+import { FooterCondition } from '../utils/render.js';
+import AbstractView from './abstract.js';
 
 const footerTemplateForBlankWithoutMovie = `<p>${FooterCondition.empty}</p>`;
 const footerTemplateForUpToDate = `<p>${FooterCondition.upToDate}</p>`;
 
-class Footer {
+class Footer extends AbstractView{
   constructor(message) {
+    super();
     this.message = message;
-    this._element = null;
   }
 
   getTemplate () {
@@ -15,18 +16,6 @@ class Footer {
     } else {
       return footerTemplateForUpToDate;
     }
-  }
-
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement () {
-    this._element = null;
   }
 }
 

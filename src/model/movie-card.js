@@ -1,4 +1,5 @@
-import { dateYear, createElement, calculateTime } from '../other/utils';
+import { dateYear, calculateTime, CardsEventsOn } from '../utils/card-utils';
+import AbstractView from './abstract';
 
 const creatCardTemplate = (film) => {
   const {title, totalRating, runtime, genre, poster, description} = film;
@@ -41,26 +42,49 @@ const creatCardTemplate = (film) => {
 </article>`;
 };
 
-class MovieCard {
+class MovieCard extends AbstractView{
   constructor (film) {
+    super();
     this._film = film;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate () {
     return creatCardTemplate(this._film);
   }
 
-  getElement () {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
+  _clickHandler(evt) {
+    evt.preventDefault();
+    const classValue = evt.target.classList.value;
+    switch(classValue) {
+      case 'film-card__poster':
+        this._callback.clickOnPoster();
+        break;
+      case 'film-card__title':
+        this._callback.clickOnTitle();
+        break;
+      case 'film-card__comments':
+        this._callback.clickOnComments();
+        break;
     }
-
-    return this._element;
   }
 
-  removeElement () {
-    this._element = null;
+  setClickHandler (type, callback) {
+    switch (type) {
+      case CardsEventsOn.POSTER:
+        this._callback.clickOnPoster = callback;
+        break;
+      case CardsEventsOn.TITLE:
+        this._callback.clickOnTitle = callback;
+        break;
+      case CardsEventsOn.COMMENTS:
+        this._callback.clickOnComments = callback;
+        break;
+      default:
+        throw Error ('Click handler contain the TYPE which is not detected');
+    }
+
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
 

@@ -1,4 +1,4 @@
-import { getRandomInteger, getRandomPositiveFloat } from '../other/utils.js';
+import { getRandomInteger, getRandomPositiveFloat } from '../utils/common.js';
 /* eslint-disable quotes */
 
 const giveFewPositionsFromArrayNames = (array) => {
