@@ -1,4 +1,4 @@
-import { dateYear, calculateTime } from '../other/utils';
+import { dateYear, calculateTime, CardsEventsOn } from '../utils/card-utils';
 import AbstractView from './abstract';
 
 const creatCardTemplate = (film) => {
@@ -46,43 +46,45 @@ class MovieCard extends AbstractView{
   constructor (film) {
     super();
     this._film = film;
-    this._clickPosterHandler = this._clickPosterHandler.bind(this);
-    this._clickTitleHandler = this._clickTitleHandler.bind(this);
-    this._clickCommentsHandler = this._clickCommentsHandler.bind(this);
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate () {
     return creatCardTemplate(this._film);
   }
 
-  _clickPosterHandler(evt) {
+  _clickHandler(evt) {
     evt.preventDefault();
-    this._callback.clickOnPoster();
+    const classValue = evt.target.classList.value;
+    switch(classValue) {
+      case 'film-card__poster':
+        this._callback.clickOnPoster();
+        break;
+      case 'film-card__title':
+        this._callback.clickOnTitle();
+        break;
+      case 'film-card__comments':
+        this._callback.clickOnComments();
+        break;
+    }
   }
 
-  _clickTitleHandler(evt) {
-    evt.preventDefault();
-    this._callback.clickOnTitle();
-  }
+  setClickHandler (type, callback) {
+    switch (type) {
+      case CardsEventsOn.POSTER:
+        this._callback.clickOnPoster = callback;
+        break;
+      case CardsEventsOn.TITLE:
+        this._callback.clickOnTitle = callback;
+        break;
+      case CardsEventsOn.COMMENTS:
+        this._callback.clickOnComments = callback;
+        break;
+      default:
+        throw Error ('Click handler contain the TYPE which is not detected');
+    }
 
-  _clickCommentsHandler(evt) {
-    evt.preventDefault();
-    this._callback.clickOnComments();
-  }
-
-  setClickPosterHandler (callback) {
-    this._callback.clickOnPoster = callback;
-    this.getElement().querySelector('.film-card__poster').addEventListener('click', this._clickPosterHandler);
-  }
-
-  setClickTitleHandler (callback) {
-    this._callback.clickOnTitle = callback;
-    this.getElement().querySelector('.film-card__title').addEventListener('click', this._clickTitleHandler);
-  }
-
-  setClickCommentsHandler (callback) {
-    this._callback.clickOnComments = callback;
-    this.getElement().querySelector('.film-card__comments').addEventListener('click',this._clickCommentsHandler);
+    this.getElement().addEventListener('click', this._clickHandler);
   }
 }
 

@@ -13,7 +13,8 @@ import FooterView from './model/footer';
 import MovieCardView from './model/movie-card.js';
 import MoviePopupView from './model/movie-popup';
 import SortView from './model/sort';
-import { render, RenderPosition, EmptyStatement, FooterCondition } from './other/utils.js';
+import { CardsEventsOn } from './utils/card-utils';
+import { render, remove, RenderPosition, EmptyStatement, FooterCondition } from './utils/render.js';
 
 const FILMS_CARDS_COUNT = 20;
 const FILMS_CARDS_PER_STEP = 5;
@@ -29,30 +30,30 @@ const headerOfBody =bodyPart.querySelector('.header');
 const mainOfBody = bodyPart.querySelector('.main');
 
 const nonOperationalStateLoading = () => {
-  render(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
-  render(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING).getElement(), RenderPosition.BEFOREEND);
-  render(footerPart, new FooterView(FooterCondition.empty).getElement(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);
+  render(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING), RenderPosition.BEFOREEND);
+  render(footerPart, new FooterView(FooterCondition.empty), RenderPosition.BEFOREEND);
 };
 
 const operationalState = () => {
-  render(headerOfBody, new AvatarView().getElement(), RenderPosition.BEFOREEND);
-  render(mainOfBody, new FilterView(filter).getElement(), RenderPosition.BEFOREEND);
-  render(mainOfBody, new SortView().getElement(), RenderPosition.BEFOREEND);
-  render(mainOfBody, new CardsContainerView().getElement(), RenderPosition.BEFOREEND);
-  render(footerPart, new FooterView(FooterCondition.upToDate).getElement(), RenderPosition.BEFOREEND);
+  render(headerOfBody, new AvatarView(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);
+  render(mainOfBody, new SortView(), RenderPosition.BEFOREEND);
+  render(mainOfBody, new CardsContainerView(), RenderPosition.BEFOREEND);
+  render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
 
   const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
 
   const addThumbnailsCardClickHandler = function (card, film) {
-    card.setClickPosterHandler(() => {
+    card.setClickHandler(CardsEventsOn.POSTER, () => {
       popup(film);
       bodyPart.classList.add('hide-overflow');
     });
-    card.setClickTitleHandler(() => {
+    card.setClickHandler(CardsEventsOn.TITLE, () => {
       popup(film);
       bodyPart.classList.add('hide-overflow');
     });
-    card.setClickCommentsHandler(() => {
+    card.setClickHandler(CardsEventsOn.COMMENTS, () => {
       popup(film);
       bodyPart.classList.add('hide-overflow');
     });
@@ -60,24 +61,27 @@ const operationalState = () => {
 
   const renderCards = (film) => {
     let cardData = new MovieCardView(film);
-    render(containerDivInMovies, cardData.getElement(), RenderPosition.BEFOREEND);
+    render(containerDivInMovies, cardData, RenderPosition.BEFOREEND);
     addThumbnailsCardClickHandler(cardData, film);
+    cardData.removeElement();
     cardData = '';
   };
 
   const renderTopRating = (index) => {
     const filmsForTopRating = films.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating);
     let cardData = new MovieCardView(filmsForTopRating[index]);
-    render(containerForMovieCards[1], cardData.getElement(),  RenderPosition.BEFOREEND);
+    render(containerForMovieCards[1], cardData,  RenderPosition.BEFOREEND);
     addThumbnailsCardClickHandler(cardData, filmsForTopRating[index]);
+    cardData.removeElement();
     cardData = '';
   };
 
   const renderTopCommented = (index) => {
     const filmForTopCommented = films.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length);
     let cardData = new MovieCardView(filmForTopCommented[index]);
-    render(containerForMovieCards[2], cardData.getElement(), RenderPosition.BEFOREEND);
+    render(containerForMovieCards[2], cardData, RenderPosition.BEFOREEND);
     addThumbnailsCardClickHandler(cardData, filmForTopCommented[index]);
+    cardData.removeElement();
     cardData = '';
   };
 
@@ -88,7 +92,7 @@ const operationalState = () => {
     const placeForButtonElement = mainOfBody.querySelector('.films-list');
     const loadMoreButtonComponent = new ButtonShowMoreView();
 
-    render(placeForButtonElement, loadMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+    render(placeForButtonElement, loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
     loadMoreButtonComponent.setClickHandler(() => {
       films
@@ -98,15 +102,14 @@ const operationalState = () => {
       renderTemplateFilmsCount += FILMS_CARDS_PER_STEP;
 
       if (renderTemplateFilmsCount >= films.length) {
-        loadMoreButtonComponent.getElement().remove();
-        loadMoreButtonComponent.removeElement();
+        remove(loadMoreButtonComponent);
       }
     });
   }
 
   const sectionMovies = mainOfBody.querySelector('.films');
-  render(sectionMovies, new TopCardsView().getElement(), RenderPosition.BEFOREEND);
-  render(sectionMovies, new TopCommentsView().getElement(), RenderPosition.BEFOREEND);
+  render(sectionMovies, new TopCardsView(), RenderPosition.BEFOREEND);
+  render(sectionMovies, new TopCommentsView(), RenderPosition.BEFOREEND);
   const containerForMovieCards = mainOfBody.querySelectorAll('.films-list__container');
 
   // ----> for TOP and MostCommented movies
@@ -117,12 +120,11 @@ const operationalState = () => {
 
 const popup = (chosenMovie) => {
   const MoviePopupChosen = new MoviePopupView (chosenMovie);
-  bodyPart.appendChild(MoviePopupChosen.getElement());
-  bodyPart.querySelector('.film-details__comments-title').appendChild(new CommentsPopupView(chosenMovie).getElement());
+  render (bodyPart, MoviePopupChosen, RenderPosition.BEFOREEND);
+  render (bodyPart.querySelector('.film-details__comments-title'), new CommentsPopupView(chosenMovie), RenderPosition.BEFOREEND);
 
   MoviePopupChosen.setClickHandler(() => {
-    MoviePopupChosen.getElement().remove();
-    MoviePopupChosen.removeElement();
+    remove(MoviePopupChosen);
     bodyPart.classList.remove('hide-overflow');
   });
 };

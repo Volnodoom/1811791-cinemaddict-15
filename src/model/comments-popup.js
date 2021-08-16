@@ -1,16 +1,5 @@
-import { dateYearMonthDayTime } from '../other/utils';
+import { dateYearMonthDayTime, EmojiUrl } from '../utils/card-utils';
 import AbstractView from './abstract';
-
-const getEmojiUrl = (datum) => {
-  const emojiUrl = {
-    smile: './images/emoji/smile.png ',
-    sleeping: './images/emoji/sleeping.png ',
-    puke: './images/emoji/puke.png ',
-    angry: './images/emoji/angry.png ',
-  };
-
-  return emojiUrl[datum];
-};
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
@@ -21,7 +10,7 @@ const getUsersCommentsTemplate = (film) => {
 
     filmComments += `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
-        <img src="${getEmojiUrl(emotion)}" width="55" height="55" alt="${emotion}">
+        <img src="${EmojiUrl[emotion.toUpperCase()]}" width="55" height="55" alt="${emotion}">
       </span>
     <div>
       <p class="film-details__comment-text">${commentItself}</p>
@@ -47,6 +36,5 @@ class CommentsPopup extends AbstractView{
     return getUsersCommentsTemplate (this._film);
   }
 }
-
 
 export default CommentsPopup;

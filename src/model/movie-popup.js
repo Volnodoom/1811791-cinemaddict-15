@@ -1,4 +1,4 @@
-import { dateDayMonthYear, calculateTime } from '../other/utils';
+import { dateDayMonthYear, calculateTime } from '../utils/card-utils';
 import AbstractView from './abstract';
 
 const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';

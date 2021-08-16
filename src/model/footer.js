@@ -1,4 +1,4 @@
-import { FooterCondition } from '../other/utils.js';
+import { FooterCondition } from '../utils/render.js';
 import AbstractView from './abstract.js';
 
 const footerTemplateForBlankWithoutMovie = `<p>${FooterCondition.empty}</p>`;
