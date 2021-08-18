@@ -5,7 +5,7 @@ import AvatarView from './model/avatar';
 import EmptyConditionView from './model/empty-condition';
 import FilterView from './model/filters';
 import FooterView from './model/footer';
-import MovieBoardPresenter from './presenter/movies-presenter';
+import MovieBoardPresenter from './presenter/board-presenter';
 import { render, RenderPosition, EmptyStatement, FooterCondition } from './utils/render.js';
 
 const FILMS_CARDS_COUNT = 20;

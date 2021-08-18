@@ -22,6 +22,7 @@ const MOST_COMMENTED_COUNT =2;
 class MovieBoard {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
+    this._renderFilmsCount = FILMS_CARDS_PER_STEP;
 
     this._bodyPart = document.body;
     this._sortComponent = new SortView();
@@ -37,6 +38,7 @@ class MovieBoard {
     this._extraTopRatingComponent = new TopRatingView();
     this._extraTopCommentedComponent = new TopCommentsView();
 
+    this._onShowMoreButtonClick = this._onShowMoreButtonClick.bind(this);
   }
 
   init(boardMovies) {
@@ -81,23 +83,18 @@ class MovieBoard {
       .forEach((boardMovie) => this._renderMovie(this._filmListContainerMain, boardMovie));
   }
 
+  _onShowMoreButtonClick() {
+    this._renderMovies(this._renderFilmsCount, this._renderFilmsCount + FILMS_CARDS_PER_STEP);
+    this._renderFilmsCount += FILMS_CARDS_PER_STEP;
+
+    if (this._renderFilmsCount >= this._boardMovies.length) {
+      remove(this._boardButtonShowMore);
+    }
+  }
+
   _renderButtonShowMore() {
-    let renderFilmsCount = FILMS_CARDS_PER_STEP;
-    const loadMoreButtonComponent = this._boardButtonShowMore;
-
-    render(this._filmListComponent, loadMoreButtonComponent, RenderPosition.BEFOREEND);
-
-    loadMoreButtonComponent.setClickHandler(() => {
-      this._boardMovies
-        .slice(renderFilmsCount, renderFilmsCount + FILMS_CARDS_PER_STEP)
-        .forEach((boardMovies) => {this._renderMovie(this._filmListContainerMain, boardMovies);});
-
-      renderFilmsCount += FILMS_CARDS_PER_STEP;
-
-      if (renderFilmsCount >= this._boardMovies.length) {
-        remove(loadMoreButtonComponent);
-      }
-    });
+    render(this._filmListComponent, this._boardButtonShowMore, RenderPosition.BEFOREEND);
+    this._boardButtonShowMore.setClickHandler(this._onShowMoreButtonClick);
   }
 
   _renderTopRating() {
