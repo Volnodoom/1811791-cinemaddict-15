@@ -1,102 +1,96 @@
 /* eslint-disable no-use-before-define */
-import AvatarView from '../model/avatar';
-import ButtonShowMoreView from '../model/button-show-more';
-import CardsContainerView from '../model/cards-container';
-import CommentsPopupView from '../model/comments-popup';
-import TopCommentsView from '../model/extra-comments-cards';
-import TopCardsView from '../model/extra-top-cards';
-import FilterView from '../model/filters';
-import FooterView from '../model/footer';
+import BoardView from '../model/board.js';
+import ButtonShowMoreView from '../model/button-show-more.js';
+import CommentsPopupView from '../model/comments-popup.js';
+import ConditionMessageBlockView from '../model/condition-message-block.js';
+import TopCommentsView from '../model/extra-comments-cards.js';
+import TopRatingView from '../model/extra-top-cards.js';
+import FilmListView from '../model/film-list.js';
+import FilmListContainerView from '../model/film-list-container.js';
+import FilterView from '../model/filters.js';
 import MovieCardView from '../model/movie-card.js';
-import MoviePopupView from '../model/movie-popup';
-import SortView from '../model/sort';
-import { render, remove, RenderPosition, FooterCondition } from '../utils/render.js';
-import { CardsEventsOn } from '../utils/card-utils';
+import MoviePopupView from '../model/movie-popup.js';
+import SortView from '../model/sort.js';
+import { CardsEventsOn } from '../utils/card-utils.js';
+import { render, remove, RenderPosition } from '../utils/render.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 const TOP_FILMS_COUNT = 2;
 const MOST_COMMENTED_COUNT =2;
 
+
 class MovieBoard {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
+
     this._bodyPart = document.body;
-
-
+    this._sortComponent = new SortView();
+    this._boardComponent = new BoardView();
+    this._filmListComponent = new FilmListView();
+    this._filmConditionMessage = new ConditionMessageBlockView();
+    this._filmListContainerMain = new FilmListContainerView();
+    this._filmListContainerExtra1 = new FilmListContainerView();
+    this._filmListContainerExtra2 = new FilmListContainerView();
     this._boardFilterComponent = new FilterView();
-    this._boardMovieCardComponent = new MovieCardView();
+    // this._movieCardComponent = new MovieCardView();
     this._boardButtonShowMore = new ButtonShowMoreView();
+    this._extraTopRatingComponent = new TopRatingView();
+    this._extraTopCommentedComponent = new TopCommentsView();
+
   }
 
   init(boardMovies) {
     this._boardMovies = boardMovies.slice();
 
-  }
+    this._renderSort();
 
-  _renderBasisForBoardMovies() {
-    const footerPart = this._bodyPart.querySelector('.footer__statistics');
-    const headerOfBody = this._bodyPart.querySelector('.header');
-    const mainOfBody = this._bodyPart.querySelector('.main');
+    render(this._boardContainer, this._boardComponent, RenderPosition.BEFOREEND);
+    render(this._boardComponent, this._filmListComponent, RenderPosition.BEFOREEND);
+    render(this._filmListComponent, this._filmConditionMessage, RenderPosition.BEFOREEND);
+    render(this._filmListComponent, this._filmListContainerMain, RenderPosition.BEFOREEND);
 
-    render(headerOfBody, new AvatarView(), RenderPosition.BEFOREEND);
-    render(mainOfBody, new SortView(), RenderPosition.BEFOREEND);
-    render(mainOfBody, new CardsContainerView(), RenderPosition.BEFOREEND);
-    render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
+    this._renderBoard();
   }
 
   _renderSort() {
-
+    render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
   _addThumbnailsCardClickHandler (card, film) {
-    card.setClickHandler(CardsEventsOn.POSTER, () => {
+    const callbackForClick = () => {
       this._renderPopup(film);
       this._bodyPart.classList.add('hide-overflow');
-    });
-    card.setClickHandler(CardsEventsOn.TITLE, () => {
-      this._renderPopup(film);
-      this._bodyPart.classList.add('hide-overflow');
-    });
-    card.setClickHandler(CardsEventsOn.COMMENTS, () => {
-      this._renderPopup(film);
-      this._bodyPart.classList.add('hide-overflow');
-    });
-  }
-
-  _renderMovie(film) {
-    const mainOfBody = this._bodyPart.querySelector('.main');
-    const containerDivInMovies = mainOfBody.querySelector('.films-list__container');
-
-    const renderCard = () => {
-      let cardData = this._boardMovieCardComponent;
-      render(containerDivInMovies, cardData, RenderPosition.BEFOREEND);
-      this._addThumbnailsCardClickHandler(cardData, film);
-      cardData.removeElement();
-      cardData = '';
     };
 
-    renderCard();
+    card.setClickHandler(CardsEventsOn.POSTER, callbackForClick);
+    card.setClickHandler(CardsEventsOn.TITLE, callbackForClick);
+    card.setClickHandler(CardsEventsOn.COMMENTS, callbackForClick);
+  }
+
+  _renderMovie(container,film) {
+    let cardData = new MovieCardView(film);
+    render(container, cardData, RenderPosition.BEFOREEND);
+    this._addThumbnailsCardClickHandler(cardData, film);
+    cardData.removeElement();
+    cardData = '';
   }
 
   _renderMovies(from, to) {
     this._boardMovies
       .slice(from, to)
-      .forEach((boardMovie) => this._renderMovie(boardMovie));
+      .forEach((boardMovie) => this._renderMovie(this._filmListContainerMain, boardMovie));
   }
 
   _renderButtonShowMore() {
     let renderFilmsCount = FILMS_CARDS_PER_STEP;
+    const loadMoreButtonComponent = this._boardButtonShowMore;
 
-    const mainOfBody = this._bodyPart.querySelector('.main');
-    const placeForButtonElement = mainOfBody.querySelector('.films-list');
-    const loadMoreButtonComponent = new ButtonShowMoreView();
-
-    render(placeForButtonElement, loadMoreButtonComponent, RenderPosition.BEFOREEND);
+    render(this._filmListComponent, loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
     loadMoreButtonComponent.setClickHandler(() => {
       this._boardMovies
         .slice(renderFilmsCount, renderFilmsCount + FILMS_CARDS_PER_STEP)
-        .forEach((boardMovies) => {this._renderMovie(boardMovies);});
+        .forEach((boardMovies) => {this._renderMovie(this._filmListContainerMain, boardMovies);});
 
       renderFilmsCount += FILMS_CARDS_PER_STEP;
 
@@ -106,54 +100,45 @@ class MovieBoard {
     });
   }
 
-  _renderTopMovies() {
-
-  }
-
-  _renderTopComments() {
-
-  }
-
-  _renderExtraMovies() {
-    const mainOfBody = this._bodyPart.querySelector('.main');
-    const sectionMovies = mainOfBody.querySelector('.films');
-
-    const renderTopRating = (index) => {
+  _renderTopRating() {
+    const renderTopRatingMovie = (index) => {
       const filmsForTopRating = this._boardMovies.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating);
       let cardData = new MovieCardView(filmsForTopRating[index]);
-      render(containerForMovieCards[1], cardData,  RenderPosition.BEFOREEND);
+      render(this._filmListContainerExtra1, cardData,  RenderPosition.BEFOREEND);
       this._addThumbnailsCardClickHandler(cardData, filmsForTopRating[index]);
       cardData.removeElement();
       cardData = '';
     };
 
-    const renderTopCommented = (index) => {
+    const topRatingComponent =  this._extraTopRatingComponent;
+    render(this._boardComponent, topRatingComponent, RenderPosition.BEFOREEND);
+    render(topRatingComponent, this._filmListContainerExtra1, RenderPosition.BEFOREEND);
+    for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {renderTopRatingMovie (ind);}
+  }
+
+  _renderTopCommented() {
+    const renderTopCommentedMovies = (index) => {
       const filmForTopCommented = this._boardMovies.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length);
       let cardData = new MovieCardView(filmForTopCommented[index]);
-      render(containerForMovieCards[2], cardData, RenderPosition.BEFOREEND);
+      render(this._filmListContainerExtra2, cardData, RenderPosition.BEFOREEND);
       this._addThumbnailsCardClickHandler(cardData, filmForTopCommented[index]);
       cardData.removeElement();
       cardData = '';
     };
 
-    render(sectionMovies, new TopCardsView(), RenderPosition.BEFOREEND);
-    render(sectionMovies, new TopCommentsView(), RenderPosition.BEFOREEND);
-
-    const containerForMovieCards = mainOfBody.querySelectorAll('.films-list__container');
-
-    // ----> for TOP and MostCommented movies
-    for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {renderTopRating (ind);}
-    for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {renderTopCommented(ind);}
-
+    const topCommentsComponent = this._extraTopCommentedComponent;
+    render(this._boardComponent, topCommentsComponent, RenderPosition.BEFOREEND);
+    render(topCommentsComponent, this._filmListContainerExtra2, RenderPosition.BEFOREEND);
+    for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {renderTopCommentedMovies(ind);}
   }
 
   _renderPopup (chosenMovie) {
-    const MoviePopupChosen = new MoviePopupView (chosenMovie);
-    render (this._bodyPart, MoviePopupChosen, RenderPosition.BEFOREEND);
+    const popupCard = new MoviePopupView (chosenMovie);
+    render (this._bodyPart, popupCard, RenderPosition.BEFOREEND);
     render (this._bodyPart.querySelector('.film-details__comments-title'), new CommentsPopupView(chosenMovie), RenderPosition.BEFOREEND);
 
-    MoviePopupChosen.setClickHandler(() => {
-      remove(MoviePopupChosen);
+    popupCard.setClickHandler(() => {
+      remove(popupCard);
       this._bodyPart.classList.remove('hide-overflow');
     });
   }
@@ -167,8 +152,9 @@ class MovieBoard {
   }
 
   _renderBoard() {
-    this._renderSort();
     this._renderMovieList();
+    this._renderTopRating();
+    this._renderTopCommented();
   }
 }
 
