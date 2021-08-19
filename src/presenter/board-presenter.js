@@ -13,6 +13,7 @@ import MoviePopupView from '../model/movie-popup.js';
 import SortView from '../model/sort.js';
 import { CardsEventsOn } from '../utils/card-utils.js';
 import { render, remove, RenderPosition } from '../utils/render.js';
+import { FILMS_CARDS_COUNT } from '../main.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 const TOP_FILMS_COUNT = 2;
@@ -23,6 +24,7 @@ class MovieBoard {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
     this._renderFilmsCount = FILMS_CARDS_PER_STEP;
+    this._moviePresenter = new Map();
 
     this._bodyPart = document.body;
     this._sortComponent = new SortView();
@@ -33,12 +35,11 @@ class MovieBoard {
     this._filmListContainerExtra1 = new FilmListContainerView();
     this._filmListContainerExtra2 = new FilmListContainerView();
     this._boardFilterComponent = new FilterView();
-    // this._movieCardComponent = new MovieCardView();
     this._boardButtonShowMore = new ButtonShowMoreView();
     this._extraTopRatingComponent = new TopRatingView();
     this._extraTopCommentedComponent = new TopCommentsView();
 
-    this._onShowMoreButtonClick = this._onShowMoreButtonClick.bind(this);
+    this._processShowMoreButtonClick = this._processShowMoreButtonClick.bind(this);
   }
 
   init(boardMovies) {
@@ -58,23 +59,20 @@ class MovieBoard {
     render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _addThumbnailsCardClickHandler (card, film) {
-    const callbackForClick = () => {
+  _renderMovie(container,film) {
+    const card = new MovieCardView(film);
+    render(container, card, RenderPosition.BEFOREEND);
+
+    const onClickPopup = () => {
       this._renderPopup(film);
       this._bodyPart.classList.add('hide-overflow');
     };
 
-    card.setClickHandler(CardsEventsOn.POSTER, callbackForClick);
-    card.setClickHandler(CardsEventsOn.TITLE, callbackForClick);
-    card.setClickHandler(CardsEventsOn.COMMENTS, callbackForClick);
-  }
+    card.setClickHandler(CardsEventsOn.POSTER, onClickPopup);
+    card.setClickHandler(CardsEventsOn.TITLE, onClickPopup);
+    card.setClickHandler(CardsEventsOn.COMMENTS, onClickPopup);
 
-  _renderMovie(container,film) {
-    let cardData = new MovieCardView(film);
-    render(container, cardData, RenderPosition.BEFOREEND);
-    this._addThumbnailsCardClickHandler(cardData, film);
-    cardData.removeElement();
-    cardData = '';
+    this._moviePresenter.set (card._film.id, card);
   }
 
   _renderMovies(from, to) {
@@ -83,50 +81,42 @@ class MovieBoard {
       .forEach((boardMovie) => this._renderMovie(this._filmListContainerMain, boardMovie));
   }
 
-  _onShowMoreButtonClick() {
-    this._renderMovies(this._renderFilmsCount, this._renderFilmsCount + FILMS_CARDS_PER_STEP);
-    this._renderFilmsCount += FILMS_CARDS_PER_STEP;
+  _processShowMoreButtonClick() {
+    // this._renderMovies(this._renderFilmsCount, this._renderFilmsCount + FILMS_CARDS_PER_STEP);
+    // this._renderFilmsCount += FILMS_CARDS_PER_STEP;
 
-    if (this._renderFilmsCount >= this._boardMovies.length) {
-      remove(this._boardButtonShowMore);
-    }
+    // if (this._renderFilmsCount >= this._boardMovies.length) {
+    //   remove(this._boardButtonShowMore);
+    this._clearMovieList();
+    // }
   }
 
   _renderButtonShowMore() {
     render(this._filmListComponent, this._boardButtonShowMore, RenderPosition.BEFOREEND);
-    this._boardButtonShowMore.setClickHandler(this._onShowMoreButtonClick);
+    this._boardButtonShowMore.setClickHandler(this._processShowMoreButtonClick);
   }
 
   _renderTopRating() {
-    const renderTopRatingMovie = (index) => {
-      const filmsForTopRating = this._boardMovies.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating);
-      let cardData = new MovieCardView(filmsForTopRating[index]);
-      render(this._filmListContainerExtra1, cardData,  RenderPosition.BEFOREEND);
-      this._addThumbnailsCardClickHandler(cardData, filmsForTopRating[index]);
-      cardData.removeElement();
-      cardData = '';
-    };
-
     const topRatingComponent =  this._extraTopRatingComponent;
     render(this._boardComponent, topRatingComponent, RenderPosition.BEFOREEND);
     render(topRatingComponent, this._filmListContainerExtra1, RenderPosition.BEFOREEND);
-    for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {renderTopRatingMovie (ind);}
+
+    const filmsForTopRating = this._boardMovies.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating);
+    for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
+      this._renderMovie(this._filmListContainerExtra1,filmsForTopRating[ind]);
+    }
   }
 
   _renderTopCommented() {
-    const renderTopCommentedMovies = (index) => {
-      const filmForTopCommented = this._boardMovies.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length);
-      let cardData = new MovieCardView(filmForTopCommented[index]);
-      render(this._filmListContainerExtra2, cardData, RenderPosition.BEFOREEND);
-      this._addThumbnailsCardClickHandler(cardData, filmForTopCommented[index]);
-      cardData.removeElement();
-      cardData = '';
-    };
-
     const topCommentsComponent = this._extraTopCommentedComponent;
     render(this._boardComponent, topCommentsComponent, RenderPosition.BEFOREEND);
     render(topCommentsComponent, this._filmListContainerExtra2, RenderPosition.BEFOREEND);
-    for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {renderTopCommentedMovies(ind);}
+
+    const filmForTopCommented = this._boardMovies.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length);
+
+    for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
+      this._renderMovie(this._filmListContainerExtra2,filmForTopCommented[ind]);
+    }
   }
 
   _renderPopup (chosenMovie) {
@@ -138,6 +128,13 @@ class MovieBoard {
       remove(popupCard);
       this._bodyPart.classList.remove('hide-overflow');
     });
+  }
+
+  _clearMovieList () {
+    this._moviePresenter.forEach((movie) => remove(movie));
+    this._moviePresenter.clear();
+    this._renderFilmsCount = FILMS_CARDS_PER_STEP;
+    remove(this._boardButtonShowMore);
   }
 
   _renderMovieList() {
