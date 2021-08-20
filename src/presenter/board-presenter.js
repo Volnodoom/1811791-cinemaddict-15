@@ -13,7 +13,7 @@ import MoviePopupView from '../model/movie-popup.js';
 import SortView from '../model/sort.js';
 import { CardsEventsOn } from '../utils/card-utils.js';
 import { render, remove, RenderPosition } from '../utils/render.js';
-import { FILMS_CARDS_COUNT } from '../main.js';
+import { updateItem } from '../utils/common.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 const TOP_FILMS_COUNT = 2;
@@ -82,13 +82,17 @@ class MovieBoard {
   }
 
   _processShowMoreButtonClick() {
-    // this._renderMovies(this._renderFilmsCount, this._renderFilmsCount + FILMS_CARDS_PER_STEP);
-    // this._renderFilmsCount += FILMS_CARDS_PER_STEP;
+    this._renderMovies(this._renderFilmsCount, this._renderFilmsCount + FILMS_CARDS_PER_STEP);
+    this._renderFilmsCount += FILMS_CARDS_PER_STEP;
 
-    // if (this._renderFilmsCount >= this._boardMovies.length) {
-    //   remove(this._boardButtonShowMore);
-    this._clearMovieList();
-    // }
+    if (this._renderFilmsCount >= this._boardMovies.length) {
+      remove(this._boardButtonShowMore);
+    }
+  }
+
+  _processMovieChange (updatedMovie) {
+    this._boardMovies = updateItem(this._boardMovies, updatedMovie);
+    this._moviePresenter.get(updatedMovie.id)
   }
 
   _renderButtonShowMore() {
