@@ -1,7 +1,6 @@
 /* eslint-disable no-use-before-define */
 import BoardView from '../model/board.js';
 import ButtonShowMoreView from '../model/button-show-more.js';
-import CommentsPopupView from '../model/comments-popup.js';
 import ConditionMessageBlockView from '../model/condition-message-block.js';
 import TopCommentsView from '../model/extra-comments-cards.js';
 import TopRatingView from '../model/extra-top-cards.js';
@@ -9,11 +8,16 @@ import FilmListView from '../model/film-list.js';
 import FilmListContainerView from '../model/film-list-container.js';
 import FilterView from '../model/filters.js';
 import MovieCardView from '../model/movie-card.js';
-import MoviePopupView from '../model/movie-popup.js';
+import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import SortView from '../model/sort.js';
 import { CardsEventsOn } from '../utils/card-utils.js';
 import { render, remove, RenderPosition } from '../utils/render.js';
 import { updateItem } from '../utils/common.js';
+import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
+import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-title.js';
+import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
+import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
+import MoviePresenter from './movie-presenter.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 const TOP_FILMS_COUNT = 2;
@@ -24,7 +28,9 @@ class MovieBoard {
   constructor (boardContainer) {
     this._boardContainer = boardContainer;
     this._renderFilmsCount = FILMS_CARDS_PER_STEP;
-    this._moviePresenter = new Map();
+    this._filmPresenterMain = new Map();
+    this._filmPresenterTopRating = new Map();
+    this._filmPresenterTopCommented = new Map();
 
     this._bodyPart = document.body;
     this._sortComponent = new SortView();
@@ -38,6 +44,8 @@ class MovieBoard {
     this._boardButtonShowMore = new ButtonShowMoreView();
     this._extraTopRatingComponent = new TopRatingView();
     this._extraTopCommentedComponent = new TopCommentsView();
+
+    this._PopupCommentsWrapComponent = new PopupCommentsWrap();
 
     this._processShowMoreButtonClick = this._processShowMoreButtonClick.bind(this);
   }
@@ -59,26 +67,17 @@ class MovieBoard {
     render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderMovie(container,film) {
-    const card = new MovieCardView(film);
-    render(container, card, RenderPosition.BEFOREEND);
+  _renderMovie(container,film, MapObject) {
 
-    const onClickPopup = () => {
-      this._renderPopup(film);
-      this._bodyPart.classList.add('hide-overflow');
-    };
+    const moviePresenter = new MoviePresenter (container);
+    moviePresenter.init(film, MapObject);
 
-    card.setClickHandler(CardsEventsOn.POSTER, onClickPopup);
-    card.setClickHandler(CardsEventsOn.TITLE, onClickPopup);
-    card.setClickHandler(CardsEventsOn.COMMENTS, onClickPopup);
-
-    this._moviePresenter.set (card._film.id, card);
   }
 
   _renderMovies(from, to) {
     this._boardMovies
       .slice(from, to)
-      .forEach((boardMovie) => this._renderMovie(this._filmListContainerMain, boardMovie));
+      .forEach((boardMovie) => this._renderMovie(this._filmListContainerMain, boardMovie, this._filmPresenterMain));
   }
 
   _processShowMoreButtonClick() {
@@ -92,7 +91,7 @@ class MovieBoard {
 
   _processMovieChange (updatedMovie) {
     this._boardMovies = updateItem(this._boardMovies, updatedMovie);
-    this._moviePresenter.get(updatedMovie.id)
+    this._moviePresenter.get(updatedMovie.id);
   }
 
   _renderButtonShowMore() {
@@ -107,7 +106,7 @@ class MovieBoard {
 
     const filmsForTopRating = this._boardMovies.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating);
     for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
-      this._renderMovie(this._filmListContainerExtra1,filmsForTopRating[ind]);
+      this._renderMovie(this._filmListContainerExtra1,filmsForTopRating[ind], this._filmPresenterTopRating);
     }
   }
 
@@ -119,24 +118,43 @@ class MovieBoard {
     const filmForTopCommented = this._boardMovies.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length);
 
     for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
-      this._renderMovie(this._filmListContainerExtra2,filmForTopCommented[ind]);
+      this._renderMovie(this._filmListContainerExtra2,filmForTopCommented[ind], this._filmPresenterTopCommented);
     }
   }
 
+
   _renderPopup (chosenMovie) {
-    const popupCard = new MoviePopupView (chosenMovie);
+    const popupCard = new PopupMovieView(chosenMovie);
+    const popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
+    const popupCommentsList = new PopupCommentsListView(chosenMovie);
+    const popupCommentsNew = new PopupCommentsNewView();
+
     render (this._bodyPart, popupCard, RenderPosition.BEFOREEND);
-    render (this._bodyPart.querySelector('.film-details__comments-title'), new CommentsPopupView(chosenMovie), RenderPosition.BEFOREEND);
+    render (this._bodyPart.querySelector('.film-details__bottom-container'), this._PopupCommentsWrapComponent, RenderPosition.BEFOREEND);
+    render (this._PopupCommentsWrapComponent, popupCommentsTitle, RenderPosition.BEFOREEND);
+    render (this._PopupCommentsWrapComponent, popupCommentsList, RenderPosition.BEFOREEND);
+    render (this._PopupCommentsWrapComponent, popupCommentsNew, RenderPosition.BEFOREEND);
+
 
     popupCard.setClickHandler(() => {
       remove(popupCard);
+      remove(this._PopupCommentsWrapComponent);
+      remove(popupCommentsTitle);
+      remove(popupCommentsList);
+      remove(popupCommentsNew);
       this._bodyPart.classList.remove('hide-overflow');
     });
   }
 
   _clearMovieList () {
-    this._moviePresenter.forEach((movie) => remove(movie));
-    this._moviePresenter.clear();
+    const clearMapDOM = (MapObject) => {
+      MapObject.forEach((movie) => remove(movie));
+      MapObject.clear();
+    };
+
+    clearMapDOM(this._moviePresenterMain);
+    clearMapDOM(this._moviePresenterTopRating);
+    clearMapDOM(this._moviePresenterTopCommented);
     this._renderFilmsCount = FILMS_CARDS_PER_STEP;
     remove(this._boardButtonShowMore);
   }

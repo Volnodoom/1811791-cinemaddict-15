@@ -1,5 +1,5 @@
-import { dateYearMonthDayTime, EmojiUrl } from '../utils/card-utils';
-import AbstractView from './abstract';
+import { dateYearMonthDayTime, EmojiUrl } from '../../utils/card-utils';
+import AbstractView from '../abstract';
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
@@ -26,7 +26,7 @@ const getUsersCommentsTemplate = (film) => {
   return allComments;
 };
 
-class CommentsPopup extends AbstractView{
+class PopupCommentsList extends AbstractView{
   constructor (film) {
     super();
     this._film = film;
@@ -37,4 +37,4 @@ class CommentsPopup extends AbstractView{
   }
 }
 
-export default CommentsPopup;
+export default PopupCommentsList;
