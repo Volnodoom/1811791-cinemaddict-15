@@ -48,6 +48,7 @@ class MovieBoard {
     this._PopupCommentsWrapComponent = new PopupCommentsWrap();
 
     this._processShowMoreButtonClick = this._processShowMoreButtonClick.bind(this);
+    this._processMovieChange = this._processMovieChange.bind(this);
   }
 
   init(boardMovies) {
@@ -67,11 +68,9 @@ class MovieBoard {
     render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderMovie(container,film, MapObject) {
-
-    const moviePresenter = new MoviePresenter (container);
+  _renderMovie(container, film, MapObject) {
+    const moviePresenter = new MoviePresenter (container, this._processMovieChange);
     moviePresenter.init(film, MapObject);
-
   }
 
   _renderMovies(from, to) {
@@ -89,9 +88,9 @@ class MovieBoard {
     }
   }
 
-  _processMovieChange (updatedMovie) {
-    this._boardMovies = updateItem(this._boardMovies, updatedMovie);
-    this._moviePresenter.get(updatedMovie.id);
+  _processMovieChange (whatWeWantToChangeInMovie) {
+    this._boardMovies = updateItem(this._boardMovies, whatWeWantToChangeInMovie);
+    this._filmPresenterMain.get(whatWeWantToChangeInMovie.id).init(whatWeWantToChangeInMovie, this._filmPresenterMain);
   }
 
   _renderButtonShowMore() {
@@ -148,13 +147,13 @@ class MovieBoard {
 
   _clearMovieList () {
     const clearMapDOM = (MapObject) => {
-      MapObject.forEach((movie) => remove(movie));
+      MapObject.forEach((movie) => movie.destroy());
       MapObject.clear();
     };
 
-    clearMapDOM(this._moviePresenterMain);
-    clearMapDOM(this._moviePresenterTopRating);
-    clearMapDOM(this._moviePresenterTopCommented);
+    clearMapDOM(this._filmPresenterMain);
+    clearMapDOM(this._filmPresenterTopRating);
+    clearMapDOM(this._filmPresenterTopCommented);
     this._renderFilmsCount = FILMS_CARDS_PER_STEP;
     remove(this._boardButtonShowMore);
   }

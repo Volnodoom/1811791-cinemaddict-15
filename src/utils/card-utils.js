@@ -3,9 +3,12 @@ import dayjs from 'dayjs';
 const MINUTES = 60;
 
 const CardsEventsOn = {
-  POSTER: 'poster',
-  TITLE: 'title',
-  COMMENTS: 'comments',
+  POSTER: 'film-card__poster',
+  TITLE: 'film-card__title',
+  COMMENTS: 'film-card__comments',
+  FAVORITE: 'film-card__controls-item--favorite',
+  WATCHED: 'film-card__controls-item--mark-as-watched',
+  WATCHLIST: 'film-card__controls-item--add-to-watchlist',
 };
 
 const EmojiUrl = {
