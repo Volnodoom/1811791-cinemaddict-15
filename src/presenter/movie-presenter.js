@@ -1,5 +1,5 @@
 import MovieCardView from '../model/movie-card.js';
-import { CardsEventsOn } from '../utils/card-utils.js';
+import { CardsEventsOn, getDeepKeys } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
@@ -19,9 +19,11 @@ class Movie {
 
     this._processClickPopup = this._processClickPopup.bind(this);
     this._processFavoriteClick = this._processFavoriteClick.bind(this);
+    this._processWatchedClick = this._processWatchedClick.bind(this);
+    this._processWatchlistClick = this._processWatchlistClick.bind(this);
   }
 
-  init(film) {
+  initM(film) {
     this._film = film;
 
     const prevFilmComponent = this._filmComponent;
@@ -36,13 +38,14 @@ class Movie {
 
     if(this._movieListContainer.getElement().contains(prevFilmComponent.getElement())) {
       replace(this._filmComponent, prevFilmComponent);
+      this._setEventListenersThumbnails();
     }
 
     remove(prevFilmComponent);
   }
 
-  _processFavoriteClick () {
-    const getDeepKeys = (obj) => {
+  _processFavoriteClick() {
+    const getDeepKeys1 = (obj) => {
       const data = {};
       for(const key in obj) {
         if (key === 'favorite') {
@@ -52,12 +55,55 @@ class Movie {
           data.key = obj;
         }
         if(typeof obj[key] === 'object') {
-          getDeepKeys(obj[key]);
+          getDeepKeys1(obj[key]);
         }
       }
       return data.key;
     };
-    this._changeData(getDeepKeys(this._film));
+
+    this._changeData(getDeepKeys1(this._film));
+  }
+
+  _processWatchedClick() {
+    const getDeepKeys1 = (obj) => {
+      const data = {};
+      for(const key in obj) {
+        if (key === 'alreadyWatched') {
+          obj[key] = !obj[key];
+          data.key = obj;
+        } else {
+          data.key = obj;
+        }
+        if(typeof obj[key] === 'object') {
+          getDeepKeys1(obj[key]);
+        }
+      }
+      return data.key;
+    };
+
+    this._changeData(getDeepKeys1(this._film));
+    // this._changeData(getDeepKeys(this._film, 'alreadyWatched'));
+  }
+
+  _processWatchlistClick() {
+    const getDeepKeys1 = (obj) => {
+      const data = {};
+      for(const key in obj) {
+        if (key === 'watchlist') {
+          obj[key] = !obj[key];
+          data.key = obj;
+        } else {
+          data.key = obj;
+        }
+        if(typeof obj[key] === 'object') {
+          getDeepKeys1(obj[key]);
+        }
+      }
+      return data.key;
+    };
+
+    this._changeData(getDeepKeys1(this._film));
+    // this._changeData(getDeepKeys(this._film, 'watchlist'));
   }
 
   _processClickPopup() {
@@ -70,9 +116,9 @@ class Movie {
     this._filmComponent.setClickHandler(CardsEventsOn.TITLE, this._processClickPopup);
     this._filmComponent.setClickHandler(CardsEventsOn.COMMENTS, this._processClickPopup);
 
-    this._filmComponent.setClickHandler(CardsEventsOn.FAVORITE, this._processFavoriteClick);
-    // this._filmComponent.setClickHandler(CardsEventsOn.WATCHED, this._processFavoriteClick);
-    // this._filmComponent.setClickHandler(CardsEventsOn.WATCHLIST, this._processFavoriteClick);
+    this._filmComponent.setClickHandler(CardsEventsOn.FAVORITE,  this._processFavoriteClick);
+    this._filmComponent.setClickHandler(CardsEventsOn.WATCHED, this._processWatchedClick);
+    this._filmComponent.setClickHandler(CardsEventsOn.WATCHLIST, this._processWatchlistClick);
   }
 
   _renderPopup(chosenMovie) {

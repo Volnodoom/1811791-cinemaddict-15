@@ -45,4 +45,20 @@ const calculateTime = (movieDuration) => {
   return duration;
 };
 
-export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl};
+const getDeepKeys = (obj, whatKeyToFind) => {
+  const data = {};
+  for(const key in obj) {
+    if (key === whatKeyToFind) {
+      obj[key] = !obj[key];
+      data.key = obj;
+    } else {
+      data.key = obj;
+    }
+    if(typeof obj[key] === 'object') {
+      getDeepKeys(obj[key]);
+    }
+  }
+  return data.key;
+};
+
+export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl, getDeepKeys};

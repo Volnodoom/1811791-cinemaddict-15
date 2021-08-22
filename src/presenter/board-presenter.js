@@ -66,7 +66,7 @@ class MovieBoard {
 
   _renderMovie(container, film) {
     const moviePresenter = new MoviePresenter (container, this._processMovieChange);
-    moviePresenter.init(film);
+    moviePresenter.initM(film);
     this._filmPresenterMain.set(film.id, moviePresenter);
   }
 
@@ -87,7 +87,7 @@ class MovieBoard {
 
   _processMovieChange (whatWeWantToChangeInMovie) {
     this._boardMovies = updateItem(this._boardMovies, whatWeWantToChangeInMovie);
-    this._filmPresenterMain.get(whatWeWantToChangeInMovie.id).init(whatWeWantToChangeInMovie);
+    this._filmPresenterMain.get(whatWeWantToChangeInMovie.id).initM(whatWeWantToChangeInMovie);
   }
 
   _renderButtonShowMore() {
