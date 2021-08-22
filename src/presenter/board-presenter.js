@@ -10,7 +10,6 @@ import FilterView from '../model/filters.js';
 import MovieCardView from '../model/movie-card.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import SortView from '../model/sort.js';
-import { CardsEventsOn } from '../utils/card-utils.js';
 import { render, remove, RenderPosition } from '../utils/render.js';
 import { updateItem } from '../utils/common.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
@@ -20,9 +19,6 @@ import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.
 import MoviePresenter from './movie-presenter.js';
 
 const FILMS_CARDS_PER_STEP = 5;
-const TOP_FILMS_COUNT = 2;
-const MOST_COMMENTED_COUNT =2;
-
 
 class MovieBoard {
   constructor (boardContainer) {
@@ -68,9 +64,10 @@ class MovieBoard {
     render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderMovie(container, film, MapObject) {
+  _renderMovie(container, film) {
     const moviePresenter = new MoviePresenter (container, this._processMovieChange);
-    moviePresenter.init(film, MapObject);
+    moviePresenter.init(film);
+    this._filmPresenterMain.set(film.id, moviePresenter);
   }
 
   _renderMovies(from, to) {
@@ -98,28 +95,28 @@ class MovieBoard {
     this._boardButtonShowMore.setClickHandler(this._processShowMoreButtonClick);
   }
 
-  _renderTopRating() {
-    const topRatingComponent =  this._extraTopRatingComponent;
-    render(this._boardComponent, topRatingComponent, RenderPosition.BEFOREEND);
-    render(topRatingComponent, this._filmListContainerExtra1, RenderPosition.BEFOREEND);
+  // _renderTopRating() {
+  //   const topRatingComponent =  this._extraTopRatingComponent;
+  //   render(this._boardComponent, topRatingComponent, RenderPosition.BEFOREEND);
+  //   render(topRatingComponent, this._filmListContainerExtra1, RenderPosition.BEFOREEND);
 
-    const filmsForTopRating = this._boardMovies.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating);
-    for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
-      this._renderMovie(this._filmListContainerExtra1,filmsForTopRating[ind], this._filmPresenterTopRating);
-    }
-  }
+  //   const filmsForTopRating = this._boardMovies.slice().sort((aInd,bInd) => bInd.totalRating - aInd.totalRating);
+  //   for (let ind = 0; ind <TOP_FILMS_COUNT; ind++) {
+  //     this._renderMovie(this._filmListContainerExtra1,filmsForTopRating[ind], this._filmPresenterTopRating);
+  //   }
+  // }
 
-  _renderTopCommented() {
-    const topCommentsComponent = this._extraTopCommentedComponent;
-    render(this._boardComponent, topCommentsComponent, RenderPosition.BEFOREEND);
-    render(topCommentsComponent, this._filmListContainerExtra2, RenderPosition.BEFOREEND);
+  // _renderTopCommented() {
+  //   const topCommentsComponent = this._extraTopCommentedComponent;
+  //   render(this._boardComponent, topCommentsComponent, RenderPosition.BEFOREEND);
+  //   render(topCommentsComponent, this._filmListContainerExtra2, RenderPosition.BEFOREEND);
 
-    const filmForTopCommented = this._boardMovies.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length);
+  //   const filmForTopCommented = this._boardMovies.slice().sort((aInd,bInd) => bInd.comments.length - aInd.comments.length);
 
-    for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
-      this._renderMovie(this._filmListContainerExtra2,filmForTopCommented[ind], this._filmPresenterTopCommented);
-    }
-  }
+  //   for (let ind = 0; ind <MOST_COMMENTED_COUNT; ind++) {
+  //     this._renderMovie(this._filmListContainerExtra2,filmForTopCommented[ind], this._filmPresenterTopCommented);
+  //   }
+  // }
 
 
   _renderPopup (chosenMovie) {
@@ -168,8 +165,8 @@ class MovieBoard {
 
   _renderBoard() {
     this._renderMovieList();
-    this._renderTopRating();
-    this._renderTopCommented();
+    // this._renderTopRating();
+    // this._renderTopCommented();
   }
 }
 

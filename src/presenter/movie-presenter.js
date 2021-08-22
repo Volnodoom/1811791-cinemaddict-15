@@ -21,7 +21,7 @@ class Movie {
     this._processFavoriteClick = this._processFavoriteClick.bind(this);
   }
 
-  init(film, MapObject) {
+  init(film) {
     this._film = film;
 
     const prevFilmComponent = this._filmComponent;
@@ -31,7 +31,6 @@ class Movie {
     if(prevFilmComponent === null) {
       render(this._movieListContainer, this._filmComponent, RenderPosition.BEFOREEND);
       this._setEventListenersThumbnails();
-      MapObject.set (this._film.id, this._filmComponent);
       return;
     }
 
@@ -43,31 +42,22 @@ class Movie {
   }
 
   _processFavoriteClick () {
-
-    // const switcher = !this._film.userDetails.favorite;
-    // const getDeepKeys = (obj) => {
-    //   for(const key in obj) {
-    //     if (key === 'favorite') {
-    //       obj[key] = switcher;
-    //       break;
-    //     }
-    //     if(typeof obj[key] === 'object') {
-    //       getDeepKeys(obj[key]);
-    //     }
-    //   }
-    // };
-
-
-    // this._changeData(getDeepKeys(this._film));
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          title: 'HAHAHA I HAVE CHANGED IT',
-        },
-      ),
-    );
+    const getDeepKeys = (obj) => {
+      const data = {};
+      for(const key in obj) {
+        if (key === 'favorite') {
+          obj[key] = !obj[key];
+          data.key = obj;
+        } else {
+          data.key = obj;
+        }
+        if(typeof obj[key] === 'object') {
+          getDeepKeys(obj[key]);
+        }
+      }
+      return data.key;
+    };
+    return this._changeData(getDeepKeys(this._film));
   }
 
   _processClickPopup() {
