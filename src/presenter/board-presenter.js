@@ -87,7 +87,7 @@ class MovieBoard {
 
   _processMovieChange (whatWeWantToChangeInMovie) {
     this._boardMovies = updateItem(this._boardMovies, whatWeWantToChangeInMovie);
-    this._filmPresenterMain.get(whatWeWantToChangeInMovie.id).init(whatWeWantToChangeInMovie, this._filmPresenterMain);
+    this._filmPresenterMain.get(whatWeWantToChangeInMovie.id).init(whatWeWantToChangeInMovie);
   }
 
   _renderButtonShowMore() {

@@ -57,7 +57,7 @@ class Movie {
       }
       return data.key;
     };
-    return this._changeData(getDeepKeys(this._film));
+    this._changeData(getDeepKeys(this._film));
   }
 
   _processClickPopup() {
