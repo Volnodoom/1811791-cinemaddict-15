@@ -18,6 +18,12 @@ const EmojiUrl = {
   ANGRY: './images/emoji/angry.png ',
 };
 
+const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date-up',
+  RATING: 'rating-up',
+};
+
 const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
 const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
 const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
@@ -61,4 +67,8 @@ const getDeepKeys = (obj, whatKeyToFind) => {
   return data.key;
 };
 
-export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl, getDeepKeys};
+const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRateA.totalRating;
+
+const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.data).diff(dayjs(movieDateA.release.data));
+
+export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl, getDeepKeys, SortType, sortRating, sortReleaseDate};

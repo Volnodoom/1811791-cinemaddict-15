@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import { render, remove, RenderPosition } from '../utils/render.js';
 import BoardView from '../model/board.js';
 import ButtonShowMoreView from '../model/button-show-more.js';
 import ConditionMessageBlockView from '../model/condition-message-block.js';
@@ -10,13 +11,13 @@ import FilterView from '../model/filters.js';
 import MovieCardView from '../model/movie-card.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import SortView from '../model/sort.js';
-import { render, remove, RenderPosition } from '../utils/render.js';
 import { updateItem } from '../utils/common.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
 import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-title.js';
 import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
 import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
 import MoviePresenter from './movie-presenter.js';
+import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 
@@ -27,6 +28,7 @@ class MovieBoard {
     this._filmPresenterMain = new Map();
     this._filmPresenterTopRating = new Map();
     this._filmPresenterTopCommented = new Map();
+    this._currentSortType = SortType.DEFAULT;
 
     this._bodyPart = document.body;
     this._sortComponent = new SortView();
@@ -45,10 +47,13 @@ class MovieBoard {
 
     this._processShowMoreButtonClick = this._processShowMoreButtonClick.bind(this);
     this._processMovieChange = this._processMovieChange.bind(this);
+    this._processModeChange = this._processModeChange.bind(this);
+    this._processSortTypeChange = this._processSortTypeChange.bind(this);
   }
 
   init(boardMovies) {
     this._boardMovies = boardMovies.slice();
+    this._sourcedBoardMovies = boardMovies.slice();
 
     this._renderSort();
 
@@ -62,10 +67,11 @@ class MovieBoard {
 
   _renderSort() {
     render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
+    this._sortComponent.setSortTypeChangeHandler(this._processSortTypeChange);
   }
 
   _renderMovie(container, film) {
-    const moviePresenter = new MoviePresenter (container, this._processMovieChange);
+    const moviePresenter = new MoviePresenter(container, this._processMovieChange, this._processModeChange);
     moviePresenter.initM(film);
     this._filmPresenterMain.set(film.id, moviePresenter);
   }
@@ -85,9 +91,38 @@ class MovieBoard {
     }
   }
 
-  _processMovieChange (whatWeWantToChangeInMovie) {
+  _processMovieChange(whatWeWantToChangeInMovie) {
     this._boardMovies = updateItem(this._boardMovies, whatWeWantToChangeInMovie);
+    this._sourcedBoardMovies = updateItem(this._sourcedBoardMovies, whatWeWantToChangeInMovie);
     this._filmPresenterMain.get(whatWeWantToChangeInMovie.id).initM(whatWeWantToChangeInMovie);
+  }
+
+  _processModeChange() {
+    this._filmPresenterMain.forEach((presenter) => presenter.resetView());
+  }
+
+  _sortMovies(sortType) {
+    switch (sortType) {
+      case SortType.RATING:
+        this._boardMovies.sort(sortRating);
+        break;
+      case SortType.DATE:
+        this._boardMovies.sort(sortReleaseDate);
+        break;
+      default:
+        this._boardMovies = this._sourcedBoardMovies.slice();
+    }
+    this._currentSortType = SortType;
+  }
+
+  _processSortTypeChange(sortType) {
+    if(this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortMovies(sortType);
+    this._clearMovieList();
+    this._renderMovieList();
   }
 
   _renderButtonShowMore() {
@@ -119,7 +154,7 @@ class MovieBoard {
   // }
 
 
-  _renderPopup (chosenMovie) {
+  _renderPopup(chosenMovie) {
     const popupCard = new PopupMovieView(chosenMovie);
     const popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     const popupCommentsList = new PopupCommentsListView(chosenMovie);
@@ -142,7 +177,7 @@ class MovieBoard {
     });
   }
 
-  _clearMovieList () {
+  _clearMovieList() {
     const clearMapDOM = (MapObject) => {
       MapObject.forEach((movie) => movie.destroy());
       MapObject.clear();

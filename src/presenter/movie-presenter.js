@@ -7,13 +7,22 @@ import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-ti
 import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
 import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  POPUP: 'POPUP',
+};
+
 class Movie {
-  constructor(movieListContainer, changeData) {
+  constructor(movieListContainer, changeData, changeMode) {
     this._movieListContainer = movieListContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
+
     this._bodyPart = document.body;
 
     this._filmComponent = null;
+    this._popupCard = null;
+    this._mode = Mode.DEFAULT;
 
     this._PopupCommentsWrapComponent = new PopupCommentsWrap();
 
@@ -37,14 +46,31 @@ class Movie {
     }
 
     if(this._movieListContainer.getElement().contains(prevFilmComponent.getElement())) {
+    // if (this._mode === Mode.DEFAULT) {
       replace(this._filmComponent, prevFilmComponent);
       this._setEventListenersThumbnails();
     }
 
+    // if (this._mode === Mode.POPUP) {
+    //   replace(this._filmComponent, prevFilmComponent);
+    //   this._setEventListenersThumbnails();
+    // }
+
+    this._mode = Mode.DEFAULT;
     remove(prevFilmComponent);
   }
 
   _processFavoriteClick() {
+    // this._changeData(
+    //   Object.assign(
+    //     {},
+    //     this._film,
+    //     {
+    //       favorite: !this._film.userDetails.favorite,
+    //     },
+    //   ),
+    // );
+
     const getDeepKeys1 = (obj) => {
       const data = {};
       for(const key in obj) {
@@ -56,11 +82,11 @@ class Movie {
         }
         if(typeof obj[key] === 'object') {
           getDeepKeys1(obj[key]);
+          data.key = obj;
         }
       }
       return data.key;
     };
-
     this._changeData(getDeepKeys1(this._film));
   }
 
@@ -82,6 +108,7 @@ class Movie {
     };
 
     this._changeData(getDeepKeys1(this._film));
+    // console.log(this._film);
     // this._changeData(getDeepKeys(this._film, 'alreadyWatched'));
   }
 
@@ -109,6 +136,8 @@ class Movie {
   _processClickPopup() {
     this._renderPopup(this._film);
     this._bodyPart.classList.add('hide-overflow');
+    this._changeMode();
+    this._mode = Mode.POPUP;
   }
 
   _setEventListenersThumbnails() {
@@ -121,13 +150,20 @@ class Movie {
     this._filmComponent.setClickHandler(CardsEventsOn.WATCHLIST, this._processWatchlistClick);
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      remove(this._popupCard);
+      this._mode = Mode.DEFAULT;
+    }
+  }
+
   _renderPopup(chosenMovie) {
-    const popupCard = new PopupMovieView(chosenMovie);
+    this._popupCard = new PopupMovieView(chosenMovie);
     const popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     const popupCommentsList = new PopupCommentsListView(chosenMovie);
     const popupCommentsNew = new PopupCommentsNewView();
 
-    render (this._bodyPart, popupCard, RenderPosition.BEFOREEND);
+    render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
     const popupCommentsContainer = this._bodyPart.querySelector('.film-details__bottom-container');
 
     render (popupCommentsContainer, this._PopupCommentsWrapComponent, RenderPosition.BEFOREEND);
@@ -135,8 +171,9 @@ class Movie {
     render (this._PopupCommentsWrapComponent, popupCommentsList, RenderPosition.BEFOREEND);
     render (this._PopupCommentsWrapComponent, popupCommentsNew, RenderPosition.BEFOREEND);
 
+
     const onClosePopupButton = () => {
-      remove(popupCard);
+      remove(this._popupCard);
       remove(this._PopupCommentsWrapComponent);
       remove(popupCommentsTitle);
       remove(popupCommentsList);
@@ -144,7 +181,7 @@ class Movie {
       this._bodyPart.classList.remove('hide-overflow');
     };
 
-    popupCard.setClickHandler(onClosePopupButton);
+    this._popupCard.setClickHandler(onClosePopupButton);
   }
 
   destroy() {
