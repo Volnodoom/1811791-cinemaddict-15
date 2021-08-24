@@ -24,6 +24,12 @@ const SortType = {
   RATING: 'rating-up',
 };
 
+const ToolbarNamesFromServer = {
+  FAVORITE: 'favorite',
+  WATCHED: 'alreadyWatched',
+  WATCHLIST: 'watchlist',
+};
+
 const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
 const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
 const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
@@ -51,24 +57,8 @@ const calculateTime = (movieDuration) => {
   return duration;
 };
 
-const getDeepKeys = (obj, whatKeyToFind) => {
-  const data = {};
-  for(const key in obj) {
-    if (key === whatKeyToFind) {
-      obj[key] = !obj[key];
-      data.key = obj;
-    } else {
-      data.key = obj;
-    }
-    if(typeof obj[key] === 'object') {
-      getDeepKeys(obj[key]);
-    }
-  }
-  return data.key;
-};
-
 const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRateA.totalRating;
 
 const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.data).diff(dayjs(movieDateA.release.data));
 
-export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl, getDeepKeys, SortType, sortRating, sortReleaseDate};
+export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl, SortType, ToolbarNamesFromServer, sortRating, sortReleaseDate};

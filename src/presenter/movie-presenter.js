@@ -1,5 +1,5 @@
 import MovieCardView from '../model/movie-card.js';
-import { CardsEventsOn, getDeepKeys } from '../utils/card-utils.js';
+import { CardsEventsOn } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
@@ -46,91 +46,57 @@ class Movie {
     }
 
     if(this._movieListContainer.getElement().contains(prevFilmComponent.getElement())) {
-    // if (this._mode === Mode.DEFAULT) {
       replace(this._filmComponent, prevFilmComponent);
       this._setEventListenersThumbnails();
     }
-
-    // if (this._mode === Mode.POPUP) {
-    //   replace(this._filmComponent, prevFilmComponent);
-    //   this._setEventListenersThumbnails();
-    // }
 
     this._mode = Mode.DEFAULT;
     remove(prevFilmComponent);
   }
 
   _processFavoriteClick() {
-    // this._changeData(
-    //   Object.assign(
-    //     {},
-    //     this._film,
-    //     {
-    //       favorite: !this._film.userDetails.favorite,
-    //     },
-    //   ),
-    // );
-
-    const getDeepKeys1 = (obj) => {
-      const data = {};
-      for(const key in obj) {
-        if (key === 'favorite') {
-          obj[key] = !obj[key];
-          data.key = obj;
-        } else {
-          data.key = obj;
-        }
-        if(typeof obj[key] === 'object') {
-          getDeepKeys1(obj[key]);
-          data.key = obj;
-        }
-      }
-      return data.key;
-    };
-    this._changeData(getDeepKeys1(this._film));
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          userDetails: {
+            ...this._film.userDetails,
+            favorite: !this._film.userDetails.favorite,
+          },
+        },
+      ),
+    );
   }
 
   _processWatchedClick() {
-    const getDeepKeys1 = (obj) => {
-      const data = {};
-      for(const key in obj) {
-        if (key === 'alreadyWatched') {
-          obj[key] = !obj[key];
-          data.key = obj;
-        } else {
-          data.key = obj;
-        }
-        if(typeof obj[key] === 'object') {
-          getDeepKeys1(obj[key]);
-        }
-      }
-      return data.key;
-    };
-
-    this._changeData(getDeepKeys1(this._film));
-    // console.log(this._film);
-    // this._changeData(getDeepKeys(this._film, 'alreadyWatched'));
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          userDetails: {
+            ...this._film.userDetails,
+            alreadyWatched: !this._film.userDetails.alreadyWatched,
+          },
+        },
+      ),
+    );
   }
 
   _processWatchlistClick() {
-    const getDeepKeys1 = (obj) => {
-      const data = {};
-      for(const key in obj) {
-        if (key === 'watchlist') {
-          obj[key] = !obj[key];
-          data.key = obj;
-        } else {
-          data.key = obj;
-        }
-        if(typeof obj[key] === 'object') {
-          getDeepKeys1(obj[key]);
-        }
-      }
-      return data.key;
-    };
-
-    this._changeData(getDeepKeys1(this._film));
-    // this._changeData(getDeepKeys(this._film, 'watchlist'));
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          userDetails: {
+            ...this._film.userDetails,
+            watchlist: !this._film.userDetails.watchlist,
+          },
+        },
+      ),
+    );
   }
 
   _processClickPopup() {
