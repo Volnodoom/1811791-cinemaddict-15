@@ -2,11 +2,16 @@
 import { generateFilmInfo } from './mock/card-mock';
 import { generateFilter } from './mock/filter-mock';
 import AvatarView from './model/avatar';
-import EmptyConditionView from './model/empty-condition';
+// import EmptyConditionView from './model/empty-condition';
 import FilterView from './model/filters';
 import FooterView from './model/footer';
 import MovieBoardPresenter from './presenter/board-presenter';
-import { render, RenderPosition, EmptyStatement, FooterCondition } from './utils/render.js';
+import {
+  render,
+  RenderPosition,
+  // EmptyStatement,
+  FooterCondition
+} from './utils/render.js';
 
 const FILMS_CARDS_COUNT = 20;
 const bodyPart = document.body;
@@ -25,11 +30,10 @@ render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFO
 const movieBoardPresenter = new MovieBoardPresenter(mainOfBody);
 movieBoardPresenter.init(films);
 
-
-const nonOperationalStateLoading = () => {
-  render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);
-  render(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING), RenderPosition.BEFOREEND);
-  render(footerPart, new FooterView(FooterCondition.empty), RenderPosition.BEFOREEND);
-};
+// const nonOperationalStateLoading = () => {
+//   render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);
+//   render(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING), RenderPosition.BEFOREEND);
+//   render(footerPart, new FooterView(FooterCondition.empty), RenderPosition.BEFOREEND);
+// };
 
 // nonOperationalStateLoading();

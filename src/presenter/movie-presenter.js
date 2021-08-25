@@ -1,5 +1,5 @@
 import MovieCardView from '../model/movie-card.js';
-import { CardsEventsOn } from '../utils/card-utils.js';
+import { CardsEventsOn, PopupCardEventOn } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
@@ -125,6 +125,7 @@ class Movie {
 
   _renderPopup(chosenMovie) {
     this._popupCard = new PopupMovieView(chosenMovie);
+
     const popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     const popupCommentsList = new PopupCommentsListView(chosenMovie);
     const popupCommentsNew = new PopupCommentsNewView();
@@ -140,14 +141,19 @@ class Movie {
 
     const onClosePopupButton = () => {
       remove(this._popupCard);
-      remove(this._PopupCommentsWrapComponent);
-      remove(popupCommentsTitle);
-      remove(popupCommentsList);
-      remove(popupCommentsNew);
       this._bodyPart.classList.remove('hide-overflow');
+      this._mode = Mode.DEFAULT;
     };
 
-    this._popupCard.setClickHandler(onClosePopupButton);
+    const setEventListenersPopup = () => {
+      this._popupCard.setClickHandler(PopupCardEventOn.CLOSE_BTN, onClosePopupButton);
+      this._popupCard.setClickHandler(PopupCardEventOn.FAVORITE, this._processFavoriteClickPopup);
+      this._popupCard.setClickHandler(PopupCardEventOn.WATCHED, this._processWatchedClick);
+      this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
+
+    };
+
+    setEventListenersPopup();
   }
 
   destroy() {

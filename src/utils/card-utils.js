@@ -30,6 +30,13 @@ const ToolbarNamesFromServer = {
   WATCHLIST: 'watchlist',
 };
 
+const PopupCardEventOn = {
+  CLOSE_BTN:'film-details__close-btn',
+  FAVORITE: 'favorite',
+  WATCHED: 'watched',
+  WATCHLIST: 'watchlist',
+};
+
 const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
 const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
 const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
@@ -61,4 +68,5 @@ const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRat
 
 const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.data).diff(dayjs(movieDateA.release.data));
 
-export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl, SortType, ToolbarNamesFromServer, sortRating, sortReleaseDate};
+export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear,
+  EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, sortRating, sortReleaseDate};

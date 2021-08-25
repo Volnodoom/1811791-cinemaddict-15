@@ -1,4 +1,4 @@
-import { dateDayMonthYear, calculateTime } from '../../utils/card-utils';
+import { dateDayMonthYear, calculateTime, PopupCardEventOn } from '../../utils/card-utils';
 import AbstractView from '../abstract';
 
 const createGenre = (genreData) => {
@@ -117,14 +117,47 @@ class PopupMovie extends AbstractView {
 
   _clickHandler(evt) {
     evt.preventDefault();
-    this._callback.click();
+    const idEvent = evt.target.id;
+
+    if (evt.target.className === PopupCardEventOn.CLOSE_BTN) {
+      this._callback.clickOnCloseButton();
+    }
+
+    switch (idEvent) {
+      case PopupCardEventOn.FAVORITE:
+        evt.target.classList.toggle('film-details__control-button--active');
+        this._callback.clickOnFavorite();
+        break;
+      case PopupCardEventOn.WATCHED:
+        evt.target.classList.toggle('film-details__control-button--active');
+        this._callback.clickOnWatched();
+        break;
+      case PopupCardEventOn.WATCHLIST:
+        evt.target.classList.toggle('film-details__control-button--active');
+        this._callback.clickOnWatchlist();
+        break;
+    }
   }
 
-  setClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
+  setClickHandler(type, callback) {
+    switch (type) {
+      case PopupCardEventOn.CLOSE_BTN:
+        this._callback.clickOnCloseButton = callback;
+        break;
+      case PopupCardEventOn.FAVORITE:
+        this._callback.clickOnFavorite = callback;
+        break;
+      case PopupCardEventOn.WATCHED:
+        this._callback.clickOnWatched = callback;
+        break;
+      case PopupCardEventOn.WATCHLIST:
+        this._callback.clickOnWatchlist = callback;
+        break;
+      default:
+        throw Error ('Click handler contain the TYPE which is not detected');
+    }
+    this.getElement().addEventListener('click', this._clickHandler);
   }
-
 }
 
 export default PopupMovie;

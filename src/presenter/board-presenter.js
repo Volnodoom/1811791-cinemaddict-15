@@ -8,7 +8,6 @@ import TopRatingView from '../model/extra-top-cards.js';
 import FilmListView from '../model/film-list.js';
 import FilmListContainerView from '../model/film-list-container.js';
 import FilterView from '../model/filters.js';
-import MovieCardView from '../model/movie-card.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import SortView from '../model/sort.js';
 import { updateItem } from '../utils/common.js';
