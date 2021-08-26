@@ -1,5 +1,7 @@
-import { getRandomInteger, getRandomPositiveFloat } from '../utils/common.js';
 /* eslint-disable quotes */
+import { nanoid } from 'nanoid';
+import { getRandomInteger, getRandomPositiveFloat } from '../utils/common.js';
+
 
 const giveFewPositionsFromArrayNames = (array) => {
   const copyAr = array.slice();
@@ -215,6 +217,7 @@ const generateFilmInfo = () => {
   const alternativeTitle = `${titleValue} random`;
 
   return {
+    id: nanoid(),
     title: titleValue,
     alternativeTitle,
     poster: generatePoster(),

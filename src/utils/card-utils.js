@@ -3,9 +3,12 @@ import dayjs from 'dayjs';
 const MINUTES = 60;
 
 const CardsEventsOn = {
-  POSTER: 'poster',
-  TITLE: 'title',
-  COMMENTS: 'comments',
+  POSTER: 'film-card__poster',
+  TITLE: 'film-card__title',
+  COMMENTS: 'film-card__comments',
+  FAVORITE: 'film-card__controls-item--favorite',
+  WATCHED: 'film-card__controls-item--mark-as-watched',
+  WATCHLIST: 'film-card__controls-item--add-to-watchlist',
 };
 
 const EmojiUrl = {
@@ -13,6 +16,25 @@ const EmojiUrl = {
   SLEEPING: './images/emoji/sleeping.png ',
   PUKE: './images/emoji/puke.png ',
   ANGRY: './images/emoji/angry.png ',
+};
+
+const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date-up',
+  RATING: 'rating-up',
+};
+
+const ToolbarNamesFromServer = {
+  FAVORITE: 'favorite',
+  WATCHED: 'alreadyWatched',
+  WATCHLIST: 'watchlist',
+};
+
+const PopupCardEventOn = {
+  CLOSE_BTN:'film-details__close-btn',
+  FAVORITE: 'favorite',
+  WATCHED: 'watched',
+  WATCHLIST: 'watchlist',
 };
 
 const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
@@ -42,4 +64,9 @@ const calculateTime = (movieDuration) => {
   return duration;
 };
 
-export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear, EmojiUrl};
+const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRateA.totalRating;
+
+const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.data).diff(dayjs(movieDateA.release.data));
+
+export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear,
+  EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, sortRating, sortReleaseDate};

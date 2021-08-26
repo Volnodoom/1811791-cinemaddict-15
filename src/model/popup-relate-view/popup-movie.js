@@ -1,7 +1,5 @@
-import { dateDayMonthYear, calculateTime } from '../utils/card-utils';
-import AbstractView from './abstract';
-
-const localComment = 'a film that changed my life, a true masterpiece, post-credit scene was just amazing omg.';
+import { dateDayMonthYear, calculateTime, PopupCardEventOn } from '../../utils/card-utils';
+import AbstractView from '../abstract';
 
 const createGenre = (genreData) => {
   let genreLine = '';
@@ -99,51 +97,14 @@ const createPopupTemplate = (film) => {
     </section>
   </div>
 
-  <div class="film-details__bottom-container">
-<section class="film-details__comments-wrap">
-  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${film.comments.length}</span></h3>
+    <div class="film-details__bottom-container">
 
-
-
-  <div class="film-details__new-comment">
-  <div class="film-details__add-emoji-label">
-  <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-  </div>
-
-  <label class="film-details__comment-label">
-    <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${localComment}</textarea>
-  </label>
-
-  <div class="film-details__emoji-list">
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-    <label class="film-details__emoji-label" for="emoji-smile">
-      <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-    </label>
-
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-    <label class="film-details__emoji-label" for="emoji-sleeping">
-      <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-    </label>
-
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-    <label class="film-details__emoji-label" for="emoji-puke">
-      <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-    </label>
-
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-    <label class="film-details__emoji-label" for="emoji-angry">
-      <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-    </label>
-  </div>
-</div>
-</section>
-</div>
-
-</form>
+    </div>
+  </form>
 </section>`;
 };
 
-class MoviePopup extends AbstractView {
+class PopupMovie extends AbstractView {
   constructor(film) {
     super();
     this._film = film;
@@ -156,15 +117,48 @@ class MoviePopup extends AbstractView {
 
   _clickHandler(evt) {
     evt.preventDefault();
-    this._callback.click();
+    const idEvent = evt.target.id;
+
+    if (evt.target.className === PopupCardEventOn.CLOSE_BTN) {
+      this._callback.clickOnCloseButton();
+    }
+
+    switch (idEvent) {
+      case PopupCardEventOn.FAVORITE:
+        evt.target.classList.toggle('film-details__control-button--active');
+        this._callback.clickOnFavorite();
+        break;
+      case PopupCardEventOn.WATCHED:
+        evt.target.classList.toggle('film-details__control-button--active');
+        this._callback.clickOnWatched();
+        break;
+      case PopupCardEventOn.WATCHLIST:
+        evt.target.classList.toggle('film-details__control-button--active');
+        this._callback.clickOnWatchlist();
+        break;
+    }
   }
 
-  setClickHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._clickHandler);
+  setClickHandler(type, callback) {
+    switch (type) {
+      case PopupCardEventOn.CLOSE_BTN:
+        this._callback.clickOnCloseButton = callback;
+        break;
+      case PopupCardEventOn.FAVORITE:
+        this._callback.clickOnFavorite = callback;
+        break;
+      case PopupCardEventOn.WATCHED:
+        this._callback.clickOnWatched = callback;
+        break;
+      case PopupCardEventOn.WATCHLIST:
+        this._callback.clickOnWatchlist = callback;
+        break;
+      default:
+        throw Error ('Click handler contain the TYPE which is not detected');
+    }
+    this.getElement().addEventListener('click', this._clickHandler);
   }
-
 }
 
-export default MoviePopup;
+export default PopupMovie;
 
