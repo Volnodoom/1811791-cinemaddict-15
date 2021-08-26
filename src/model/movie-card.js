@@ -55,16 +55,29 @@ class MovieCard extends AbstractView{
 
   _clickHandler(evt) {
     evt.preventDefault();
-    const classValue = evt.target.classList.value;
-    switch(classValue) {
-      case 'film-card__poster':
+    const classList1 = evt.target.classList[0];
+    const classList2 = evt.target.classList[1];
+    switch(classList1) {
+      case CardsEventsOn.POSTER:
         this._callback.clickOnPoster();
         break;
-      case 'film-card__title':
+      case CardsEventsOn.TITLE:
         this._callback.clickOnTitle();
         break;
-      case 'film-card__comments':
+      case CardsEventsOn.COMMENTS:
         this._callback.clickOnComments();
+        break;
+    }
+
+    switch(classList2){
+      case CardsEventsOn.FAVORITE:
+        this._callback.favoriteClick();
+        break;
+      case CardsEventsOn.WATCHED:
+        this._callback.watchedClick();
+        break;
+      case CardsEventsOn.WATCHLIST:
+        this._callback.watchlistClick();
         break;
     }
   }
@@ -80,12 +93,22 @@ class MovieCard extends AbstractView{
       case CardsEventsOn.COMMENTS:
         this._callback.clickOnComments = callback;
         break;
+      case CardsEventsOn.FAVORITE:
+        this._callback.favoriteClick = callback;
+        break;
+      case CardsEventsOn.WATCHED:
+        this._callback.watchedClick = callback;
+        break;
+      case CardsEventsOn.WATCHLIST:
+        this._callback.watchlistClick = callback;
+        break;
       default:
         throw Error ('Click handler contain the TYPE which is not detected');
     }
 
     this.getElement().addEventListener('click', this._clickHandler);
   }
+
 }
 
 export default MovieCard;
