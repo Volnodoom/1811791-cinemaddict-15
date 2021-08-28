@@ -8,13 +8,13 @@ import TopRatingView from '../model/extra-top-cards.js';
 import FilmListView from '../model/film-list.js';
 import FilmListContainerView from '../model/film-list-container.js';
 import FilterView from '../model/filters.js';
-import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
+// import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import SortView from '../model/sort.js';
 import { updateItem } from '../utils/common.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
-import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-title.js';
-import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
-import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
+// import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-title.js';
+// import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
+// import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
 import MoviePresenter from './movie-presenter.js';
 import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 
@@ -153,28 +153,28 @@ class MovieBoard {
   // }
 
 
-  _renderPopup(chosenMovie) {
-    const popupCard = new PopupMovieView(chosenMovie);
-    const popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
-    const popupCommentsList = new PopupCommentsListView(chosenMovie);
-    const popupCommentsNew = new PopupCommentsNewView();
+  // _renderPopup(chosenMovie) {
+  //   const popupCard = new PopupMovieView(chosenMovie);
+  //   const popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
+  //   const popupCommentsList = new PopupCommentsListView(chosenMovie);
+  //   const popupCommentsNew = new PopupCommentsNewView();
 
-    render (this._bodyPart, popupCard, RenderPosition.BEFOREEND);
-    render (this._bodyPart.querySelector('.film-details__bottom-container'), this._PopupCommentsWrapComponent, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrapComponent, popupCommentsTitle, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrapComponent, popupCommentsList, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrapComponent, popupCommentsNew, RenderPosition.BEFOREEND);
+  //   render (this._bodyPart, popupCard, RenderPosition.BEFOREEND);
+  //   render (this._bodyPart.querySelector('.film-details__bottom-container'), this._PopupCommentsWrapComponent, RenderPosition.BEFOREEND);
+  //   render (this._PopupCommentsWrapComponent, popupCommentsTitle, RenderPosition.BEFOREEND);
+  //   render (this._PopupCommentsWrapComponent, popupCommentsList, RenderPosition.BEFOREEND);
+  //   render (this._PopupCommentsWrapComponent, popupCommentsNew, RenderPosition.BEFOREEND);
 
 
-    popupCard.setClickHandler(() => {
-      remove(popupCard);
-      remove(this._PopupCommentsWrapComponent);
-      remove(popupCommentsTitle);
-      remove(popupCommentsList);
-      remove(popupCommentsNew);
-      this._bodyPart.classList.remove('hide-overflow');
-    });
-  }
+  //   popupCard.setClickHandler(() => {
+  //     remove(popupCard);
+  //     remove(this._PopupCommentsWrapComponent);
+  //     remove(popupCommentsTitle);
+  //     remove(popupCommentsList);
+  //     remove(popupCommentsNew);
+  //     this._bodyPart.classList.remove('hide-overflow');
+  //   });
+  // }
 
   _clearMovieList() {
     const clearMapDOM = (MapObject) => {
