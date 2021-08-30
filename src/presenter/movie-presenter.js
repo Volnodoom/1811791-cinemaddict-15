@@ -1,5 +1,5 @@
 import MovieCardView from '../model/movie-card.js';
-import { CardsEventsOn, PopupCardEventOn } from '../utils/card-utils.js';
+import { CardsEventsOn, PopupCardEventOn, PopupCommentsState } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
@@ -133,7 +133,7 @@ class Movie {
     this._popupCard = new PopupMovieView(chosenMovie);
     this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     this._popupCommentsList = new PopupCommentsListView(chosenMovie);
-    this._popupCommentsNew = new PopupCommentsNewView();
+    this._popupCommentsNew = new PopupCommentsNewView(chosenMovie);
     this._PopupCommentsWrap = new PopupCommentsWrap();
 
     render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
@@ -153,6 +153,8 @@ class Movie {
     this._popupCard.setClickHandler(PopupCardEventOn.FAVORITE, this._processFavoriteClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHED, this._processWatchedClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
+
+    this._popupCommentsList.setClickHandler();
   }
 
   _closePopup () {

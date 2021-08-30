@@ -12,10 +12,10 @@ const CardsEventsOn = {
 };
 
 const EmojiUrl = {
-  SMILE: './images/emoji/smile.png ',
-  SLEEPING: './images/emoji/sleeping.png ',
-  PUKE: './images/emoji/puke.png ',
-  ANGRY: './images/emoji/angry.png ',
+  SMILE: 'images/emoji/smile.png ',
+  SLEEPING: 'images/emoji/sleeping.png ',
+  PUKE: 'images/emoji/puke.png ',
+  ANGRY: 'images/emoji/angry.png ',
 };
 
 const SortType = {
@@ -35,6 +35,11 @@ const PopupCardEventOn = {
   FAVORITE: 'favorite',
   WATCHED: 'watched',
   WATCHLIST: 'watchlist',
+};
+
+const PopupCommentsState = {
+  INPUT: 'input',
+  CLICK: 'click',
 };
 
 const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
@@ -69,4 +74,4 @@ const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRat
 const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.data).diff(dayjs(movieDateA.release.data));
 
 export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear,
-  EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, sortRating, sortReleaseDate};
+  EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, PopupCommentsState, sortRating, sortReleaseDate};

@@ -1,6 +1,8 @@
 import { dateDayMonthYear, calculateTime, PopupCardEventOn } from '../../utils/card-utils';
 import AbstractView from '../abstract';
 
+const ACTIVE_STATE_CLASS = 'film-details__control-button--active';
+
 const createGenre = (genreData) => {
   let genreLine = '';
   if (genreData.length >= 2) {
@@ -18,19 +20,9 @@ const createPopupTemplate = (film) => {
   const {data, releaseCountry} = film.release;
   const {watchlist, alreadyWatched, favorite} = film.userDetails;
 
-  let termGenre ='';
-  if (genre.length >= 2) {termGenre = 'Genres';} else {termGenre = 'Genre';}
   const writersLine = writers.join(', ');
   const actorsLine = actors.join(', ');
   const altPoster = title;
-
-  let watchlistClassName = '';
-  let historyClassName = '';
-  let favoriteClassName = '';
-
-  if (watchlist) {watchlistClassName = 'film-details__control-button--active';} else {watchlistClassName = '';}
-  if (alreadyWatched) {historyClassName = 'film-details__control-button--active';} else {historyClassName = '';}
-  if (favorite) {favoriteClassName = 'film-details__control-button--active';} else {favoriteClassName = '';}
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -79,7 +71,7 @@ const createPopupTemplate = (film) => {
             <td class="film-details__cell">${releaseCountry}</td>
           </tr>
           <tr class="film-details__row">
-            <td class="film-details__term">${termGenre}</td>
+            <td class="film-details__term">${genre.length >= 2 ? 'Genres' : 'Genre'}</td>
             <td class="film-details__cell">
               ${createGenre(genre)}
               </td>
@@ -91,9 +83,9 @@ const createPopupTemplate = (film) => {
     </div>
 
     <section class="film-details__controls">
-      <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlistClassName}" id="watchlist" name="watchlist">Add to watchlist</button>
-      <button type="button" class="film-details__control-button film-details__control-button--watched ${historyClassName}" id="watched" name="watched">Already watched</button>
-      <button type="button" class="film-details__control-button film-details__control-button--favorite ${favoriteClassName}" id="favorite" name="favorite">Add to favorites</button>
+      <button type="button" class="film-details__control-button film-details__control-button--watchlist ${watchlist ? ACTIVE_STATE_CLASS : ''}" id="watchlist" name="watchlist">Add to watchlist</button>
+      <button type="button" class="film-details__control-button film-details__control-button--watched ${alreadyWatched ? ACTIVE_STATE_CLASS : ''}" id="watched" name="watched">Already watched</button>
+      <button type="button" class="film-details__control-button film-details__control-button--favorite ${favorite ? ACTIVE_STATE_CLASS : ''}" id="favorite" name="favorite">Add to favorites</button>
     </section>
   </div>
 
