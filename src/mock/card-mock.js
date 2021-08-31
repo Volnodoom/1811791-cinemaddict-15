@@ -196,20 +196,25 @@ const generateComAuthor = () => {
 };
 
 const generateFilmComments = () => {
-  const randomNumberComments =  getRandomInteger(0, 4);
-
   const finaleNumberOfComments = [];
-  for (let ind = 0; ind <= randomNumberComments; ind++) {
-    finaleNumberOfComments.push(
-      {
-        commentItself: generateCommentItself(),
-        comAuthor: generateComAuthor(),
-        comDayTime: generateData(),
-        emotion: generateEmotion(),
-      },
-    );
+
+  if (generateCommentItself().length === 0) {
+    return finaleNumberOfComments;
+  } else {
+    const randomNumberComments =  getRandomInteger(0, 4);
+
+    for (let ind = 0; ind <= randomNumberComments; ind++) {
+      finaleNumberOfComments.push(
+        {
+          commentItself: generateCommentItself(),
+          comAuthor: generateComAuthor(),
+          comDayTime: generateData(),
+          emotion: generateEmotion(),
+        },
+      );
+    }
+    return finaleNumberOfComments;
   }
-  return finaleNumberOfComments;
 };
 
 const generateFilmInfo = () => {

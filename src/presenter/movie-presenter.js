@@ -1,5 +1,5 @@
 import MovieCardView from '../model/movie-card.js';
-import { CardsEventsOn, PopupCardEventOn } from '../utils/card-utils.js';
+import { CardsEventsOn, PopupCardEventOn, PopupCommentsState } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
 import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
 import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
@@ -21,12 +21,18 @@ class Movie {
     this._bodyPart = document.body;
 
     this._filmComponent = null;
-    this._popupCard = null;
+
+    // this._popupCard = this._popupCard.bind(this);
+    // this._popupCommentsTitle = this._popupCommentsTitle.bind(this);
+    // this._popupCommentsList = this._popupCommentsList.bind(this);
+    // this._popupCommentsNew = this._popupCommentsNew.bind(this);
+    // this._PopupCommentsWrapComponent = this._PopupCommentsWrapComponent.bind(this);
+
     this._mode = Mode.DEFAULT;
 
-    this._PopupCommentsWrapComponent = new PopupCommentsWrap();
-
     this._processClickPopup = this._processClickPopup.bind(this);
+    this._closePopup = this._closePopup.bind(this);
+    this._setEventListenersPopup = this._setEventListenersPopup.bind(this);
     this._processFavoriteClick = this._processFavoriteClick.bind(this);
     this._processWatchedClick = this._processWatchedClick.bind(this);
     this._processWatchlistClick = this._processWatchlistClick.bind(this);
@@ -100,9 +106,9 @@ class Movie {
   }
 
   _processClickPopup() {
+    this._changeMode();
     this._renderPopup(this._film);
     this._bodyPart.classList.add('hide-overflow');
-    this._changeMode();
     this._mode = Mode.POPUP;
   }
 
@@ -125,35 +131,39 @@ class Movie {
 
   _renderPopup(chosenMovie) {
     this._popupCard = new PopupMovieView(chosenMovie);
-
-    const popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
-    const popupCommentsList = new PopupCommentsListView(chosenMovie);
-    const popupCommentsNew = new PopupCommentsNewView();
+    this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
+    this._popupCommentsList = new PopupCommentsListView(chosenMovie);
+    this._popupCommentsNew = new PopupCommentsNewView(chosenMovie);
+    this._PopupCommentsWrap = new PopupCommentsWrap();
 
     render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
-    const popupCommentsContainer = this._bodyPart.querySelector('.film-details__bottom-container');
 
-    render (popupCommentsContainer, this._PopupCommentsWrapComponent, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrapComponent, popupCommentsTitle, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrapComponent, popupCommentsList, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrapComponent, popupCommentsNew, RenderPosition.BEFOREEND);
+    this.popupCommentsContainer = this._bodyPart.querySelector('.film-details__bottom-container');
 
+    render (this.popupCommentsContainer, this._PopupCommentsWrap, RenderPosition.BEFOREEND);
+    render (this._PopupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
+    render (this._PopupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
+    render (this._PopupCommentsWrap, this._popupCommentsNew, RenderPosition.BEFOREEND);
 
-    const onClosePopupButton = () => {
-      remove(this._popupCard);
-      this._bodyPart.classList.remove('hide-overflow');
-      this._mode = Mode.DEFAULT;
-    };
+    this._setEventListenersPopup();
+  }
 
-    const setEventListenersPopup = () => {
-      this._popupCard.setClickHandler(PopupCardEventOn.CLOSE_BTN, onClosePopupButton);
-      this._popupCard.setClickHandler(PopupCardEventOn.FAVORITE, this._processFavoriteClickPopup);
-      this._popupCard.setClickHandler(PopupCardEventOn.WATCHED, this._processWatchedClick);
-      this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
+  _setEventListenersPopup () {
+    this._popupCard.setClickHandler(PopupCardEventOn.CLOSE_BTN, this._closePopup);
+    this._popupCard.setClickHandler(PopupCardEventOn.FAVORITE, this._processFavoriteClick);
+    this._popupCard.setClickHandler(PopupCardEventOn.WATCHED, this._processWatchedClick);
+    this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
 
-    };
+    this._popupCommentsList.setClickHandler();
+  }
 
-    setEventListenersPopup();
+  _closePopup () {
+    remove(this._popupCard);
+    remove(this._popupCommentsTitle);
+    remove(this._popupCommentsList);
+    remove(this._popupCommentsNew);
+    this._bodyPart.classList.remove('hide-overflow');
+    this._mode = Mode.DEFAULT;
   }
 
   destroy() {
