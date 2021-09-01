@@ -1,20 +1,20 @@
 /* eslint-disable no-use-before-define */
 import { render, remove, RenderPosition } from '../utils/render.js';
-import BoardView from '../model/board.js';
-import ButtonShowMoreView from '../model/button-show-more.js';
-import ConditionMessageBlockView from '../model/condition-message-block.js';
-import TopCommentsView from '../model/extra-comments-cards.js';
-import TopRatingView from '../model/extra-top-cards.js';
-import FilmListView from '../model/film-list.js';
-import FilmListContainerView from '../model/film-list-container.js';
-import FilterView from '../model/filters.js';
-// import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
-import SortView from '../model/sort.js';
+import BoardView from '../view/board.js';
+import ButtonShowMoreView from '../view/button-show-more.js';
+import ConditionMessageBlockView from '../view/condition-message-block.js';
+import TopCommentsView from '../view/extra-comments-cards.js.js';
+import TopRatingView from '../view/extra-top-cards.js.js';
+import FilmListView from '../view/film-list.js.js';
+import FilmListContainerView from '../view/film-list-container.js';
+import FilterView from '../view/filters.js.js';
+// import PopupMovieView fro../view/popup-relate-view/popup-movie.js.js.js';
+import SortView from '../view/sort.js';
 import { updateItem } from '../utils/common.js';
-import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
-// import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-title.js';
-// import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
-// import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
+import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js.js';
+// import PopupCommentsTitleView fro../view/popup-relate-view/popup-comments-title.js.js.js';
+// import PopupCommentsListView fro../view/popup-relate-view/popup-comments-list.js.js';
+// import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js.js.js';
 import MoviePresenter from './movie-presenter.js';
 import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 
