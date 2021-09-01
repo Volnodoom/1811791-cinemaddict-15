@@ -1,11 +1,11 @@
-import MovieCardView from '../model/movie-card.js';
-import { CardsEventsOn, PopupCardEventOn, PopupCommentsState } from '../utils/card-utils.js';
+import MovieCardView from '../view/movie-card.js.js';
+import { CardsEventsOn, PopupCardEventOn } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
-import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
-import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
-import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-title.js';
-import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
-import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
+import PopupMovieView from '../view/popup-relate-view/popup-movie.js.js';
+import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js.js';
+import PopupCommentsTitleView from '../view/popup-relate-view/popup-comments-title.js.js';
+import PopupCommentsListView from '../view/popup-relate-view/popup-comments-list.js';
+import PopupCommentsNewView from '../view/popup-relate-view/popup-comments-new.js.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -21,12 +21,6 @@ class Movie {
     this._bodyPart = document.body;
 
     this._filmComponent = null;
-
-    // this._popupCard = this._popupCard.bind(this);
-    // this._popupCommentsTitle = this._popupCommentsTitle.bind(this);
-    // this._popupCommentsList = this._popupCommentsList.bind(this);
-    // this._popupCommentsNew = this._popupCommentsNew.bind(this);
-    // this._PopupCommentsWrapComponent = this._PopupCommentsWrapComponent.bind(this);
 
     this._mode = Mode.DEFAULT;
 
