@@ -6,6 +6,7 @@ import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js.
 import PopupCommentsTitleView from '../view/popup-relate-view/popup-comments-title.js.js';
 import PopupCommentsListView from '../view/popup-relate-view/popup-comments-list.js';
 import PopupCommentsNewView from '../view/popup-relate-view/popup-comments-new.js.js';
+import { UpdateType, UserAction } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -56,45 +57,33 @@ class Movie {
 
   _processFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
-        {
-          userDetails: {
-            ...this._film.userDetails,
-            favorite: !this._film.userDetails.favorite,
-          },
-        },
       ),
     );
   }
 
   _processWatchedClick() {
     this._changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
-        {
-          userDetails: {
-            ...this._film.userDetails,
-            alreadyWatched: !this._film.userDetails.alreadyWatched,
-          },
-        },
       ),
     );
   }
 
   _processWatchlistClick() {
     this._changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
-        {
-          userDetails: {
-            ...this._film.userDetails,
-            watchlist: !this._film.userDetails.watchlist,
-          },
-        },
       ),
     );
   }
