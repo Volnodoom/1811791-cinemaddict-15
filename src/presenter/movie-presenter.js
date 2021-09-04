@@ -22,6 +22,7 @@ class Movie {
     this._bodyPart = document.body;
 
     this._filmComponent = null;
+    this._popupCard = null;
 
     this._mode = Mode.DEFAULT;
 
@@ -31,6 +32,7 @@ class Movie {
     this._processFavoriteClick = this._processFavoriteClick.bind(this);
     this._processWatchedClick = this._processWatchedClick.bind(this);
     this._processWatchlistClick = this._processWatchlistClick.bind(this);
+    this._processDeleteComments = this._processDeleteComments.bind(this);
   }
 
   initM(film) {
@@ -52,16 +54,28 @@ class Movie {
     }
 
     this._mode = Mode.DEFAULT;
+
+    if (this._popupCard) {
+      this._closePopup ();
+      this._processClickPopup();
+    }
+
     remove(prevFilmComponent);
   }
 
   _processFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
+        {
+          userDetails: {
+            ...this._film.userDetails,
+            favorite: !this._film.userDetails.favorite,
+          },
+        },
       ),
     );
   }
@@ -69,10 +83,16 @@ class Movie {
   _processWatchedClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
+        {
+          userDetails: {
+            ...this._film.userDetails,
+            alreadyWatched: !this._film.userDetails.alreadyWatched,
+          },
+        },
       ),
     );
   }
@@ -80,10 +100,16 @@ class Movie {
   _processWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
+        {
+          userDetails: {
+            ...this._film.userDetails,
+            watchlist: !this._film.userDetails.watchlist,
+          },
+        },
       ),
     );
   }
@@ -92,7 +118,6 @@ class Movie {
     this._changeMode();
     this._renderPopup(this._film);
     this._bodyPart.classList.add('hide-overflow');
-    this._mode = Mode.POPUP;
   }
 
   _setEventListenersThumbnails() {
@@ -113,6 +138,8 @@ class Movie {
   }
 
   _renderPopup(chosenMovie) {
+    this._mode = Mode.POPUP;
+
     this._popupCard = new PopupMovieView(chosenMovie);
     this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     this._popupCommentsList = new PopupCommentsListView(chosenMovie);
@@ -131,16 +158,26 @@ class Movie {
     this._setEventListenersPopup();
   }
 
-  _setEventListenersPopup () {
+  _setEventListenersPopup() {
     this._popupCard.setClickHandler(PopupCardEventOn.CLOSE_BTN, this._closePopup);
     this._popupCard.setClickHandler(PopupCardEventOn.FAVORITE, this._processFavoriteClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHED, this._processWatchedClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
 
-    this._popupCommentsList.setClickHandler();
+    this._popupCommentsList.setClickHandler(this._processDeleteComments);
   }
 
-  _closePopup () {
+  _addComents() {}
+
+  _processDeleteComments() {
+    return this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      Object.assign({}, this._film),
+    );
+  }
+
+  _closePopup() {
     remove(this._popupCard);
     remove(this._popupCommentsTitle);
     remove(this._popupCommentsList);
@@ -150,7 +187,12 @@ class Movie {
   }
 
   destroy() {
+    if (this._filmComponent === null) {
+      return;
+    }
+
     remove(this._filmComponent);
+    this._filmComponent = null;
   }
 }
 

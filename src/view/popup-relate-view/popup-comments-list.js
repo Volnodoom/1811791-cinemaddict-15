@@ -48,48 +48,16 @@ class PopupCommentsList extends AbstractView{
 
   _clickHandler(evt) {
     if (evt.target.tagName === 'BUTTON') {
-      this.getElement().removeChild(evt.target.closest('li'));
+      const index = this._film.comments.findIndex((line) => line.commentItself === evt.target.parentElement.previousElementSibling.textContent);
+      this._film.comments.splice(index, 1);
+      this._callback.clickOnDeleteCommentButton();
     }
   }
 
-  setClickHandler() {
+  setClickHandler(callback) {
+    this._callback.clickOnDeleteCommentButton = callback;
     this.getElement().addEventListener('click', this._clickHandler);
   }
 }
 
 export default PopupCommentsList;
-
-// class PopupCommentsTitle extends Abstract {
-//   constructor(film) {
-//     super();
-//     this._data = PopupCommentsTitle.parseFilmToData(film);
-//   }
-
-//   getTemplate() {
-//     return createPopupCommentsTitle(this._data);
-//   }
-
-//   static parseFilmToData (film) {
-//     return Object.assign(
-//       {},
-//       film,
-//       {
-//         hasNoComments: (film.comments.length === 0),
-//       },
-//     );
-//   }
-
-//   static parseDataToFilm (data) {
-//     data = Object.assign({}, data);
-
-//     if(data.hasNoComments) {
-//       data.comments = [];
-//     }
-
-//     delete data.hasNoComments;
-
-//     return data;
-//   }
-// }
-
-// export default PopupCommentsTitle;

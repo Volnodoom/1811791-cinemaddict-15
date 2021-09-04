@@ -111,9 +111,9 @@ class MovieBoard {
   _processShowMoreButtonClick() {
     const movieCount = this._getMovies().length;
     const newRenderFilmsCount = Math.min(movieCount, this._renderedFilmCount + FILMS_CARDS_PER_STEP);
-    const movies = this._getMovies().slice(this._renderedFilmCount, newRenderFilmsCount);
+    const films = this._getMovies().slice(this._renderedFilmCount, newRenderFilmsCount);
 
-    this._renderMovies(movies);
+    this._renderMovies(films);
     this._renderedFilmCount = newRenderFilmsCount;
 
     if (this._renderedFilmCount >= movieCount) {
@@ -126,7 +126,9 @@ class MovieBoard {
       case UserAction.UPDATE_MOVIE:
         this._filmsModel.updateMovie(updateType, update);
         break;
-
+      case UserAction.DELETE_COMMENT:
+        this._filmsModel.updateMovie(updateType, update);
+        break;
     }
 
   }
@@ -198,27 +200,6 @@ class MovieBoard {
   //     this._bodyPart.classList.remove('hide-overflow');
   //   });
   // }
-
-  _clearMovieList() {
-    const clearMapDOM = (MapObject) => {
-      MapObject.forEach((movie) => movie.destroy());
-      MapObject.clear();
-    };
-
-    clearMapDOM(this._filmPresenterMain);
-    clearMapDOM(this._filmPresenterTopRating);
-    clearMapDOM(this._filmPresenterTopCommented);
-    this._renderedFilmCount = FILMS_CARDS_PER_STEP;
-    remove(this._boardButtonShowMoreComponent);
-  }
-
-  _renderMovieList() {
-    this._renderMovies (0, Math.min(this._boardMovies.length, FILMS_CARDS_PER_STEP));
-
-    if (this._boardMovies.length > FILMS_CARDS_PER_STEP) {
-      this._renderButtonShowMore();
-    }
-  }
 
   _clearBoard({resetRenderedMovieCount = false, resetSortType = false} = {}) {
     const filmCount = this._getMovies().length;

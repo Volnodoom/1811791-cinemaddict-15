@@ -206,6 +206,7 @@ const generateFilmComments = () => {
     for (let ind = 0; ind <= randomNumberComments; ind++) {
       finaleNumberOfComments.push(
         {
+          id: nanoid(),
           commentItself: generateCommentItself(),
           comAuthor: generateComAuthor(),
           comDayTime: generateData(),
