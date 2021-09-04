@@ -3,17 +3,17 @@ import { render, remove, RenderPosition } from '../utils/render.js';
 import BoardView from '../view/board.js';
 import ButtonShowMoreView from '../view/button-show-more.js';
 import ConditionMessageBlockView from '../view/condition-message-block.js';
-import TopCommentsView from '../view/extra-comments-cards.js.js';
-import TopRatingView from '../view/extra-top-cards.js.js';
-import FilmListView from '../view/film-list.js.js';
+import TopCommentsView from '../view/extra-comments-cards.js';
+import TopRatingView from '../view/extra-top-cards.js';
+import FilmListView from '../view/film-list.js';
 import FilmListContainerView from '../view/film-list-container.js';
-import FilterView from '../view/filters.js.js';
-// import PopupMovieView fro../view/popup-relate-view/popup-movie.js.js.js';
+import FilterView from '../view/filters.js';
+// import PopupMovieView fro../view/popup-relate-view/popup-movie.js';
 import SortView from '../view/sort.js';
-import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js.js';
-// import PopupCommentsTitleView fro../view/popup-relate-view/popup-comments-title.js.js.js';
-// import PopupCommentsListView fro../view/popup-relate-view/popup-comments-list.js.js';
-// import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js.js.js';
+import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
+// import PopupCommentsTitleView fro../view/popup-relate-view/popup-comments-title.js';
+// import PopupCommentsListView fro../view/popup-relate-view/popup-comments-list.js';
+// import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js';
 import MoviePresenter from './movie-presenter.js';
 import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 import { UpdateType, UserAction } from '../const.js';
@@ -25,7 +25,7 @@ class MovieBoard {
   constructor (boardContainer, model) {
     this._filmsModel = model;
     this._boardContainer = boardContainer;
-    this._renderFilmsCount = FILMS_CARDS_PER_STEP;
+    this._renderedFilmCount = FILMS_CARDS_PER_STEP;
     this._filmPresenterMain = new Map();
     this._filmPresenterTopRating = new Map();
     this._filmPresenterTopCommented = new Map();
@@ -57,7 +57,7 @@ class MovieBoard {
   }
 
   init() {
-    this._renderSort();
+    // this._renderSort();
 
     render(this._boardContainer, this._boardComponent, RenderPosition.BEFOREEND);
     render(this._boardComponent, this._filmListComponent, RenderPosition.BEFOREEND);
@@ -75,7 +75,7 @@ class MovieBoard {
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._processSortTypeChange);
 
-    render(this._boardContainer, this._sortComponent, RenderPosition.BEFOREEND);
+    render(this._boardContainer, this._sortComponent, RenderPosition.AFTER_ELEMENT);
   }
 
   _processSortTypeChange(sortType) {
@@ -88,8 +88,8 @@ class MovieBoard {
     this._renderBoard();
   }
 
-  _renderMovie(container, film) {
-    const moviePresenter = new MoviePresenter(container, this._processViewAction, this._processModeChange);
+  _renderMovie(film) {
+    const moviePresenter = new MoviePresenter(this._filmListContainerMain, this._processViewAction, this._processModeChange);
     moviePresenter.initM(film);
     this._filmPresenterMain.set(film.id, moviePresenter);
   }
@@ -104,20 +104,20 @@ class MovieBoard {
     }
 
     this._boardButtonShowMoreComponent = new ButtonShowMoreView();
-    this._boardButtonShowMore.setClickHandler(this._processShowMoreButtonClick);
+    this._boardButtonShowMoreComponent.setClickHandler(this._processShowMoreButtonClick);
     render(this._filmListComponent, this._boardButtonShowMoreComponent, RenderPosition.BEFOREEND);
   }
 
   _processShowMoreButtonClick() {
     const movieCount = this._getMovies().length;
-    const newRenderFilmsCount = Math.min(movieCount, this._renderFilmsCount + FILMS_CARDS_PER_STEP);
-    const movies = this._getMovies().slice(this._renderFilmsCount, newRenderFilmsCount);
+    const newRenderFilmsCount = Math.min(movieCount, this._renderedFilmCount + FILMS_CARDS_PER_STEP);
+    const movies = this._getMovies().slice(this._renderedFilmCount, newRenderFilmsCount);
 
     this._renderMovies(movies);
-    this._renderFilmsCount = newRenderFilmsCount;
+    this._renderedFilmCount = newRenderFilmsCount;
 
-    if (movieCount >= FILMS_CARDS_PER_STEP) {
-      remove(this._boardButtonShowMore);
+    if (this._renderedFilmCount >= movieCount) {
+      remove(this._boardButtonShowMoreComponent);
     }
   }
 
@@ -208,8 +208,8 @@ class MovieBoard {
     clearMapDOM(this._filmPresenterMain);
     clearMapDOM(this._filmPresenterTopRating);
     clearMapDOM(this._filmPresenterTopCommented);
-    this._renderFilmsCount = FILMS_CARDS_PER_STEP;
-    remove(this._boardButtonShowMore);
+    this._renderedFilmCount = FILMS_CARDS_PER_STEP;
+    remove(this._boardButtonShowMoreComponent);
   }
 
   _renderMovieList() {
@@ -221,11 +221,40 @@ class MovieBoard {
   }
 
   _clearBoard({resetRenderedMovieCount = false, resetSortType = false} = {}) {
+    const filmCount = this._getMovies().length;
 
+    this._filmPresenterMain.forEach((presenter) => presenter.destroy());
+    this._filmPresenterMain.clear();
+
+    remove(this._sortComponent);
+    remove(this._boardButtonShowMoreComponent);
+
+    if (resetRenderedMovieCount) {
+      this._renderedFilmCount = FILMS_CARDS_PER_STEP;
+    } else {
+      this._renderedFilmCount = Math.min(filmCount, this._renderedFilmCount);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
   }
 
   _renderBoard() {
-    this._renderMovieList();
+    const films = this._getMovies();
+    const filmCount = films.length;
+
+    // if (filmCount === 0) {
+    //   additing conditions when there are no movies to show
+    // }
+
+    this._renderSort();
+    this._renderMovies(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
+
+    if (filmCount > this._renderedFilmCount) {
+      this._renderButtonShowMore();
+    }
+
     // this._renderTopRating();
     // this._renderTopCommented();
   }

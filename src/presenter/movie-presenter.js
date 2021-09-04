@@ -1,11 +1,11 @@
-import MovieCardView from '../view/movie-card.js.js';
+import MovieCardView from '../view/movie-card.js';
 import { CardsEventsOn, PopupCardEventOn } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
-import PopupMovieView from '../view/popup-relate-view/popup-movie.js.js';
-import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js.js';
-import PopupCommentsTitleView from '../view/popup-relate-view/popup-comments-title.js.js';
-import PopupCommentsListView from '../view/popup-relate-view/popup-comments-list.js';
-import PopupCommentsNewView from '../view/popup-relate-view/popup-comments-new.js.js';
+import PopupMovieView from '../view/popup-relate-view/popup-movie.js';
+import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
+import PopupCommentsTitleView from '../view/popup-relate-view/popup-comments-title.js';
+import PopupCommentsListView from '../view/popup-relate-view/popup-comments-list';
+import PopupCommentsNewView from '../view/popup-relate-view/popup-comments-new.js';
 import { UpdateType, UserAction } from '../const.js';
 
 const Mode = {
