@@ -19,11 +19,11 @@ class FilterPresenter {
   }
 
   init() {
-    const filters = this._getFilters;
+    const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterContainer = new FilterView (filters, this._filterModel.getFilter());
-    this._filterContainer.setFilterTypeChangeHandler(this._processFilterTypeChange);
+    this._filterComponent = new FilterView (filters, this._filterModel.getFilter());
+    this._filterComponent.setFilterTypeChangeHandler(this._processFilterTypeChange);
 
     if(prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);

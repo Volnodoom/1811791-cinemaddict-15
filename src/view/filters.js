@@ -1,25 +1,23 @@
 import AbstractView from './abstract.js';
 
-const firstLetterUpperCaseString = (string) => string[0].toUpperCase() + string.slice(1);
+// const firstLetterUpperCaseString = (string) => string[0].toUpperCase() + string.slice(1);
 const createSingleFilterItemTemplate = (filterData, currentFilterType) => {
-  const {name, count} = filterData;
-  let countElements = count.length;
-  if (countElements === 0) {countElements = 0;}
-  return (`<a href="#${name}" class="main-navigation__item ${name === currentFilterType ? 'main-navigation__item--active' : ''}">
-  ${firstLetterUpperCaseString(name)}<span class="main-navigation__item-count">${countElements}</span></a>`);
+  const {type, name, count} = filterData;
+  // let countElements = count.length;
+  // if (countElements === 0) {countElements = 0;}
+  return (`<a href="#${type}" class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}">
+  ${name}<span class="main-navigation__item-count">${count}</span></a>`);
 };
 
 const createFiltersTemplate = (filtersData, currentFilterType) => {
   const filterItemsTemplate = filtersData.map((filter) => createSingleFilterItemTemplate(filter, currentFilterType)).join(' ');
 
-  return `
-    <nav class="main-navigation">
+  return (`<nav class="main-navigation">
       <div class="main-navigation__items">
         ${filterItemsTemplate}
       </div>
       <a href="#stats" class="main-navigation__additional">Stats</a>
-    /nav>
-  `;
+    </nav>`);
 };
 
 class FilterView extends AbstractView{
@@ -38,20 +36,16 @@ class FilterView extends AbstractView{
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
 
-    switch (evt.target.id) {
+    switch (evt.target.hash.slice(1)) {
       case 'all':
-        break;
       case 'watchlist':
-        break;
       case 'history':
-        break;
       case 'favorites':
+        this._callback.filterTypeChange(evt.target.hash.slice(1));
         break;
       case 'stats':
         break;
     }
-// evt should be === to filterType data
-    this._callback.filterTypeChange(evt);
   }
 
   setFilterTypeChangeHandler(callback) {

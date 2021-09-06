@@ -42,7 +42,7 @@ class MovieBoard {
     this._filmListContainerMain = new FilmListContainerView();
     this._filmListContainerExtra1 = new FilmListContainerView();
     this._filmListContainerExtra2 = new FilmListContainerView();
-    this._boardFilterComponent = new FilterView();
+    // this._boardFilterComponent = new FilterView();
     this._extraTopRatingComponent = new TopRatingView();
     this._extraTopCommentedComponent = new TopCommentsView();
 
