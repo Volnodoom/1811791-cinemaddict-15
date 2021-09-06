@@ -33,6 +33,9 @@ class Movie {
     this._processWatchedClick = this._processWatchedClick.bind(this);
     this._processWatchlistClick = this._processWatchlistClick.bind(this);
     this._processDeleteComments = this._processDeleteComments.bind(this);
+
+    this._processKeySubmit = this._processKeySubmit.bind(this);
+    this._keyCancelHandler = this._keyCancelHandler.bind(this);
   }
 
   initM(film) {
@@ -118,6 +121,7 @@ class Movie {
     this._changeMode();
     this._renderPopup(this._film);
     this._bodyPart.classList.add('hide-overflow');
+    document.addEventListener('keydown', this._keyCancelHandler);
   }
 
   _setEventListenersThumbnails() {
@@ -165,15 +169,31 @@ class Movie {
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
 
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
+    // document.setKeyHandler(KeyType.SUBMIT, this._processKeySubmit);
+
   }
 
-  _addComents() {}
+  _processKeySubmit() {}
+
+  _keyCancelHandler(evt) {
+    evt.preventDefault();
+
+    switch (true) {
+      case (evt.key === 'Escape'):
+
+        break;
+      case (evt.key === 'ControlLeft' && 'Enter'):
+      case (evt.key === 'ControlRight' && 'Enter'):
+        this._callback.keyOnSubmit();
+        break;
+    }
+  }
 
   _processDeleteComments() {
     return this._changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.PATCH,
-      Object.assign({}, this._film),
+      this._film,
     );
   }
 

@@ -17,13 +17,14 @@ import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js'
 import MoviePresenter from './movie-presenter.js';
 import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 import { UpdateType, UserAction } from '../const.js';
-
+import { filter } from '../utils/filter-utils.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 
 class MovieBoard {
-  constructor (boardContainer, model) {
+  constructor (boardContainer, model, filterModel) {
     this._filmsModel = model;
+    this._filterModel = filterModel;
     this._boardContainer = boardContainer;
     this._renderedFilmCount = FILMS_CARDS_PER_STEP;
     this._filmPresenterMain = new Map();
@@ -54,6 +55,7 @@ class MovieBoard {
     this._processSortTypeChange = this._processSortTypeChange.bind(this);
 
     this._filmsModel.addObserver(this._processModelEvent);
+    this._filterModel.addObserver(this._processModelEvent);
   }
 
   init() {
@@ -241,13 +243,18 @@ class MovieBoard {
   }
 
   _getMovies() {
+    const filterType = this._filterModel.getFilter();
+    const films = this._filmsModel.getMovies();
+    const filteredMovies = filter[filterType](films);
+
+
     switch (this._currentSortType) {
       case SortType.DATE:
-        return this._filmsModel.getMovies().slice().sort(sortReleaseDate);
+        return filteredMovies.sort(sortReleaseDate);
       case SortType.RATING:
-        return this._filmsModel.getMovies().slice().sort(sortRating);
+        return filteredMovies.sort(sortRating);
       default:
-        return this._filmsModel.getMovies();
+        return filteredMovies;
     }
   }
 

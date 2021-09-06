@@ -42,6 +42,11 @@ const PopupCommentsState = {
   CLICK: 'click',
 };
 
+const KeyType = {
+  SUBMIT: 'submit',
+  CANCEL: 'cancel',
+};
+
 const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
 const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
 const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
@@ -74,4 +79,5 @@ const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRat
 const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.data).diff(dayjs(movieDateA.release.data));
 
 export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear,
-  EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, PopupCommentsState, sortRating, sortReleaseDate};
+  EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, PopupCommentsState, sortRating, sortReleaseDate,
+  KeyType};

@@ -1,4 +1,4 @@
-import { dateYearMonthDayTime, EmojiUrl } from '../../utils/card-utils';
+import { dateYearMonthDayTime, EmojiUrl, KeyType } from '../../utils/card-utils';
 import AbstractView from '../abstract';
 
 const getUsersCommentsTemplate = (film) => {
@@ -40,6 +40,7 @@ class PopupCommentsList extends AbstractView{
     super();
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
+    this._keyHandler = this._keyHandler.bind(this);
   }
 
   getTemplate () {
@@ -47,6 +48,8 @@ class PopupCommentsList extends AbstractView{
   }
 
   _clickHandler(evt) {
+    evt.preventDefault();
+
     if (evt.target.tagName === 'BUTTON') {
       const index = this._film.comments.findIndex((line) => line.commentItself === evt.target.parentElement.previousElementSibling.textContent);
       this._film.comments.splice(index, 1);
@@ -57,6 +60,33 @@ class PopupCommentsList extends AbstractView{
   setClickHandler(callback) {
     this._callback.clickOnDeleteCommentButton = callback;
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  _keyHandler(evt) {
+    evt.preventDefault();
+
+    switch (true) {
+      case (evt.key === 'Escape'):
+        this._callback.keyOnCancel();
+        break;
+      case (evt.key === 'ControlLeft' && 'Enter'):
+      case (evt.key === 'ControlRight' && 'Enter'):
+        this._callback.keyOnSubmit();
+        break;
+    }
+  }
+
+  setKeyHandler(keyType, callback) {
+    switch (keyType) {
+      case KeyType.SUBMIT:
+        this._callback.keyOnSubmit = callback;
+        break;
+      case KeyType.CANCEL:
+        this._callback.keyOnCancel = callback;
+        break;
+    }
+
+    this.getElement().addEventListener('keydown', this._keyHandler);
   }
 }
 
