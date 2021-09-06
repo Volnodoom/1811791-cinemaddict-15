@@ -6,14 +6,6 @@ const RenderPosition = {
   AFTER_ELEMENT: 'afterElement',
 };
 
-const EmptyStatement = {
-  LOADING: 'Loading...',
-  ALL_MOVIES: 'There are no movies in our database',
-  WHATCHLIST: 'There are no movies to watch now',
-  HISTORY: 'There are no watched movies now',
-  FAVORITES: 'There are no favorite movies now',
-};
-
 const FooterCondition = {
   empty: '0 movies inside',
   upToDate: '130 291 movies inside',
@@ -78,4 +70,4 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {render, remove, replace, createElement, RenderPosition, EmptyStatement, FooterCondition};
+export {render, remove, replace, createElement, RenderPosition, FooterCondition};

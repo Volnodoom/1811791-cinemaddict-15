@@ -39,8 +39,7 @@ class PopupCommentsNew extends SmartView {
     this._innerClickHandler = this._innerClickHandler.bind(this);
 
     this._setInnerHandler();
-    // this._feedbackFromUser;
-    // this._emojiFeedback;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   static parseFilmsToData(film) {
@@ -53,12 +52,6 @@ class PopupCommentsNew extends SmartView {
       },
     );
   }
-
-  // static parseDataToFilm(data) {
-  //   data = Object.assign({}, data);
-
-  //   //do some operations with data if we want to delet localComments and localEmoji
-  // }
 
   getTemplate () {
     return createPopupCommentsNew();
@@ -89,6 +82,16 @@ class PopupCommentsNew extends SmartView {
   _setInnerHandler() {
     this.getElement().addEventListener('click', this._innerClickHandler);
     this.getElement().addEventListener('input', this._innerClickHandler);
+  }
+
+  _formSubmitHandler (evt) {
+    evt.preventDefault();
+
+  }
+
+  setOuterHandler (callback) {
+    this._callback.formSubmit = callback;
+    document.querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
   restoreHandlers() {

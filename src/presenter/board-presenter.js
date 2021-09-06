@@ -7,7 +7,6 @@ import TopCommentsView from '../view/extra-comments-cards.js';
 import TopRatingView from '../view/extra-top-cards.js';
 import FilmListView from '../view/film-list.js';
 import FilmListContainerView from '../view/film-list-container.js';
-import FilterView from '../view/filters.js';
 // import PopupMovieView fro../view/popup-relate-view/popup-movie.js';
 import SortView from '../view/sort.js';
 import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
@@ -16,8 +15,9 @@ import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js'
 // import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js';
 import MoviePresenter from './movie-presenter.js';
 import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
-import { UpdateType, UserAction } from '../const.js';
+import { FilterType, UpdateType, UserAction } from '../const.js';
 import { filter } from '../utils/filter-utils.js';
+import NoMovieView from '../view/no-movie.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 
@@ -30,10 +30,12 @@ class MovieBoard {
     this._filmPresenterMain = new Map();
     this._filmPresenterTopRating = new Map();
     this._filmPresenterTopCommented = new Map();
+    this._filterType = FilterType.ALL;
     this._currentSortType = SortType.DEFAULT;
 
     this._sortComponent = null;
     this._boardButtonShowMoreComponent = null;
+    this._noMovieComponent = null;
 
     this._bodyPart = document.body;
     this._boardComponent = new BoardView();
@@ -42,7 +44,6 @@ class MovieBoard {
     this._filmListContainerMain = new FilmListContainerView();
     this._filmListContainerExtra1 = new FilmListContainerView();
     this._filmListContainerExtra2 = new FilmListContainerView();
-    // this._boardFilterComponent = new FilterView();
     this._extraTopRatingComponent = new TopRatingView();
     this._extraTopCommentedComponent = new TopCommentsView();
 
@@ -212,6 +213,10 @@ class MovieBoard {
     remove(this._sortComponent);
     remove(this._boardButtonShowMoreComponent);
 
+    if (this._noMovieComponent) {
+      remove(this._noMovieComponent);
+    }
+
     if (resetRenderedMovieCount) {
       this._renderedFilmCount = FILMS_CARDS_PER_STEP;
     } else {
@@ -227,9 +232,10 @@ class MovieBoard {
     const films = this._getMovies();
     const filmCount = films.length;
 
-    // if (filmCount === 0) {
-    //   additing conditions when there are no movies to show
-    // }
+    if (filmCount === 0) {
+      this._renderNoMovies();
+      return;
+    }
 
     this._renderSort();
     this._renderMovies(films.slice(0, Math.min(filmCount, this._renderedFilmCount)));
@@ -243,9 +249,9 @@ class MovieBoard {
   }
 
   _getMovies() {
-    const filterType = this._filterModel.getFilter();
+    this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getMovies();
-    const filteredMovies = filter[filterType](films);
+    const filteredMovies = filter[this._filterType](films);
 
 
     switch (this._currentSortType) {
@@ -258,6 +264,10 @@ class MovieBoard {
     }
   }
 
+  _renderNoMovies() {
+    this._noMovieComponent = new NoMovieView (this._filterType);
+    render(this._boardContainer, this._noMovieComponent, RenderPosition.AFTER_ELEMENT);
+  }
 }
 
 export default MovieBoard;

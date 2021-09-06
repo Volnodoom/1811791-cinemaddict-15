@@ -12,7 +12,7 @@ class FilterPresenter {
     this._filterComponent = null;
 
     this._processModelEvent = this._processModelEvent.bind(this);
-    this._processFilterTypeChange = this._processFilterTypeChange.bind();
+    this._processFilterTypeChange = this._processFilterTypeChange.bind(this);
 
     this._filmsModel.addObserver(this._processModelEvent);
     this._filterModel.addObserver(this._processModelEvent);
