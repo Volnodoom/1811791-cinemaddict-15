@@ -5,8 +5,8 @@ import PopupMovieView from '../view/popup-relate-view/popup-movie.js';
 import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
 import PopupCommentsTitleView from '../view/popup-relate-view/popup-comments-title.js';
 import PopupCommentsListView from '../view/popup-relate-view/popup-comments-list';
+import PopupCommentsNewView from '../view/popup-relate-view/popup-comments-new.js';
 import { UpdateType, UserAction } from '../const.js';
-import CommentNewPresenter from './new-comment-presenter.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -147,7 +147,7 @@ class Movie {
     this._popupCard = new PopupMovieView(chosenMovie);
     this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     this._popupCommentsList = new PopupCommentsListView(chosenMovie);
-    this._popupCommentsNew = new CommentNewPresenter (this._PopupCommentsWrap, chosenMovie, this._changeData);
+    this._popupCommentsNew = new PopupCommentsNewView(chosenMovie);
     this._PopupCommentsWrap = new PopupCommentsWrap();
 
     render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
@@ -157,7 +157,7 @@ class Movie {
     render (this.popupCommentsContainer, this._PopupCommentsWrap, RenderPosition.BEFOREEND);
     render (this._PopupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
     render (this._PopupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
-    this._popupCommentsNew.init();
+    render (this._PopupCommentsWrap, this._popupCommentsNew, RenderPosition.BEFOREEND);
 
     this._setEventListenersPopup();
   }
@@ -169,6 +169,8 @@ class Movie {
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
 
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
+    // document.setKeyHandler(KeyType.SUBMIT, this._processKeySubmit);
+
   }
 
   _processKeySubmit() {}

@@ -1,11 +1,13 @@
 import SmartView from '../smart';
 
+const commentsByYou = '';
+
 const createPopupCommentsNew = () => (
   `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label"></div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentsByYou}</textarea>
           </label>
 
     <div class="film-details__emoji-list">
@@ -47,7 +49,7 @@ class PopupCommentsNew extends SmartView {
       {},
       film,
       {
-        localComments: '',
+        localComments: commentsByYou,
         localEmoji: '',
       },
     );
