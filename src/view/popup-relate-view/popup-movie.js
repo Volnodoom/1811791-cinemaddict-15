@@ -101,6 +101,7 @@ class PopupMovie extends AbstractView {
     super();
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
+    this._keydownHandler = this._keydownHandler.bind(this);
   }
 
   getTemplate() {
@@ -149,6 +150,18 @@ class PopupMovie extends AbstractView {
         throw Error ('Click handler contain the TYPE which is not detected');
     }
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  _keydownHandler(evt) {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this._callback.keydownEsc();
+    }
+  }
+
+  setKeyDownHandler(callback) {
+    this._callback.keydownEsc = callback;
+    document.addEventListener('keydown', this._keydownHandler);
   }
 }
 

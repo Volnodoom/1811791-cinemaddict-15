@@ -5,8 +5,8 @@ import PopupMovieView from '../view/popup-relate-view/popup-movie.js';
 import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
 import PopupCommentsTitleView from '../view/popup-relate-view/popup-comments-title.js';
 import PopupCommentsListView from '../view/popup-relate-view/popup-comments-list';
-import PopupCommentsNewView from '../view/popup-relate-view/popup-comments-new.js';
 import { UpdateType, UserAction } from '../const.js';
+import CommentNewPresenter from './new-comment-presenter.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -34,8 +34,6 @@ class Movie {
     this._processWatchlistClick = this._processWatchlistClick.bind(this);
     this._processDeleteComments = this._processDeleteComments.bind(this);
 
-    this._processKeySubmit = this._processKeySubmit.bind(this);
-    this._keyCancelHandler = this._keyCancelHandler.bind(this);
   }
 
   initM(film) {
@@ -147,8 +145,8 @@ class Movie {
     this._popupCard = new PopupMovieView(chosenMovie);
     this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     this._popupCommentsList = new PopupCommentsListView(chosenMovie);
-    this._popupCommentsNew = new PopupCommentsNewView(chosenMovie);
     this._PopupCommentsWrap = new PopupCommentsWrap();
+    this._popupCommentsNew = new CommentNewPresenter (this._PopupCommentsWrap, chosenMovie, this._changeData);
 
     render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
 
@@ -157,7 +155,7 @@ class Movie {
     render (this.popupCommentsContainer, this._PopupCommentsWrap, RenderPosition.BEFOREEND);
     render (this._PopupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
     render (this._PopupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrap, this._popupCommentsNew, RenderPosition.BEFOREEND);
+    this._popupCommentsNew.init();
 
     this._setEventListenersPopup();
   }
@@ -167,26 +165,9 @@ class Movie {
     this._popupCard.setClickHandler(PopupCardEventOn.FAVORITE, this._processFavoriteClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHED, this._processWatchedClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
+    this._popupCard.setKeyDownHandler(this._closePopup);
 
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
-    // document.setKeyHandler(KeyType.SUBMIT, this._processKeySubmit);
-
-  }
-
-  _processKeySubmit() {}
-
-  _keyCancelHandler(evt) {
-    evt.preventDefault();
-
-    switch (true) {
-      case (evt.key === 'Escape'):
-
-        break;
-      case (evt.key === 'ControlLeft' && 'Enter'):
-      case (evt.key === 'ControlRight' && 'Enter'):
-        this._callback.keyOnSubmit();
-        break;
-    }
   }
 
   _processDeleteComments() {
@@ -201,7 +182,7 @@ class Movie {
     remove(this._popupCard);
     remove(this._popupCommentsTitle);
     remove(this._popupCommentsList);
-    remove(this._popupCommentsNew);
+    this._popupCommentsNew.destroy();
     this._bodyPart.classList.remove('hide-overflow');
     this._mode = Mode.DEFAULT;
   }

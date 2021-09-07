@@ -1,5 +1,6 @@
 import { dateYearMonthDayTime, EmojiUrl, KeyType } from '../../utils/card-utils';
 import AbstractView from '../abstract';
+import he from 'he';
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
@@ -20,7 +21,7 @@ const getUsersCommentsTemplate = (film) => {
         <img src="${EmojiUrl[emotion.toUpperCase()]}" width="55" height="55" alt="${emotion}">
       </span>
     <div>
-      <p class="film-details__comment-text">${commentItself}</p>
+      <p class="film-details__comment-text">${he.encode(commentItself)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comAuthor}</span>
         <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>

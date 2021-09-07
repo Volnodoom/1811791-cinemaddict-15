@@ -1,13 +1,12 @@
 import SmartView from '../smart';
-
-const commentsByYou = '';
+import he from 'he';
 
 const createPopupCommentsNew = () => (
   `<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label"></div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentsByYou}</textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
 
     <div class="film-details__emoji-list">
@@ -39,6 +38,7 @@ class PopupCommentsNew extends SmartView {
     super();
     this._data = PopupCommentsNew.parseFilmsToData(film);
     this._innerClickHandler = this._innerClickHandler.bind(this);
+    this._innerInputHandler = this._innerInputHandler.bind(this);
 
     this._setInnerHandler();
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -49,7 +49,7 @@ class PopupCommentsNew extends SmartView {
       {},
       film,
       {
-        localComments: commentsByYou,
+        localComments: '',
         localEmoji: '',
       },
     );
@@ -60,40 +60,42 @@ class PopupCommentsNew extends SmartView {
   }
 
   _innerClickHandler(evt) {
-    evt.preventDefault();
+    if (evt.target.tagName === 'IMG') {
+      evt.target.parentElement.previousElementSibling.checked = 'true';
+      this.getElement().querySelector('.film-details__add-emoji-label')
+        .innerHTML =`<img src="${evt.target.attributes[0].value}" width="55" height="55" alt="emoji-smile"></img>`;
 
-    switch (true) {
-      case (evt.target.tagName === 'IMG'):
-        evt.target.parentElement.previousElementSibling.checked = 'true';
-        this.getElement().querySelector('.film-details__add-emoji-label')
-          .innerHTML =`<img src="${evt.target.attributes[0].value}" width="55" height="55" alt="emoji-smile"></img>`;
-
-        this.updateData({
-          localEmoji: evt.target.parentElement.previousElementSibling.value,
-        }, true);
-        break;
-
-      case (evt.target.tagName === 'TEXTAREA'):
-        this.updateData({
-          localComments: evt.target.value,
-        }, true);
-        break;
+      this.updateData({
+        localEmoji: evt.target.parentElement.previousElementSibling.value,
+      }, true);
     }
   }
 
   _setInnerHandler() {
     this.getElement().addEventListener('click', this._innerClickHandler);
-    this.getElement().addEventListener('input', this._innerClickHandler);
+    this.getElement().addEventListener('input', this._innerInputHandler);
   }
 
-  _formSubmitHandler (evt) {
-    evt.preventDefault();
+  _innerInputHandler (evt) {
+    if (evt.target.tagName === 'TEXTAREA') {
+      this.updateData({
+        localComments: he.encode(evt.target.value),
+      }, true);
+    }
+  }
 
+
+  _formSubmitHandler (evt) {
+    if (evt.ctrlKey && (evt.key === 'Enter' || evt.key === 'Enter')) {
+      evt.preventDefault();
+      this._callback.formSubmit();
+      document.querySelector('form').submit();
+    }
   }
 
   setOuterHandler (callback) {
     this._callback.formSubmit = callback;
-    document.querySelector('form').addEventListener('submit', this._formSubmitHandler);
+    this.getElement().addEventListener('keydown', this._formSubmitHandler);
   }
 
   restoreHandlers() {
