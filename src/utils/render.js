@@ -1,16 +1,9 @@
-import Abstract from '../model/abstract';
+import Abstract from '../view/abstract';
 
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
-};
-
-const EmptyStatement = {
-  LOADING: 'Loading...',
-  ALL_MOVIES: 'There are no movies in our database',
-  WHATCHLIST: 'There are no movies to watch now',
-  HISTORY: 'There are no watched movies now',
-  FAVORITES: 'There are no favorite movies now',
+  AFTER_ELEMENT: 'afterElement',
 };
 
 const FooterCondition = {
@@ -34,6 +27,8 @@ const render = (container, child, place) => {
     case RenderPosition.BEFOREEND:
       container.append(child);
       break;
+    case RenderPosition.AFTER_ELEMENT:
+      container.children[0].after(child);
   }
 };
 
@@ -56,6 +51,10 @@ const replace = (newChild, oldChild) => {
 };
 
 const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   if (!(component instanceof Abstract)) {
     throw new Error ('Can remove only components');
   }
@@ -71,4 +70,4 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {render, remove, replace, createElement, RenderPosition, EmptyStatement, FooterCondition};
+export {render, remove, replace, createElement, RenderPosition, FooterCondition};

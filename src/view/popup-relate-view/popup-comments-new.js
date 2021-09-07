@@ -1,4 +1,5 @@
 import SmartView from '../smart';
+import he from 'he';
 
 const createPopupCommentsNew = () => (
   `<div class="film-details__new-comment">
@@ -37,10 +38,10 @@ class PopupCommentsNew extends SmartView {
     super();
     this._data = PopupCommentsNew.parseFilmsToData(film);
     this._innerClickHandler = this._innerClickHandler.bind(this);
+    this._innerInputHandler = this._innerInputHandler.bind(this);
 
     this._setInnerHandler();
-    // this._feedbackFromUser;
-    // this._emojiFeedback;
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   static parseFilmsToData(film) {
@@ -54,41 +55,47 @@ class PopupCommentsNew extends SmartView {
     );
   }
 
-  // static parseDataToFilm(data) {
-  //   data = Object.assign({}, data);
-
-  //   //do some operations with data if we want to delet localComments and localEmoji
-  // }
-
   getTemplate () {
     return createPopupCommentsNew();
   }
 
   _innerClickHandler(evt) {
-    evt.preventDefault();
+    if (evt.target.tagName === 'IMG') {
+      evt.target.parentElement.previousElementSibling.checked = 'true';
+      this.getElement().querySelector('.film-details__add-emoji-label')
+        .innerHTML =`<img src="${evt.target.attributes[0].value}" width="55" height="55" alt="emoji-smile"></img>`;
 
-    switch (true) {
-      case (evt.target.tagName === 'IMG'):
-        evt.target.parentElement.previousElementSibling.checked = 'true';
-        this.getElement().querySelector('.film-details__add-emoji-label')
-          .innerHTML =`<img src="${evt.target.attributes[0].value}" width="55" height="55" alt="emoji-smile"></img>`;
-
-        this.updateData({
-          localEmoji: evt.target.parentElement.previousElementSibling.value,
-        }, true);
-        break;
-
-      case (evt.target.tagName === 'TEXTAREA'):
-        this.updateData({
-          localComments: evt.target.value,
-        }, true);
-        break;
+      this.updateData({
+        localEmoji: evt.target.parentElement.previousElementSibling.value,
+      }, true);
     }
   }
 
   _setInnerHandler() {
     this.getElement().addEventListener('click', this._innerClickHandler);
-    this.getElement().addEventListener('input', this._innerClickHandler);
+    this.getElement().addEventListener('input', this._innerInputHandler);
+  }
+
+  _innerInputHandler (evt) {
+    if (evt.target.tagName === 'TEXTAREA') {
+      this.updateData({
+        localComments: he.encode(evt.target.value),
+      }, true);
+    }
+  }
+
+
+  _formSubmitHandler (evt) {
+    if (evt.ctrlKey && (evt.key === 'Enter' || evt.key === 'Enter')) {
+      evt.preventDefault();
+      this._callback.formSubmit();
+      document.querySelector('form').submit();
+    }
+  }
+
+  setOuterHandler (callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener('keydown', this._formSubmitHandler);
   }
 
   restoreHandlers() {

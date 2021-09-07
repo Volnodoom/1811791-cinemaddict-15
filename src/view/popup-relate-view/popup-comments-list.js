@@ -1,5 +1,6 @@
-import { dateYearMonthDayTime, EmojiUrl } from '../../utils/card-utils';
+import { dateYearMonthDayTime, EmojiUrl, KeyType } from '../../utils/card-utils';
 import AbstractView from '../abstract';
+import he from 'he';
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
@@ -20,7 +21,7 @@ const getUsersCommentsTemplate = (film) => {
         <img src="${EmojiUrl[emotion.toUpperCase()]}" width="55" height="55" alt="${emotion}">
       </span>
     <div>
-      <p class="film-details__comment-text">${commentItself}</p>
+      <p class="film-details__comment-text">${he.encode(commentItself)}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comAuthor}</span>
         <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>
@@ -40,6 +41,7 @@ class PopupCommentsList extends AbstractView{
     super();
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
+    this._keyHandler = this._keyHandler.bind(this);
   }
 
   getTemplate () {
@@ -47,49 +49,46 @@ class PopupCommentsList extends AbstractView{
   }
 
   _clickHandler(evt) {
+    evt.preventDefault();
+
     if (evt.target.tagName === 'BUTTON') {
-      this.getElement().removeChild(evt.target.closest('li'));
+      const index = this._film.comments.findIndex((line) => line.commentItself === evt.target.parentElement.previousElementSibling.textContent);
+      this._film.comments.splice(index, 1);
+      this._callback.clickOnDeleteCommentButton();
     }
   }
 
-  setClickHandler() {
+  setClickHandler(callback) {
+    this._callback.clickOnDeleteCommentButton = callback;
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  _keyHandler(evt) {
+    evt.preventDefault();
+
+    switch (true) {
+      case (evt.key === 'Escape'):
+        this._callback.keyOnCancel();
+        break;
+      case (evt.key === 'ControlLeft' && 'Enter'):
+      case (evt.key === 'ControlRight' && 'Enter'):
+        this._callback.keyOnSubmit();
+        break;
+    }
+  }
+
+  setKeyHandler(keyType, callback) {
+    switch (keyType) {
+      case KeyType.SUBMIT:
+        this._callback.keyOnSubmit = callback;
+        break;
+      case KeyType.CANCEL:
+        this._callback.keyOnCancel = callback;
+        break;
+    }
+
+    this.getElement().addEventListener('keydown', this._keyHandler);
   }
 }
 
 export default PopupCommentsList;
-
-// class PopupCommentsTitle extends Abstract {
-//   constructor(film) {
-//     super();
-//     this._data = PopupCommentsTitle.parseFilmToData(film);
-//   }
-
-//   getTemplate() {
-//     return createPopupCommentsTitle(this._data);
-//   }
-
-//   static parseFilmToData (film) {
-//     return Object.assign(
-//       {},
-//       film,
-//       {
-//         hasNoComments: (film.comments.length === 0),
-//       },
-//     );
-//   }
-
-//   static parseDataToFilm (data) {
-//     data = Object.assign({}, data);
-
-//     if(data.hasNoComments) {
-//       data.comments = [];
-//     }
-
-//     delete data.hasNoComments;
-
-//     return data;
-//   }
-// }
-
-// export default PopupCommentsTitle;

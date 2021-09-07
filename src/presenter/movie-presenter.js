@@ -1,11 +1,12 @@
-import MovieCardView from '../model/movie-card.js';
-import { CardsEventsOn, PopupCardEventOn, PopupCommentsState } from '../utils/card-utils.js';
+import MovieCardView from '../view/movie-card.js';
+import { CardsEventsOn, PopupCardEventOn } from '../utils/card-utils.js';
 import { render, remove, replace, RenderPosition } from '../utils/render.js';
-import PopupMovieView from '../model/popup-relate-view/popup-movie.js';
-import PopupCommentsWrap from '../model/popup-relate-view/popup-comments-wrap.js';
-import PopupCommentsTitleView from '../model/popup-relate-view/popup-comments-title.js';
-import PopupCommentsListView from '../model/popup-relate-view/popup-comments-list.js';
-import PopupCommentsNewView from '../model/popup-relate-view/popup-comments-new.js';
+import PopupMovieView from '../view/popup-relate-view/popup-movie.js';
+import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
+import PopupCommentsTitleView from '../view/popup-relate-view/popup-comments-title.js';
+import PopupCommentsListView from '../view/popup-relate-view/popup-comments-list';
+import { UpdateType, UserAction } from '../const.js';
+import CommentNewPresenter from './new-comment-presenter.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -21,12 +22,7 @@ class Movie {
     this._bodyPart = document.body;
 
     this._filmComponent = null;
-
-    // this._popupCard = this._popupCard.bind(this);
-    // this._popupCommentsTitle = this._popupCommentsTitle.bind(this);
-    // this._popupCommentsList = this._popupCommentsList.bind(this);
-    // this._popupCommentsNew = this._popupCommentsNew.bind(this);
-    // this._PopupCommentsWrapComponent = this._PopupCommentsWrapComponent.bind(this);
+    this._popupCard = null;
 
     this._mode = Mode.DEFAULT;
 
@@ -36,6 +32,8 @@ class Movie {
     this._processFavoriteClick = this._processFavoriteClick.bind(this);
     this._processWatchedClick = this._processWatchedClick.bind(this);
     this._processWatchlistClick = this._processWatchlistClick.bind(this);
+    this._processDeleteComments = this._processDeleteComments.bind(this);
+
   }
 
   initM(film) {
@@ -57,11 +55,19 @@ class Movie {
     }
 
     this._mode = Mode.DEFAULT;
+
+    if (this._popupCard) {
+      this._closePopup ();
+      this._processClickPopup();
+    }
+
     remove(prevFilmComponent);
   }
 
   _processFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -77,6 +83,8 @@ class Movie {
 
   _processWatchedClick() {
     this._changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -92,6 +100,8 @@ class Movie {
 
   _processWatchlistClick() {
     this._changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -109,7 +119,7 @@ class Movie {
     this._changeMode();
     this._renderPopup(this._film);
     this._bodyPart.classList.add('hide-overflow');
-    this._mode = Mode.POPUP;
+    document.addEventListener('keydown', this._keyCancelHandler);
   }
 
   _setEventListenersThumbnails() {
@@ -130,11 +140,13 @@ class Movie {
   }
 
   _renderPopup(chosenMovie) {
+    this._mode = Mode.POPUP;
+
     this._popupCard = new PopupMovieView(chosenMovie);
     this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     this._popupCommentsList = new PopupCommentsListView(chosenMovie);
-    this._popupCommentsNew = new PopupCommentsNewView(chosenMovie);
     this._PopupCommentsWrap = new PopupCommentsWrap();
+    this._popupCommentsNew = new CommentNewPresenter (this._PopupCommentsWrap, chosenMovie, this._changeData);
 
     render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
 
@@ -143,31 +155,45 @@ class Movie {
     render (this.popupCommentsContainer, this._PopupCommentsWrap, RenderPosition.BEFOREEND);
     render (this._PopupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
     render (this._PopupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrap, this._popupCommentsNew, RenderPosition.BEFOREEND);
+    this._popupCommentsNew.init();
 
     this._setEventListenersPopup();
   }
 
-  _setEventListenersPopup () {
+  _setEventListenersPopup() {
     this._popupCard.setClickHandler(PopupCardEventOn.CLOSE_BTN, this._closePopup);
     this._popupCard.setClickHandler(PopupCardEventOn.FAVORITE, this._processFavoriteClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHED, this._processWatchedClick);
     this._popupCard.setClickHandler(PopupCardEventOn.WATCHLIST, this._processWatchlistClick);
+    this._popupCard.setKeyDownHandler(this._closePopup);
 
-    this._popupCommentsList.setClickHandler();
+    this._popupCommentsList.setClickHandler(this._processDeleteComments);
   }
 
-  _closePopup () {
+  _processDeleteComments() {
+    return this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.MINOR,
+      this._film,
+    );
+  }
+
+  _closePopup() {
     remove(this._popupCard);
     remove(this._popupCommentsTitle);
     remove(this._popupCommentsList);
-    remove(this._popupCommentsNew);
+    this._popupCommentsNew.destroy();
     this._bodyPart.classList.remove('hide-overflow');
     this._mode = Mode.DEFAULT;
   }
 
   destroy() {
+    if (this._filmComponent === null) {
+      return;
+    }
+
     remove(this._filmComponent);
+    this._filmComponent = null;
   }
 }
 
