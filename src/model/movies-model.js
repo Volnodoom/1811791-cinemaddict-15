@@ -30,6 +30,73 @@ class FilmsModel extends AbstractObserver {
     this._notify(UpdateType, update);
   }
 
+  static adaptToClient(film) {
+    const adaptedFilm = Object.assign (
+      {},
+      film,
+      {
+        ... film['film_info'],
+        alternativeTitle: film['film_info']['alternative_title'],
+        totalRating: film['film_info'] ['total_rating'],
+        ageRating: film['film_info']['age_rating'],
+        release: {
+          ... film['film_info'].release,
+          releaseCountry: film['film_info'].release['release_country'],
+        },
+        userDetails: {
+          ...film['user_details'],
+          alreadyWatched: film['user_details']['already_watched'],
+          watchingDate: film['user_details']['watching_date'],
+        },
+      },
+    );
+
+    delete adaptedFilm['film_info'];
+    delete adaptedFilm['alternative_title'];
+    delete adaptedFilm['total_rating'];
+    delete adaptedFilm['age_rating'];
+    delete adaptedFilm.release['release_country'];
+    delete adaptedFilm['user_details'];
+    delete adaptedFilm.userDetails['already_watched'];
+    delete adaptedFilm.userDetails['watching_date'];
+
+    return adaptedFilm;
+  }
+
+  static adaptToServer(film) {
+    const adaptedMovie = Object.assign(
+      {},
+      {
+        id: film.id,
+        comments: film.comments,
+        'film_info': {
+          title: film.title,
+          'alternative_title': film.alternativeTitle,
+          'total_rating': film.totalRating,
+          poster: film.poster,
+          'age_rating': film.ageRating,
+          director: film.director,
+          writers: film.writers,
+          actors: film.actors,
+          release: {
+            date: film.release.date,
+            'release_country': film.release.releaseCountry,
+          },
+          runtime: film.runtime,
+          genre: film.genre,
+          description: film.description,
+        },
+        'user_details': {
+          watchlist: film.watchlist,
+          'already_watched': film.alreadyWatched,
+          'watching_date': film.watchingDate,
+          favorite: film.favorite,
+        },
+      },
+    );
+
+    return adaptedMovie;
+  }
 }
 
 export default FilmsModel;

@@ -13,9 +13,12 @@ import {
 } from './utils/render.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import Api from './api.js';
 
 
 const FILMS_CARDS_COUNT = 20;
+const AUTHORIZATION = 'Basic kTy9gONDT2389rD';
+const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const bodyPart = document.body;
 
 const footerPart = bodyPart.querySelector('.footer__statistics');
@@ -23,6 +26,9 @@ const headerOfBody =bodyPart.querySelector('.header');
 const mainOfBody = bodyPart.querySelector('.main');
 
 const films = new Array (FILMS_CARDS_COUNT).fill(' ').map(generateFilmInfo);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getMovie().then((films) => {console.log(films)});
 
 const filmsModel = new FilmsModel();
 filmsModel.setMovies(films);
