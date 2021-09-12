@@ -50,7 +50,6 @@ class FilmsModel extends AbstractObserver {
           alreadyWatched: film['user_details']['already_watched'],
           watchingDate: film['user_details']['watching_date'],
         },
-        comments:
       },
     );
 
