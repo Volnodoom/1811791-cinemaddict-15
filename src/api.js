@@ -1,4 +1,5 @@
 import FilmsModel from './model/movies-model.js';
+import { UrlTo } from './utils/card-utils.js';
 
 const Method = {
   GET: 'GET',
@@ -13,21 +14,39 @@ export default class Api {
     this._authorization = authorization;
   }
 
-  getMovie() {
-    return this._load ({url: 'movies'})
-      .then(Api.parsJSONtoObject)
-      .then((films) => films.map(FilmsModel.adaptToClient));
+  getMovies(path) {
+    switch (path) {
+      case UrlTo.MOVIES:
+        return this._load ({url: UrlTo.MOVIES})
+          .then(Api.parsJSONtoObject)
+          .then((films) => films.map(FilmsModel.adaptToClient));
+      case UrlTo.COMMENTS:
+        return this._load ({url: UrlTo.COMMENTS})
+          .then(Api.parsJSONtoObject);
+    }
   }
 
-  updateMovie(film) {
-    return this._load({
-      url: `movies/${film.id}`,
-      method: Method.PUT,
-      body: JSON.stringify(FilmsModel.adaptToServer(film)),
-      headers: new Headers({'Content-Type': 'application/json'}),
-    })
-      .then(Api.parsJSONtoObject)
-      .then(FilmsModel.adaptToClient);
+  updateMovie(film, path) {
+    switch (path) {
+      case UrlTo.MOVIES:
+        return this._load({
+          url: `${UrlTo.MOVIES}/${film.id}`,
+          method: Method.PUT,
+          body: JSON.stringify(FilmsModel.adaptToServer(film)),
+          headers: new Headers({'Content-Type': 'application/json'}),
+        })
+          .then(Api.parsJSONtoObject)
+          .then(FilmsModel.adaptToClient);
+
+      case UrlTo.COMMENTS:
+        return this._load({
+          url: `${UrlTo.COMMENTS}/${film.id}`,
+          method: Method.PUT,
+          body: JSON.stringify(),
+          headers: new Headers({'Content-Type': 'application/json'}),
+        })
+          .then(Api.parsJSONtoObject);
+    }
   }
 
   _load({

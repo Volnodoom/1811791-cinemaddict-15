@@ -1,10 +1,7 @@
 import AbstractView from './abstract.js';
 
-// const firstLetterUpperCaseString = (string) => string[0].toUpperCase() + string.slice(1);
 const createSingleFilterItemTemplate = (filterData, currentFilterType) => {
   const {type, name, count} = filterData;
-  // let countElements = count.length;
-  // if (countElements === 0) {countElements = 0;}
   return (`<a href="#${type}" class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}">
   ${name}<span class="main-navigation__item-count">${count}</span></a>`);
 };

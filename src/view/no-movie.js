@@ -6,11 +6,8 @@ const NoMoviesTextType = {
   [FilterType.WATCHLIST]: 'There are no movies to watch now',
   [FilterType.HISTORY]: 'There are no watched movies now',
   [FilterType.FAVORITES]: 'There are no favorite movies now',
+  [FilterType.LOADING]: 'Loading...',
 };
-
-// const EmptyStatement = {
-//   LOADING: 'Loading...',
-// };
 
 const createEmptyConditionTemplate = (filterType) => {
   const noMovieTextValue = NoMoviesTextType[filterType];

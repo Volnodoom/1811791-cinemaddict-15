@@ -14,7 +14,7 @@ import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js'
 // import PopupCommentsListView fro../view/popup-relate-view/popup-comments-list.js';
 // import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js';
 import MoviePresenter from './movie-presenter.js';
-import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
+import { SortType, sortRating, sortReleaseDate, UrlTo } from '../utils/card-utils.js';
 import { FilterType, UpdateType, UserAction } from '../const.js';
 import { filter } from '../utils/filter-utils.js';
 import NoMovieView from '../view/no-movie.js';
@@ -22,7 +22,7 @@ import NoMovieView from '../view/no-movie.js';
 const FILMS_CARDS_PER_STEP = 5;
 
 class MovieBoard {
-  constructor (boardContainer, model, filterModel) {
+  constructor (boardContainer, model, filterModel, api) {
     this._filmsModel = model;
     this._filterModel = filterModel;
     this._boardContainer = boardContainer;
@@ -32,6 +32,8 @@ class MovieBoard {
     this._filmPresenterTopCommented = new Map();
     this._filterType = FilterType.ALL;
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._api = api;
 
     this._sortComponent = null;
     this._boardButtonShowMoreComponent = null;
@@ -49,6 +51,8 @@ class MovieBoard {
 
     this._PopupCommentsWrapComponent = new PopupCommentsWrap();
 
+    this._loadingComponent = new NoMovieView(FilterType.LOADING);
+
     this._processShowMoreButtonClick = this._processShowMoreButtonClick.bind(this);
     this._processViewAction = this._processViewAction.bind(this);
     this._processModelEvent = this._processModelEvent.bind(this);
@@ -60,8 +64,6 @@ class MovieBoard {
   }
 
   init() {
-    // this._renderSort();
-
     render(this._boardContainer, this._boardComponent, RenderPosition.BEFOREEND);
     render(this._boardComponent, this._filmListComponent, RenderPosition.BEFOREEND);
     render(this._filmListComponent, this._filmConditionMessage, RenderPosition.BEFOREEND);
@@ -127,7 +129,9 @@ class MovieBoard {
   _processViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this._filmsModel.updateMovie(updateType, update);
+        this._api.updateMovie(update, UrlTo.MOVIES).then((response) => {
+          this._filmsModel.updateMovie(updateType, response);
+        });
         break;
       case UserAction.DELETE_COMMENT:
         this._filmsModel.updateMovie(updateType, update);
@@ -147,6 +151,11 @@ class MovieBoard {
         break;
       case UpdateType.MAJOR:
         this._clearBoard({resetRenderedMovieCount: true, resetSortType: true});
+        this._renderBoard();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderBoard();
         break;
     }
@@ -211,6 +220,7 @@ class MovieBoard {
     this._filmPresenterMain.clear();
 
     remove(this._sortComponent);
+    remove(this._loadingComponent);
     remove(this._boardButtonShowMoreComponent);
 
     if (this._noMovieComponent) {
@@ -229,6 +239,11 @@ class MovieBoard {
   }
 
   _renderBoard() {
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const films = this._getMovies();
     const filmCount = films.length;
 
@@ -267,6 +282,10 @@ class MovieBoard {
   _renderNoMovies() {
     this._noMovieComponent = new NoMovieView (this._filterType);
     render(this._boardContainer, this._noMovieComponent, RenderPosition.AFTER_ELEMENT);
+  }
+
+  _renderLoading() {
+    render(this._boardContainer, this._loadingComponent, RenderPosition.AFTER_ELEMENT);
   }
 }
 

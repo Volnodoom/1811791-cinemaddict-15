@@ -6,8 +6,10 @@ class FilmsModel extends AbstractObserver {
     this._films = [];
   }
 
-  setMovies(films) {
+  setMovies(updateType, films) {
     this._films = films.slice();
+
+    this._notify(updateType);
   }
 
   getMovies() {
@@ -48,6 +50,7 @@ class FilmsModel extends AbstractObserver {
           alreadyWatched: film['user_details']['already_watched'],
           watchingDate: film['user_details']['watching_date'],
         },
+        comments:
       },
     );
 
@@ -87,10 +90,10 @@ class FilmsModel extends AbstractObserver {
           description: film.description,
         },
         'user_details': {
-          watchlist: film.watchlist,
-          'already_watched': film.alreadyWatched,
-          'watching_date': film.watchingDate,
-          favorite: film.favorite,
+          watchlist: film.userDetails.watchlist,
+          'already_watched': film.userDetails.alreadyWatched,
+          'watching_date': film.userDetails.watchingDate,
+          favorite: film.userDetails.favorite,
         },
       },
     );
