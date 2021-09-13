@@ -14,7 +14,7 @@ import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js'
 // import PopupCommentsListView fro../view/popup-relate-view/popup-comments-list.js';
 // import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js';
 import MoviePresenter from './movie-presenter.js';
-import { SortType, sortRating, sortReleaseDate, UrlTo } from '../utils/card-utils.js';
+import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 import { FilterType, UpdateType, UserAction } from '../const.js';
 import { filter } from '../utils/filter-utils.js';
 import NoMovieView from '../view/no-movie.js';
@@ -129,7 +129,7 @@ class MovieBoard {
   _processViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this._api.updateMovie(update, UrlTo.MOVIES).then((response) => {
+        this._api.updateMovie(update).then((response) => {
           this._filmsModel.updateMovie(updateType, response);
         });
         break;

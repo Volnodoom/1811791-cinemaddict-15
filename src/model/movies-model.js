@@ -32,7 +32,7 @@ class FilmsModel extends AbstractObserver {
     this._notify(UpdateType, update);
   }
 
-  static adaptToClient(film) {
+  static adaptToClientMovie(film) {
     const adaptedFilm = Object.assign (
       {},
       film,
@@ -65,7 +65,23 @@ class FilmsModel extends AbstractObserver {
     return adaptedFilm;
   }
 
-  static adaptToServer(film) {
+  static adaptToClientComments(film) {
+    const cb = (filmComment) => {
+      Object.assign(
+        {},
+        {
+          ... filmComment,
+          commentItself: filmComment.comment,
+          comAuthor: filmComment.author,
+          comDayTime: filmComment.date,
+        },
+      );
+    };
+
+    return film.map(cb);
+  }
+
+  static adaptToServerMovie(film) {
     const adaptedMovie = Object.assign(
       {},
       {
@@ -98,6 +114,23 @@ class FilmsModel extends AbstractObserver {
     );
 
     return adaptedMovie;
+  }
+
+  static adaptToServerComments(film) {
+    const cb = (filmComment) => {
+      Object.assign(
+        {},
+        {
+          ... filmComment,
+          comment: filmComment.commentItself,
+          author: filmComment.comAuthor,
+          date: filmComment.comDayTime,
+        },
+      );
+    };
+
+    return film.map(cb);
+
   }
 }
 

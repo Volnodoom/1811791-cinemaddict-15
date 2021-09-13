@@ -14,7 +14,6 @@ import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import Api from './api.js';
 import { UpdateType } from './const.js';
-import { UrlTo } from './utils/card-utils.js';
 
 const AUTHORIZATION = 'Basic kTy9gONDT2389rD';
 const END_POINT = 'https://13.ecmascript.pages.academy/cinemaddict';
@@ -39,7 +38,7 @@ const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel)
 filterPresenter.init();
 movieBoardPresenter.init();
 
-api.getMovies(UrlTo.MOVIES)
+api.getMovies()
   .then((films) => {
     filmsModel.setMovies(UpdateType.INIT, films);
   })
