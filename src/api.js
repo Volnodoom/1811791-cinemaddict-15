@@ -16,30 +16,35 @@ export default class Api {
 
 
   getGeneralData() {
-    return this._load ({url: UrlTo.MOVIES})
-      .then(Api.parsJSONtoObject)
-      .then((films) => films.map(FilmsModel.adaptToClientMovie))
-      .then((films) => films.map((film) => { Object.assign(
-        {},
-        film,
-        {
-          comments: this.getComments(film['id']),
-        });
-      }));
+    return this._getMovies()
+      .then((movies) => {
+        const promisifyArrayComments = movies.map((film) => this._getComments(film));
 
-    // Promise.all([this.getMovies(), this.getComments(film)]).then(([object, array]) => {object.comments = array;});
+        return Promise.allSettled(promisifyArrayComments)
+          .then((comments) => movies
+            .map((film) => {
+              const commentsForCurrentFilm = comments.filter((commentsForFilm) => film.comments.includes(commentsForFilm.commentId.parseInt()));
+
+
+              return {
+                ...film,
+                comments: commentsForCurrentFilm,
+              };
+            }),
+          );
+      });
   }
 
-  getMovies() {
+  _getMovies() {
     return this._load ({url: UrlTo.MOVIES})
       .then(Api.parsJSONtoObject)
       .then((films) => films.map(FilmsModel.adaptToClientMovie));
   }
 
-  getComments(film) {
+  _getComments(film) {
     return this._load ({url: `${UrlTo.COMMENTS}/${film.id}`})
       .then(Api.parsJSONtoObject)
-      .then((films) => films.map(FilmsModel.adaptToClientComments));
+      .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientComments));
   }
 
   updateMovie(film) {

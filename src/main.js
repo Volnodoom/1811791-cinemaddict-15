@@ -38,7 +38,7 @@ const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel)
 filterPresenter.init();
 movieBoardPresenter.init();
 
-api.getMovies()
+api.getGeneralData()
   .then((films) => {
     filmsModel.setMovies(UpdateType.INIT, films);
   })
