@@ -15,6 +15,20 @@ export default class Api {
   }
 
 
+  getGeneralData() {
+    return this._load ({url: UrlTo.MOVIES})
+      .then(Api.parsJSONtoObject)
+      .then((films) => films.map(FilmsModel.adaptToClientMovie))
+      .then((films) => films.map((film) => { Object.assign(
+        {},
+        film,
+        {
+          comments: this.getComments(film['id']),
+        });
+      }));
+
+    // Promise.all([this.getMovies(), this.getComments(film)]).then(([object, array]) => {object.comments = array;});
+  }
 
   getMovies() {
     return this._load ({url: UrlTo.MOVIES})
@@ -22,8 +36,8 @@ export default class Api {
       .then((films) => films.map(FilmsModel.adaptToClientMovie));
   }
 
-  getComments() {
-    return this._load ({url: UrlTo.COMMENTS})
+  getComments(film) {
+    return this._load ({url: `${UrlTo.COMMENTS}/${film.id}`})
       .then(Api.parsJSONtoObject)
       .then((films) => films.map(FilmsModel.adaptToClientComments));
   }

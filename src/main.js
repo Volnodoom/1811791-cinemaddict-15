@@ -16,7 +16,7 @@ import Api from './api.js';
 import { UpdateType } from './const.js';
 
 const AUTHORIZATION = 'Basic kTy9gONDT2389rD';
-const END_POINT = 'https://13.ecmascript.pages.academy/cinemaddict';
+const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const bodyPart = document.body;
 
 const footerPart = bodyPart.querySelector('.footer__statistics');

@@ -81,7 +81,7 @@ const calculateTime = (movieDuration) => {
 
 const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRateA.totalRating;
 
-const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.data).diff(dayjs(movieDateA.release.data));
+const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.date).diff(dayjs(movieDateA.release.date));
 
 export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear,
   EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, PopupCommentsState, sortRating, sortReleaseDate,
