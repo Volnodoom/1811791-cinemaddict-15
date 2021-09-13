@@ -23,12 +23,11 @@ export default class Api {
         return Promise.allSettled(promisifyArrayComments)
           .then((comments) => movies
             .map((film) => {
-              const commentsForCurrentFilm = comments.filter((commentsForFilm) => film.comments.includes(commentsForFilm.commentId.parseInt()));
-
+              const commentsForCurrentFilm = comments.filter((commentsForFilm) => film.id === commentsForFilm.value.filmId);
 
               return {
                 ...film,
-                comments: commentsForCurrentFilm,
+                'comments': commentsForCurrentFilm,
               };
             }),
           );
@@ -44,7 +43,10 @@ export default class Api {
   _getComments(film) {
     return this._load ({url: `${UrlTo.COMMENTS}/${film.id}`})
       .then(Api.parsJSONtoObject)
-      .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientComments));
+      .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientComments))
+      .then((commentsForOneFilm) => ({
+        filmId: film.id,
+        ...commentsForOneFilm}));
   }
 
   updateMovie(film) {
