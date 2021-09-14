@@ -14,7 +14,6 @@ export default class Api {
     this._authorization = authorization;
   }
 
-
   getGeneralData() {
     return this._getMovies()
       .then((movies) => {
@@ -25,10 +24,18 @@ export default class Api {
             .map((film) => {
               const commentsForCurrentFilm = comments.filter((commentsForFilm) => film.id === commentsForFilm.value.filmId);
 
-              return {
+              const correctedFormOfResults = Object.values(commentsForCurrentFilm[0].value);
+              correctedFormOfResults.pop();
+
+              const results = {
                 ...film,
-                'comments': commentsForCurrentFilm,
+                'comments': correctedFormOfResults,
               };
+
+              delete results.comments[0].filmId;
+
+              return results;
+
             }),
           );
       });
