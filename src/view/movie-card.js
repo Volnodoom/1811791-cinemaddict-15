@@ -3,7 +3,7 @@ import AbstractView from './abstract';
 
 const creatCardTemplate = (film) => {
   const {title, totalRating, runtime, genre, poster, description} = film;
-  const {data} = film.release;
+  const {date} = film.release;
   const {watchlist, alreadyWatched, favorite} = film.userDetails;
 
   const genreLine = genre.join(', ');
@@ -27,7 +27,7 @@ const creatCardTemplate = (film) => {
   <h3 class="film-card__title">${title}</h3>
   <p class="film-card__rating">${totalRating}</p>
   <p class="film-card__info">
-    <span class="film-card__year">${dateYear(data)}</span>
+    <span class="film-card__year">${dateYear(date)}</span>
     <span class="film-card__duration">${calculateTime(runtime)}</span>
     <span class="film-card__genre">${genreLine}</span>
   </p>
