@@ -126,18 +126,25 @@ class MovieBoard {
     }
   }
 
-  _processViewAction(actionType, updateType, update) {
+  _processViewAction(actionType, updateType, update, helper =null) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
         this._api.updateMovie(update).then((response) => {
           this._filmsModel.updateMovie(updateType, response);
         });
         break;
+      case UserAction.ADD_COMMENT:
+        this._api.addComment(update)
+          .then((response) => {
+            this._filmsModel.addComment(updateType, response);
+          });
+        break;
       case UserAction.DELETE_COMMENT:
-        this._filmsModel.updateMovie(updateType, update);
+        this._api.deleteComment(helper).then(() => {
+          this._filmsModel.updateMovie(updateType, update);
+        });
         break;
     }
-
   }
 
   _processModelEvent(updateType, data) {

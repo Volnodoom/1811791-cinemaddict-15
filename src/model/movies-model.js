@@ -69,7 +69,7 @@ class FilmsModel extends AbstractObserver {
     const adaptedComments = Object.assign(
       {},
       {
-        commentId: commentsData.id,
+        id: commentsData.id,
         commentItself: commentsData.comment,
         comAuthor: commentsData.author,
         comDayTime: commentsData.date,
@@ -117,21 +117,7 @@ class FilmsModel extends AbstractObserver {
   }
 
   static adaptToServerComments(film) {
-    const cb = (filmComment) => {
-      const adaptedObject = Object.assign(
-        {},
-        {
-          ... filmComment,
-          comment: filmComment.commentItself,
-          author: filmComment.comAuthor,
-          date: filmComment.comDayTime,
-        },
-      );
-
-      delete adaptedObject['movieId'];
-    };
-
-    return film.map(cb);
+    return { comment:film.localComments, emotion:film.localEmoji };
   }
 }
 

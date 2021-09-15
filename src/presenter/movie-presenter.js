@@ -170,11 +170,12 @@ class Movie {
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
   }
 
-  _processDeleteComments() {
+  _processDeleteComments(helper) {
     return this._changeData(
       UserAction.DELETE_COMMENT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       this._film,
+      helper,
     );
   }
 

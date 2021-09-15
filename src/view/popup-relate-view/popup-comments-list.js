@@ -53,8 +53,10 @@ class PopupCommentsList extends AbstractView{
 
     if (evt.target.tagName === 'BUTTON') {
       const index = this._film.comments.findIndex((line) => line.commentItself === evt.target.parentElement.previousElementSibling.textContent);
-      this._film.comments.splice(index, 1);
-      this._callback.clickOnDeleteCommentButton();
+      const removedComment = this._film.comments.splice(index, 1);
+      const helper = removedComment[0].id;
+
+      this._callback.clickOnDeleteCommentButton(helper);
     }
   }
 

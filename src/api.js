@@ -6,6 +6,7 @@ const Method = {
   PUT: 'PUT',
   PATCH: 'PATCH',
   DELETE: 'DELETE',
+  POST: 'POST',
 };
 
 export default class Api {
@@ -67,18 +68,6 @@ export default class Api {
       .then(FilmsModel.adaptToClientMovie);
   }
 
-  updateComments(film) {
-    return this._load({
-      url: `${UrlTo.COMMENTS}/${film.id}`,
-      method: Method.PUT,
-      body: JSON.stringify(FilmsModel.adaptToServerComments(film)),
-      headers: new Headers({'Content-Type': 'application/json'}),
-    })
-      .then(Api.parsJSONtoObject)
-      .then(FilmsModel.adaptToClientComments);
-
-  }
-
   _load({
     url,
     method = Method.GET,
@@ -95,9 +84,25 @@ export default class Api {
       .catch(Api.catchError);
   }
 
+  addComment(film) {
+    return this._load({
+      url: `${UrlTo.COMMENTS}/${film.id}`,
+      method: Method.POST,
+      body: JSON.stringify(FilmsModel.adaptToServerComments(film)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+  }
+
+  deleteComment(id) {
+    return this._load({
+      url: `${UrlTo.COMMENTS}/${id}`,
+      method: Method.DELETE,
+    });
+  }
+
   static checkStatus(response) {
     if(!response.ok) {
-      throw new Error(`${response.status}: :${response.statusText}`);
+      throw new Error(`${response.status}:${response.statusText}`);
     }
 
     return response;
