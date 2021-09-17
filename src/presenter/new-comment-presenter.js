@@ -37,13 +37,28 @@ export default class CommentNewPresenter {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
+  setSaving() {
+    this._commentNewComponent.updateData({
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetCommentState = () => {
+      this._commentNewComponent.updateData({
+        isSaving: false,
+      });
+    };
+
+    this._commentNewComponent.shake(resetCommentState);
+  }
+
   _processFormSubmit(updatedFilm) {
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,
       updatedFilm,
     );
-    // this.destroy();
   }
 
   _escKeyDownHandler(evt) {

@@ -13,6 +13,14 @@ const Mode = {
   POPUP: 'POPUP',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  ADDITION: 'ADDITION',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+  ABORTING_COMMENT: 'ABORTING COMMENT',
+};
+
 class Movie {
   constructor(movieListContainer, changeData, changeMode) {
     this._movieListContainer = movieListContainer;
@@ -63,6 +71,50 @@ class Movie {
 
     remove(prevFilmComponent);
   }
+
+  setViewState(state) {
+    if (this._mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this._popupCommentsList.updateData({
+        isDisabled: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._popupCommentsNew.updateData({
+          isSaving: true,
+        });
+        break;
+      case State.ADDITION:
+        this._popupCommentsNew.setSaving();
+        break;
+      case State.DELETING:
+        this._popupCommentsList.updateData({
+          isDeleting: true,
+          isDisabled: true,
+        });
+        break;
+      case State.ABORTING:
+        this._popupCommentsList.shake(resetFormState);
+        break;
+      case State.ABORTING_COMMENT:
+        [
+          this._popupCard,
+          this._popupCommentsTitle,
+          this._popupCommentsList,
+          this._PopupCommentsWrap,
+          this._popupCommentsNew,
+          this._popupCommentsNew,
+        ].forEach((element) => element.setAborting());
+        break;
+    }
+  }
+
 
   _processFavoriteClick() {
     this._changeData(

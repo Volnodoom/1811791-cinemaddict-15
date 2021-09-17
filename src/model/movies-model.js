@@ -50,6 +50,7 @@ class FilmsModel extends AbstractObserver {
           alreadyWatched: film['user_details']['already_watched'],
           watchingDate: film['user_details']['watching_date'],
         },
+        isSaving: false,
       },
     );
 
@@ -74,9 +75,10 @@ class FilmsModel extends AbstractObserver {
         comAuthor: commentsData.author,
         comDayTime: commentsData.date,
         emotion: commentsData.emotion,
+        isDisabled: false,
+        isDeleting: false,
       },
     );
-
 
     return adaptedComments;
   }
@@ -117,7 +119,10 @@ class FilmsModel extends AbstractObserver {
   }
 
   static adaptToServerComments(film) {
-    return { comment:film.localComments, emotion:film.localEmoji };
+    return {
+      comment:film.localComments,
+      emotion:film.localEmoji,
+    };
   }
 }
 

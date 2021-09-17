@@ -1,6 +1,6 @@
 import { dateYearMonthDayTime, EmojiUrl, KeyType } from '../../utils/card-utils';
-import AbstractView from '../abstract';
 import he from 'he';
+import Smart from '../smart.js';
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
@@ -14,7 +14,9 @@ const getUsersCommentsTemplate = (film) => {
     const {commentItself,
       comAuthor,
       comDayTime,
-      emotion} = film.comments[ind];
+      emotion,
+      isDisabled,
+      isDeleting} = film.comments[ind];
 
     filmComments += `<li class="film-details__comment">
       <span class="film-details__comment-emoji">
@@ -25,7 +27,7 @@ const getUsersCommentsTemplate = (film) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comAuthor}</span>
         <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>
-        <button class="film-details__comment-delete">Delete</button>
+        <button class="film-details__comment-delete" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting ...' : 'Delete'}</button>
       </p>
     </div>
   </li>`;
@@ -36,7 +38,7 @@ const getUsersCommentsTemplate = (film) => {
   return allComments;
 };
 
-class PopupCommentsList extends AbstractView{
+class PopupCommentsList extends Smart {
   constructor (film) {
     super();
     this._film = film;

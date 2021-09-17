@@ -33,7 +33,7 @@ class Smart extends Abstract {
 
     parent.replaceChild(newElement, prevElement);
 
-    this.restoreHandlers();
+    // this.restoreHandlers();
   }
 
   restoreHandlers() {

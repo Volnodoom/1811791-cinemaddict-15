@@ -13,7 +13,7 @@ import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js'
 // import PopupCommentsTitleView fro../view/popup-relate-view/popup-comments-title.js';
 // import PopupCommentsListView fro../view/popup-relate-view/popup-comments-list.js';
 // import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js';
-import MoviePresenter from './movie-presenter.js';
+import MoviePresenter, {State as MoviePresenterViewState} from './movie-presenter.js';
 import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 import { FilterType, UpdateType, UserAction } from '../const.js';
 import { filter } from '../utils/filter-utils.js';
@@ -129,20 +129,33 @@ class MovieBoard {
   _processViewAction(actionType, updateType, update, helper =null) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this._api.updateMovie(update).then((response) => {
-          this._filmsModel.updateMovie(updateType, response);
-        });
+        this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.SAVING);
+        this._api.updateMovie(update)
+          .then((response) => {
+            this._filmsModel.updateMovie(updateType, response);
+          })
+          .catch(() => {
+            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING);
+          });
         break;
       case UserAction.ADD_COMMENT:
+        this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ADDITION);
         this._api.addComment(update)
           .then((response) => {
             this._filmsModel.addComment(updateType, response);
+          })
+          .catch(() => {
+            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING);
           });
         break;
       case UserAction.DELETE_COMMENT:
+        this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.DELETING);
         this._api.deleteComment(helper).then(() => {
           this._filmsModel.updateMovie(updateType, update);
-        });
+        })
+          .catch(() => {
+            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COMMENT);
+          });
         break;
     }
   }
