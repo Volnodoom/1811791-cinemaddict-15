@@ -109,7 +109,7 @@ class PopupMovie extends AbstractView {
   }
 
   _clickHandler(evt) {
-    evt.preventDefault();
+    // evt.preventDefault();
     const idEvent = evt.target.id;
 
     if (evt.target.className === PopupCardEventOn.CLOSE_BTN) {

@@ -88,7 +88,11 @@ class FilmsModel extends AbstractObserver {
       {},
       {
         id: film.id,
-        comments: film.comments,
+        comments: film.comments
+          .reduce((acc, item) => {
+            acc.push(item.id);
+            return acc;
+          }, []),
         'film_info': {
           title: film.title,
           'alternative_title': film.alternativeTitle,

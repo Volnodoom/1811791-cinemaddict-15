@@ -12,7 +12,7 @@ const createPopupCommentsNew = (film) => {
           </label>
 
     <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" checked>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
             <label class="film-details__emoji-label" for="emoji-smile">
               <img src="images/emoji/smile.png" width="30" height="30" alt="emoji">
             </label>
@@ -61,6 +61,11 @@ class PopupCommentsNew extends SmartView {
     return createPopupCommentsNew(this._data);
   }
 
+  _setInnerHandler() {
+    this.getElement().addEventListener('click', this._innerClickHandler);
+    this.getElement().addEventListener('input', this._innerInputHandler);
+  }
+
   _innerClickHandler(evt) {
     if (evt.target.tagName === 'IMG') {
       evt.target.parentElement.previousElementSibling.checked = 'true';
@@ -71,11 +76,6 @@ class PopupCommentsNew extends SmartView {
         localEmoji: evt.target.parentElement.previousElementSibling.value,
       }, true);
     }
-  }
-
-  _setInnerHandler() {
-    this.getElement().addEventListener('click', this._innerClickHandler);
-    this.getElement().addEventListener('input', this._innerInputHandler);
   }
 
   _innerInputHandler (evt) {
@@ -90,7 +90,6 @@ class PopupCommentsNew extends SmartView {
     if (evt.ctrlKey && (evt.key === 'Enter' || evt.key === 'Enter')) {
       evt.preventDefault();
       this._callback.formSubmit(this._data);
-      document.querySelector('form').submit();
     }
   }
 
@@ -101,6 +100,7 @@ class PopupCommentsNew extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandler();
+    this.setOuterHandler(this._callback.formSubmit);
   }
 }
 

@@ -33,10 +33,11 @@ export default class Api {
                 'comments': correctedFormOfResults,
               };
 
-              delete results.comments[0].filmId;
+              if (results.comments.length > 0) {
+                delete results.comments[0].filmId;
+              }
 
               return results;
-
             }),
           );
       });
@@ -66,6 +67,19 @@ export default class Api {
     })
       .then(Api.parsJSONtoObject)
       .then(FilmsModel.adaptToClientMovie);
+      // .then((receive) => this._getComments(film)
+      //   .then((comments) => {
+      //     const results = {
+      //       ...receive,
+      //       'comments': comments[0].value,
+      //     };
+
+      //     if (results.comments.length > 0) {
+      //       delete results.comments[0].filmId;
+      //     }
+
+      //     return results;
+      //   }));
   }
 
   _load({
@@ -90,7 +104,9 @@ export default class Api {
       method: Method.POST,
       body: JSON.stringify(FilmsModel.adaptToServerComments(film)),
       headers: new Headers({'Content-Type': 'application/json'}),
-    });
+    })
+      .then(Api.parsJSONtoObject)
+      .then(FilmsModel.adaptToClientComments);
   }
 
   deleteComment(id) {

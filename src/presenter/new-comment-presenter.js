@@ -47,6 +47,7 @@ export default class CommentNewPresenter {
     const resetCommentState = () => {
       this._commentNewComponent.updateData({
         isSaving: false,
+        isDisabled: false,
       });
     };
 
@@ -56,7 +57,7 @@ export default class CommentNewPresenter {
   _processFormSubmit(updatedFilm) {
     this._changeData(
       UserAction.ADD_COMMENT,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       updatedFilm,
     );
   }
