@@ -40,7 +40,7 @@ export default class CommentNewPresenter {
   setSaving() {
     this._commentNewComponent.updateData({
       isSaving: true,
-    });
+    }, true);
   }
 
   setAborting() {

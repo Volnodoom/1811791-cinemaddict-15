@@ -66,20 +66,21 @@ export default class Api {
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.parsJSONtoObject)
-      .then(FilmsModel.adaptToClientMovie);
-      // .then((receive) => this._getComments(film)
-      //   .then((comments) => {
-      //     const results = {
-      //       ...receive,
-      //       'comments': comments[0].value,
-      //     };
+      .then(FilmsModel.adaptToClientMovie)
+      // eslint-disable-next-line arrow-body-style
+      .then((receive) => {
+        return this._getComments(film).then((comments) => {
+          if (comments.filmId) {
+            delete comments.filmId;
+          }
+          const framedComments = Object.values(comments);
+          const results = {
+            ...receive,
+            'comments': framedComments,
+          };
 
-      //     if (results.comments.length > 0) {
-      //       delete results.comments[0].filmId;
-      //     }
-
-      //     return results;
-      //   }));
+          return results;
+        });});
   }
 
   _load({

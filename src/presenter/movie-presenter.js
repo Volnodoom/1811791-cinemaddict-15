@@ -81,7 +81,7 @@ class Movie {
       this._popupCommentsList.updateData({
         isDisabled: false,
         isDeleting: false,
-      });
+      }, true);
     };
 
     switch (state) {
@@ -91,16 +91,19 @@ class Movie {
         });
         break;
       case State.ADDITION:
-        this._popupCommentsNew.setSaving();
+        this._popupCommentsNew.updateData({
+          isSaving: true,
+        });
         break;
       case State.DELETING:
         this._popupCommentsList.updateData({
           isDeleting: true,
           isDisabled: true,
-        });
+        }, true);
         break;
       case State.ABORTING:
         this._popupCommentsList.shake(resetFormState);
+        this._popupCommentsNew.shake(resetFormState);
         break;
       case State.ABORTING_COMMENT:
         this._popupCard.setAborting();

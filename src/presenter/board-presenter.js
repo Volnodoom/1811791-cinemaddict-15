@@ -58,9 +58,6 @@ class MovieBoard {
     this._processModelEvent = this._processModelEvent.bind(this);
     this._processModeChange = this._processModeChange.bind(this);
     this._processSortTypeChange = this._processSortTypeChange.bind(this);
-
-    this._filmsModel.addObserver(this._processModelEvent);
-    this._filterModel.addObserver(this._processModelEvent);
   }
 
   init() {
@@ -68,6 +65,9 @@ class MovieBoard {
     render(this._boardComponent, this._filmListComponent, RenderPosition.BEFOREEND);
     render(this._filmListComponent, this._filmConditionMessage, RenderPosition.BEFOREEND);
     render(this._filmListComponent, this._filmListContainerMain, RenderPosition.BEFOREEND);
+
+    this._filmsModel.addObserver(this._processModelEvent);
+    this._filterModel.addObserver(this._processModelEvent);
 
     this._renderBoard();
   }
@@ -129,7 +129,7 @@ class MovieBoard {
   _processViewAction(actionType, updateType, update, helper =null) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        // this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.SAVING);
+        this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.SAVING);
         this._api.updateMovie(update)
           .then((response) => {
             this._filmsModel.updateMovie(updateType, response);
@@ -307,6 +307,18 @@ class MovieBoard {
 
   _renderLoading() {
     render(this._boardContainer, this._loadingComponent, RenderPosition.AFTER_ELEMENT);
+  }
+
+  destroy() {
+    this._clearBoard({resetRenderedMovieCount: true, resetSortType: true});
+
+    remove(this._boardComponent);
+    remove(this._filmListComponent);
+    remove(this._filmConditionMessage);
+    remove(this._filmListContainerMain);
+
+    this._filmsModel.removeObserver(this._processModelEvent);
+    this._filterModel.removeObserver(this._processModelEvent);
   }
 }
 

@@ -20,7 +20,7 @@ const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const bodyPart = document.body;
 
 const footerPart = bodyPart.querySelector('.footer__statistics');
-const headerOfBody =bodyPart.querySelector('.header');
+const headerOfBody = bodyPart.querySelector('.header');
 const mainOfBody = bodyPart.querySelector('.main');
 
 const api = new Api(END_POINT, AUTHORIZATION);
@@ -29,14 +29,13 @@ const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 
 render(headerOfBody, new AvatarView(), RenderPosition.BEFOREEND);
-// render(mainOfBody, new FilterView(filters, 'all'), RenderPosition.BEFOREEND);
 render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
 
 const movieBoardPresenter = new MovieBoardPresenter(mainOfBody, filmsModel, filterModel, api);
-const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel);
+const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel, movieBoardPresenter);
 
-filterPresenter.init();
 movieBoardPresenter.init();
+filterPresenter.init();
 
 api.getGeneralData()
   .then((films) => {

@@ -1,10 +1,12 @@
-import { FilterType, UpdateType } from '../const.js';
+import { FilterType, MenuItem, UpdateType } from '../const.js';
 import { filter } from '../utils/filter-utils.js';
 import { remove, render, RenderPosition, replace } from '../utils/render.js';
 import FilterView from '../view/filters.js';
 
 class FilterPresenter {
-  constructor(filterContainer, filterModel, filmsModel) {
+  constructor(filterContainer, filterModel, filmsModel, boardPresenter) {
+    this._boardPresenter = boardPresenter;
+
     this._filterContainer = filterContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
@@ -23,15 +25,30 @@ class FilterPresenter {
     const prevFilterComponent = this._filterComponent;
 
     this._filterComponent = new FilterView (filters, this._filterModel.getFilter());
+
+    this._filterComponent.setMovieStatisticSwitch(this._processMovieStatisticSwitch);
     this._filterComponent.setFilterTypeChangeHandler(this._processFilterTypeChange);
 
     if(prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._filterComponent, RenderPosition.AFTERBEGIN);
       return;
     }
 
     replace(this._filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
+  }
+
+  _processMovieStatisticSwitch (menuItem) {
+    switch (menuItem) {
+      case MenuItem.MOVIES:
+        this._boardPresenter.init();
+        //скрыть статистику
+        break;
+      case MenuItem.STATISTICS:
+        this._boardPresenter.destroy();
+        //показать статистику
+        break;
+    }
   }
 
   _processFilterTypeChange(filterType) {

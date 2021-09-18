@@ -17,4 +17,10 @@ export const FilterType = {
   HISTORY: 'history',
   FAVORITES: 'favorites',
   LOADING: 'loading',
+  STATISTICS: 'stats',
+};
+
+export const MenuItem = {
+  MOVIES: 'all',
+  STATISTICS: 'stats',
 };
