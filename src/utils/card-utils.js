@@ -1,8 +1,18 @@
 import dayjs from 'dayjs';
+import dayOfYear from 'dayjs/plugin/dayOfYear';
+import isToday from 'dayjs/plugin/isToday';
+dayjs.extend(dayOfYear);
+dayjs.extend(isToday);
 
 const MINUTES = 60;
 
-const CardsEventsOn = {
+const TimeLength = {
+  WEEK: 7,
+  MONTH: 1,
+  YEAR: 1,
+};
+
+export const CardsEventsOn = {
   POSTER: 'film-card__poster',
   TITLE: 'film-card__title',
   COMMENTS: 'film-card__comments',
@@ -11,52 +21,76 @@ const CardsEventsOn = {
   WATCHLIST: 'film-card__controls-item--add-to-watchlist',
 };
 
-const EmojiUrl = {
+export const EmojiUrl = {
   SMILE: 'images/emoji/smile.png ',
   SLEEPING: 'images/emoji/sleeping.png ',
   PUKE: 'images/emoji/puke.png ',
   ANGRY: 'images/emoji/angry.png ',
 };
 
-const SortType = {
+export const SortType = {
   DEFAULT: 'default',
   DATE: 'date-up',
   RATING: 'rating-up',
 };
 
-const ToolbarNamesFromServer = {
+export const ToolbarNamesFromServer = {
   FAVORITE: 'favorite',
   WATCHED: 'alreadyWatched',
   WATCHLIST: 'watchlist',
 };
 
-const PopupCardEventOn = {
+export const PopupCardEventOn = {
   CLOSE_BTN:'film-details__close-btn',
   FAVORITE: 'favorite',
   WATCHED: 'watched',
   WATCHLIST: 'watchlist',
 };
 
-const PopupCommentsState = {
+export const PopupCommentsState = {
   INPUT: 'input',
   CLICK: 'click',
 };
 
-const KeyType = {
+export const KeyType = {
   SUBMIT: 'submit',
   CANCEL: 'cancel',
 };
 
-const UrlTo = {
+export const UrlTo = {
   MOVIES: 'movies',
   COMMENTS: 'comments',
 };
 
-const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
-const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
-const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
+export const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
+export const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
+export const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
 
-const calculateTime = (movieDuration) => {
+export const isTodayDate = (date) => dayjs(date).isToday();
+
+export const isWeekAgoDate = (date) => {
+  const yearDayNumber = dayjs().dayOfYear();
+  const weekAgo = dayjs().dayOfYear(yearDayNumber - TimeLength.WEEK);
+
+  return weekAgo <= date;
+};
+
+export const isMonthAgoDate = (date) => {
+  const yearMonthNumber = dayjs().month();
+  const monthAgo = dayjs().month(yearMonthNumber - TimeLength.MONTH);
+
+  return monthAgo <= date;
+};
+
+export const isYearAgoDate = (date) => {
+  const yearNumber = dayjs().year();
+  const yearAgo = dayjs().year(yearNumber - TimeLength.YEAR);
+
+  return yearAgo <= date;
+};
+
+
+export const calculateTime = (movieDuration) => {
   const hours = Math.trunc(movieDuration/MINUTES);
   let duration = '';
   const timeConditions = [
@@ -79,10 +113,7 @@ const calculateTime = (movieDuration) => {
   return duration;
 };
 
-const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRateA.totalRating;
+export const sortRating = (movieRateA, movieRateB) => movieRateB.totalRating - movieRateA.totalRating;
+export const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.date).diff(dayjs(movieDateA.release.date));
 
-const sortReleaseDate = (movieDateA, movieDateB) => dayjs(movieDateB.release.date).diff(dayjs(movieDateA.release.date));
 
-export {CardsEventsOn, calculateTime, dateYearMonthDayTime, dateDayMonthYear, dateYear,
-  EmojiUrl, SortType, ToolbarNamesFromServer, PopupCardEventOn, PopupCommentsState, sortRating, sortReleaseDate,
-  KeyType, UrlTo};

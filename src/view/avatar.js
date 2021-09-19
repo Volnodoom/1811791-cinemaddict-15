@@ -1,15 +1,18 @@
+import { countTheRank } from '../utils/statistics-utils.js';
 import AbstractView from './abstract.js';
 
 const USER = {
-  rank: 'Movie Buff',
   avatarUrl: 'images/bitmap@2x.png',
 };
 
-const createHeaderAvatar = () => (
-  `<section class="header__profile profile">
-    <p class="profile__rating">${USER.rank}</p>
+const createHeaderAvatar = () => {
+  // const rank = countTheRank(films);
+
+  return `<section class="header__profile profile">
+    <p class="profile__rating">{rank}</p>
     <img class="profile__avatar" src="${USER.avatarUrl}" alt="Avatar" width="35" height="35">
-  </section>`);
+  </section>`;
+};
 
 class Avatar extends AbstractView {
   getTemplate () {

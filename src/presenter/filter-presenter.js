@@ -2,6 +2,7 @@ import { FilterType, MenuItem, UpdateType } from '../const.js';
 import { filter } from '../utils/filter-utils.js';
 import { remove, render, RenderPosition, replace } from '../utils/render.js';
 import FilterView from '../view/filters.js';
+import StatisticsView from '../view/statistics.js';
 
 class FilterPresenter {
   constructor(filterContainer, filterModel, filmsModel, boardPresenter) {
@@ -61,6 +62,7 @@ class FilterPresenter {
 
         this._movieStatisticSwitcherState = MenuItem.STATISTICS;
         this._boardPresenter.destroy();
+        render(this._filterContainer, new StatisticsView(this._filmsModel.getMovies()), RenderPosition.BEFOREEND);
         //показать статистику
         break;
     }

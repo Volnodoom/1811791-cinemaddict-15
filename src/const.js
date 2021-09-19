@@ -29,7 +29,7 @@ export const MenuItem = {
 };
 
 export const StatisticsPeriodValue = {
-  ALL: 'all',
+  ALL: 'all-time',
   TODAY: 'day',
   WEEK: 'week',
   MONTH: 'month',

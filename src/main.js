@@ -4,10 +4,7 @@ import AvatarView from './view/avatar';
 import FooterView from './view/footer';
 import MovieBoardPresenter from './presenter/board-presenter';
 import FilmsModel from './model/movies-model.js';
-import {
-  render,
-  RenderPosition,
-  // EmptyStatement,
+import { render, RenderPosition, // EmptyStatement,
   FooterCondition
 } from './utils/render.js';
 import FilterModel from './model/filter-model.js';
@@ -34,8 +31,9 @@ render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFO
 const movieBoardPresenter = new MovieBoardPresenter(mainOfBody, filmsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel, movieBoardPresenter);
 
-movieBoardPresenter.init();
+// movieBoardPresenter.init();
 filterPresenter.init();
+
 
 api.getGeneralData()
   .then((films) => {
@@ -44,6 +42,7 @@ api.getGeneralData()
   .catch(() => {
     filmsModel.setMovies(UpdateType.INIT, []);
   });
+
 
 // const nonOperationalStateLoading = () => {
 //   render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);
