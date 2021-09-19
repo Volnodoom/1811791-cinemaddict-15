@@ -6,7 +6,7 @@ const createSingleFilterItemTemplate = (filterData, currentFilterType) => {
   ${name}<span class="main-navigation__item-count">${count}</span></a>`);
 };
 
-const createFiltersTemplate = (filtersData, currentFilterType) => {
+const createNavigationTemplate = (filtersData, currentFilterType) => {
   const filterItemsTemplate = filtersData.map((filter) => createSingleFilterItemTemplate(filter, currentFilterType)).join(' ');
 
   return (`<nav class="main-navigation">
@@ -28,7 +28,7 @@ class FilterView extends AbstractView{
   }
 
   getTemplate () {
-    return createFiltersTemplate(this._filter, this._currentFilter);
+    return createNavigationTemplate(this._filter, this._currentFilter);
   }
 
   _filterTypeChangeHandler(evt) {
@@ -40,7 +40,10 @@ class FilterView extends AbstractView{
       case 'history':
       case 'favorites':
         this._callback.filterTypeChange(evt.target.hash.slice(1));
+        document.querySelector('.main-navigation__additional').classList.remove('main-navigation__item--active');
         break;
+      case 'stats':
+        document.querySelector('.main-navigation__additional').classList.add('main-navigation__item--active');
     }
   }
 

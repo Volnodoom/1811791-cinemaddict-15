@@ -12,9 +12,11 @@ class FilterPresenter {
     this._filmsModel = filmsModel;
 
     this._filterComponent = null;
+    this._movieStatisticSwitcherState = null;
 
     this._processModelEvent = this._processModelEvent.bind(this);
     this._processFilterTypeChange = this._processFilterTypeChange.bind(this);
+    this._processMovieStatisticSwitch = this._processMovieStatisticSwitch.bind(this);
 
     this._filmsModel.addObserver(this._processModelEvent);
     this._filterModel.addObserver(this._processModelEvent);
@@ -41,10 +43,23 @@ class FilterPresenter {
   _processMovieStatisticSwitch (menuItem) {
     switch (menuItem) {
       case MenuItem.MOVIES:
+      case MenuItem.LIST:
+      case MenuItem.HISTORY:
+      case MenuItem.FAVORITES:
+        if(this._movieStatisticSwitcherState === MenuItem.MOVIES) {
+          return;
+        }
+
+        this._movieStatisticSwitcherState = MenuItem.MOVIES;
         this._boardPresenter.init();
         //скрыть статистику
         break;
       case MenuItem.STATISTICS:
+        if(this._movieStatisticSwitcherState === MenuItem.STATISTICS) {
+          return;
+        }
+
+        this._movieStatisticSwitcherState = MenuItem.STATISTICS;
         this._boardPresenter.destroy();
         //показать статистику
         break;

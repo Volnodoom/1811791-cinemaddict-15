@@ -86,20 +86,20 @@ class Movie {
 
     switch (state) {
       case State.SAVING:
-        this._popupCommentsNew.updateData({
+        this._filmComponent.updateData({
           isSaving: true,
         });
         break;
       case State.ADDITION:
-        this._popupCommentsNew.updateData({
+        this._filmComponent.updateData({
           isSaving: true,
         });
         break;
       case State.DELETING:
-        this._popupCommentsList.updateData({
+        this._filmComponent.updateData({
           isDeleting: true,
           isDisabled: true,
-        }, true);
+        });
         break;
       case State.ABORTING:
         this._popupCommentsList.shake(resetFormState);

@@ -22,5 +22,16 @@ export const FilterType = {
 
 export const MenuItem = {
   MOVIES: 'all',
+  LIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites',
   STATISTICS: 'stats',
+};
+
+export const StatisticsPeriodValue = {
+  ALL: 'all',
+  TODAY: 'day',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };

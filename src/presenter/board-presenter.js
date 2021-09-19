@@ -152,7 +152,7 @@ class MovieBoard {
         this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.DELETING);
         this._api.deleteComment(helper)
           .then(() => {
-            this._filmsModel.updateMovie(updateType, update);
+            this._filmsModel.deleteComment(updateType, update);
           })
           .catch(() => {
             this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COMMENT);
