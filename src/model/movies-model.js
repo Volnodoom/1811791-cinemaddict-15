@@ -32,6 +32,22 @@ class FilmsModel extends AbstractObserver {
     this._notify(UpdateType, update);
   }
 
+  updateComments(UpdateType, update) {
+    const index = this._films.findIndex((film) => film.id === update.id);
+
+    if (index === -1) {
+      throw new Error('Can\'t update unexisting task');
+    }
+
+    this._films[index] = [
+      delete this._films[index].comments,
+      update,
+      ...this._films.slice(index + 1),
+    ];
+
+    this._notify(UpdateType, update);
+  }
+
   static adaptToClientMovie(film) {
     const adaptedFilm = Object.assign (
       {},
@@ -66,7 +82,7 @@ class FilmsModel extends AbstractObserver {
     return adaptedFilm;
   }
 
-  static adaptToClientComments(commentsData) {
+  static adaptToClientUnionComments(commentsData) {
     const adaptedComments = Object.assign(
       {},
       {
@@ -81,6 +97,62 @@ class FilmsModel extends AbstractObserver {
     );
 
     return adaptedComments;
+  }
+
+  static adaptToClientResponseFromCommentUpdate(serverData) {
+    const adaptToClientMovie = () => {
+      const adaptedFilm = Object.assign (
+        {},
+        serverData.movie,
+        {
+          ... serverData.movie['film_info'],
+          alternativeTitle: serverData.movie['film_info']['alternative_title'],
+          totalRating: serverData.movie['film_info'] ['total_rating'],
+          ageRating: serverData.movie['film_info']['age_rating'],
+          release: {
+            ... serverData.movie['film_info'].release,
+            releaseCountry: serverData.movie['film_info'].release['release_country'],
+          },
+          userDetails: {
+            ... serverData.movie['user_details'],
+            alreadyWatched: serverData.movie['user_details']['already_watched'],
+            watchingDate: serverData.movie['user_details']['watching_date'],
+          },
+          isSaving: false,
+        },
+      );
+
+      delete adaptedFilm['film_info'];
+      delete adaptedFilm['alternative_title'];
+      delete adaptedFilm['total_rating'];
+      delete adaptedFilm['age_rating'];
+      delete adaptedFilm.release['release_country'];
+      delete adaptedFilm['user_details'];
+      delete adaptedFilm.userDetails['already_watched'];
+      delete adaptedFilm.userDetails['watching_date'];
+
+      return adaptedFilm;
+    };
+
+    const adaptComments = () => serverData.comments.map((feedback) => ({
+      id: feedback.id,
+      commentItself: feedback.comment,
+      comAuthor: feedback.author,
+      comDayTime: feedback.date,
+      emotion: feedback.emotion,
+      isDisabled: false,
+      isDeleting: false,
+    }));
+
+    const adaptedData = Object.assign(
+      {},
+      adaptToClientMovie(),
+      {
+        comments: adaptComments(),
+      },
+    );
+
+    return adaptedData;
   }
 
   static adaptToServerMovie(film) {

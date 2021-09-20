@@ -52,7 +52,7 @@ export default class Api {
   _getComments(film) {
     return this._load ({url: `${UrlTo.COMMENTS}/${film.id}`})
       .then(Api.parsJSONtoObject)
-      .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientComments))
+      .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientUnionComments))
       .then((commentsForOneFilm) => ({
         filmId: film.id,
         ...commentsForOneFilm}));
@@ -107,7 +107,7 @@ export default class Api {
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.parsJSONtoObject)
-      .then(FilmsModel.adaptToClientComments);
+      .then(FilmsModel.adaptToClientResponseFromCommentUpdate);
   }
 
   deleteComment(id) {

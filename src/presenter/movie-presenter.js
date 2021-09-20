@@ -170,6 +170,15 @@ class Movie {
     document.addEventListener('keydown', this._keyCancelHandler);
   }
 
+  _processDeleteComments(helper) {
+    return this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      this._film,
+      helper,
+    );
+  }
+
   _setEventListenersThumbnails() {
     this._filmComponent.setClickHandler(CardsEventsOn.POSTER, this._processClickPopup);
     this._filmComponent.setClickHandler(CardsEventsOn.TITLE, this._processClickPopup);
@@ -216,15 +225,6 @@ class Movie {
     this._popupCard.setKeyDownHandler(this._closePopup);
 
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
-  }
-
-  _processDeleteComments(helper) {
-    return this._changeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      this._film,
-      helper,
-    );
   }
 
   _closePopup() {

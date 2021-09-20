@@ -57,7 +57,7 @@ export default class CommentNewPresenter {
   _processFormSubmit(updatedFilm) {
     this._changeData(
       UserAction.ADD_COMMENT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       updatedFilm,
     );
   }

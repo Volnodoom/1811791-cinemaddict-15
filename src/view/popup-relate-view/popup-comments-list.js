@@ -56,6 +56,11 @@ class PopupCommentsList extends Smart {
       const index = this._film.comments.findIndex((line) => line.commentItself === evt.target.parentElement.previousElementSibling.textContent);
       const removedComment = this._film.comments.splice(index, 1);
       const helper = removedComment[0].id;
+      // debugger;
+      // const idDeletedComment = this._film.comments[index].id;
+
+      // evt.target.innerText = 'Deleting...';
+      // evt.target.disabled = true;
 
       this._callback.clickOnDeleteCommentButton(helper);
     }
