@@ -89,7 +89,6 @@ export const isYearAgoDate = (date) => {
   return yearAgo <= date;
 };
 
-
 export const calculateTime = (movieDuration) => {
   const hours = Math.trunc(movieDuration/MINUTES);
   let duration = '';

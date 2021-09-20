@@ -1,5 +1,5 @@
 import { dateYear, calculateTime, CardsEventsOn } from '../utils/card-utils';
-import AbstractView from './abstract';
+import Smart from './smart.js';
 
 const creatCardTemplate = (film) => {
   const {title, totalRating, runtime, genre, poster, description} = film;
@@ -42,7 +42,7 @@ const creatCardTemplate = (film) => {
 </article>`;
 };
 
-class MovieCard extends AbstractView{
+class MovieCard extends Smart{
   constructor (film) {
     super();
     this._film = film;
@@ -107,6 +107,10 @@ class MovieCard extends AbstractView{
     }
 
     this.getElement().addEventListener('click', this._clickHandler);
+  }
+
+  restoreHandlers() {
+
   }
 
 }

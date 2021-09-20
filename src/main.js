@@ -31,7 +31,8 @@ const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel,
 movieBoardPresenter.init();
 filterPresenter.init();
 
-
+render(headerOfBody, new AvatarView(filmsModel), RenderPosition.BEFOREEND);
+render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
 
 api.getGeneralData()
   .then((films) => {
@@ -40,9 +41,6 @@ api.getGeneralData()
   .catch(() => {
     filmsModel.setMovies(UpdateType.INIT, []);
   });
-
-  render(headerOfBody, new AvatarView(filmsModel), RenderPosition.BEFOREEND);
-  render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
 
 // const nonOperationalStateLoading = () => {
 //   render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);

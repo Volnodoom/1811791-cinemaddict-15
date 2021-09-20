@@ -9,7 +9,7 @@ import FilmListView from '../view/film-list.js';
 import FilmListContainerView from '../view/film-list-container.js';
 // import PopupMovieView fro../view/popup-relate-view/popup-movie.js';
 import SortView from '../view/sort.js';
-import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
+// import PopupCommentsWrap from '../view/popup-relate-view/popup-comments-wrap.js';
 // import PopupCommentsTitleView fro../view/popup-relate-view/popup-comments-title.js';
 // import PopupCommentsListView fro../view/popup-relate-view/popup-comments-list.js';
 // import PopupCommentsNewView fro../view/popup-relate-view/popup-comments-new.js';
@@ -48,8 +48,6 @@ class MovieBoard {
     this._filmListContainerExtra2 = new FilmListContainerView();
     this._extraTopRatingComponent = new TopRatingView();
     this._extraTopCommentedComponent = new TopCommentsView();
-
-    this._PopupCommentsWrapComponent = new PopupCommentsWrap();
 
     this._loadingComponent = new NoMovieView(FilterType.LOADING);
 
@@ -142,7 +140,7 @@ class MovieBoard {
         this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ADDITION);
         this._api.addComment(update)
           .then((response) => {
-            this._filmsModel.addComment(updateType, response);
+            this._filmsModel.updateMovie(updateType, response);
           })
           .catch(() => {
             this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING);
@@ -152,7 +150,7 @@ class MovieBoard {
         this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.DELETING);
         this._api.deleteComment(helper)
           .then(() => {
-            this._filmsModel.deleteComment(updateType, update);
+            this._filmsModel.updateMovie(updateType, update);
           })
           .catch(() => {
             this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COMMENT);
@@ -218,15 +216,15 @@ class MovieBoard {
   //   const popupCommentsNew = new PopupCommentsNewView();
 
   //   render (this._bodyPart, popupCard, RenderPosition.BEFOREEND);
-  //   render (this._bodyPart.querySelector('.film-details__bottom-container'), this._PopupCommentsWrapComponent, RenderPosition.BEFOREEND);
-  //   render (this._PopupCommentsWrapComponent, popupCommentsTitle, RenderPosition.BEFOREEND);
-  //   render (this._PopupCommentsWrapComponent, popupCommentsList, RenderPosition.BEFOREEND);
-  //   render (this._PopupCommentsWrapComponent, popupCommentsNew, RenderPosition.BEFOREEND);
+  //   render (this._bodyPart.querySelector('.film-details__bottom-container'), this._popupCommentsWrapComponent, RenderPosition.BEFOREEND);
+  //   render (this._popupCommentsWrapComponent, popupCommentsTitle, RenderPosition.BEFOREEND);
+  //   render (this._popupCommentsWrapComponent, popupCommentsList, RenderPosition.BEFOREEND);
+  //   render (this._popupCommentsWrapComponent, popupCommentsNew, RenderPosition.BEFOREEND);
 
 
   //   popupCard.setClickHandler(() => {
   //     remove(popupCard);
-  //     remove(this._PopupCommentsWrapComponent);
+  //     remove(this._popupCommentsWrapComponent);
   //     remove(popupCommentsTitle);
   //     remove(popupCommentsList);
   //     remove(popupCommentsNew);

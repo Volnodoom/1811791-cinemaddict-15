@@ -103,7 +103,7 @@ class Movie {
         break;
       case State.ABORTING:
         this._popupCommentsList.shake(resetFormState);
-        this._popupCommentsNew.shake(resetFormState);
+        this._popupCommentsWrap.shake(resetFormState);
         break;
       case State.ABORTING_COMMENT:
         this._popupCard.setAborting();
@@ -193,16 +193,16 @@ class Movie {
     this._popupCard = new PopupMovieView(chosenMovie);
     this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     this._popupCommentsList = new PopupCommentsListView(chosenMovie);
-    this._PopupCommentsWrap = new PopupCommentsWrap();
-    this._popupCommentsNew = new CommentNewPresenter (this._PopupCommentsWrap, chosenMovie, this._changeData);
+    this._popupCommentsWrap = new PopupCommentsWrap();
+    this._popupCommentsNew = new CommentNewPresenter (this._popupCommentsWrap, chosenMovie, this._changeData);
 
     render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
 
     this.popupCommentsContainer = this._bodyPart.querySelector('.film-details__bottom-container');
 
-    render (this.popupCommentsContainer, this._PopupCommentsWrap, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
+    render (this.popupCommentsContainer, this._popupCommentsWrap, RenderPosition.BEFOREEND);
+    render (this._popupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
+    render (this._popupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
     this._popupCommentsNew.init();
 
     this._setEventListenersPopup();
