@@ -13,7 +13,7 @@ class FilterPresenter {
     this._filmsModel = filmsModel;
 
     this._filterComponent = null;
-    this._movieStatisticSwitcherState = null;
+    this._movieStatisticSwitcherState = MenuItem.MOVIES;
 
     this._processModelEvent = this._processModelEvent.bind(this);
     this._processFilterTypeChange = this._processFilterTypeChange.bind(this);
@@ -26,6 +26,7 @@ class FilterPresenter {
   init() {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
+    this._statisticsComponent = null;
 
     this._filterComponent = new FilterView (filters, this._filterModel.getFilter());
 
@@ -42,6 +43,8 @@ class FilterPresenter {
   }
 
   _processMovieStatisticSwitch (menuItem) {
+
+
     switch (menuItem) {
       case MenuItem.MOVIES:
       case MenuItem.LIST:
@@ -53,8 +56,9 @@ class FilterPresenter {
 
         this._movieStatisticSwitcherState = MenuItem.MOVIES;
         this._boardPresenter.init();
-        //скрыть статистику
+        remove(this._statisticsComponent);
         break;
+
       case MenuItem.STATISTICS:
         if(this._movieStatisticSwitcherState === MenuItem.STATISTICS) {
           return;
@@ -62,8 +66,8 @@ class FilterPresenter {
 
         this._movieStatisticSwitcherState = MenuItem.STATISTICS;
         this._boardPresenter.destroy();
-        render(this._filterContainer, new StatisticsView(this._filmsModel.getMovies()), RenderPosition.BEFOREEND);
-        //показать статистику
+        this._statisticsComponent = new StatisticsView(this._filmsModel.getMovies());
+        render(this._filterContainer, this._statisticsComponent, RenderPosition.BEFOREEND);
         break;
     }
   }

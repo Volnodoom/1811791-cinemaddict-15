@@ -1,7 +1,12 @@
 import { StatisticsPeriodValue } from '../const.js';
 import { parseInfoToStatisticData } from '../utils/statistics-utils.js';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Smart from './smart.js';
 
+const BAR_HEIGHT = 50;
+
+const creatChartTemplate = '<div class="statistic__chart-wrap"> <canvas class="statistic__chart" width="1000"></canvas></div>';
 
 const createStatisticsTemplate = ({
   yourRank,
@@ -50,21 +55,87 @@ const createStatisticsTemplate = ({
       </li>
     </ul>
 
-    <div class="statistic__chart-wrap">
-      <canvas class="statistic__chart" width="1000"></canvas>
-    </div>
+    ${numberWatched !== 0 ? creatChartTemplate : ''}
 
   </section>`;
+
+const createChartTemplate = ({listOfGenres, watchCount}, statisticCtx) => {
+  statisticCtx.height = BAR_HEIGHT * listOfGenres.length;
+
+  return new Chart(statisticCtx, {
+    plugins: [ChartDataLabels],
+    type: 'horizontalBar',
+    data: {
+      labels: [...listOfGenres],
+      datasets: [{
+        data: [...watchCount],
+        backgroundColor: '#ffe800',
+        hoverBackgroundColor: '#ffe800',
+        anchor: 'start',
+      }],
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 20,
+          },
+          color: '#ffffff',
+          anchor: 'start',
+          align: 'start',
+          offset: 40,
+        },
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            fontColor: '#ffffff',
+            padding: 100,
+            fontSize: 20,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+          barThickness: 24,
+        }],
+        xAxes: [{
+          ticks: {
+            display: false,
+            beginAtZero: true,
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false,
+          },
+        }],
+      },
+      dataset: {
+        barThickness: 24,
+      },
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        enabled: false,
+      },
+    },
+  });
+};
+
 
 export default class StatisticsView extends Smart {
   constructor(films) {
     super();
     this._films = films;
     this._data = parseInfoToStatisticData(this._films);
+    this._chart = null;
 
     this._statsFilterHandler = this._statsFilterHandler.bind(this);
 
     this._setClickHandler();
+
+    this._renderChart();
   }
 
   getTemplate() {
@@ -74,7 +145,20 @@ export default class StatisticsView extends Smart {
   removeElement() {
     super.removeElement();
 
-    //some additional logic
+    if(this._chart !== null){
+      this._chart = null;
+    }
+  }
+
+  _renderChart() {
+    if(this._chart !== null){
+      this._chart = null;
+    }
+
+    if (this._data.numberWatched !== 0) {
+      const statisticCtx = this.getElement().querySelector('.statistic__chart');
+      this._chart = createChartTemplate(this._data, statisticCtx);
+    }
   }
 
   _setClickHandler() {
@@ -83,6 +167,7 @@ export default class StatisticsView extends Smart {
 
   _statsFilterHandler(evt) {
     this.updateData(parseInfoToStatisticData(this._films, evt.target.value));
+    this._renderChart();
   }
 
   restoreHandlers() {

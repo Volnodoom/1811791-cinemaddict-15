@@ -6,6 +6,15 @@ dayjs.extend(isBetween);
 const MINUTES = 60;
 
 export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPeriodValue.ALL) => {
+  const emptyState = {
+    'selectedPeriod': selectedPeriod,
+    yourRank: 0,
+    isRank: false,
+    htmlTimeLine:  '0 <span class="statistic__item-description">h</span> 0 <span class="statistic__item-description">m</span>',
+    favoriteGenre: '',
+    numberWatched: 0,
+  };
+
   const arrayOfWatchedMovies = films.slice().reduce((acc, item) => {
     if(item.userDetails.alreadyWatched) {
       acc.push(item);
@@ -13,15 +22,8 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
     return acc;
   }, []);
 
-  if (arrayOfWatchedMovies.length < 1) {
-    return {
-      'selectedPeriod': selectedPeriod,
-      yourRank: 0,
-      isRank: false,
-      htmlTimeLine: 0,
-      favoriteGenre: '',
-      numberWatched: 0,
-    };
+  if (arrayOfWatchedMovies.length < 1 || arrayOfWatchedMovies.length === null) {
+    return emptyState;
   }
 
   const statisticMovieFilter = (watchedFilms) => {
@@ -42,24 +44,17 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
   const numberOfWatchedMovies = statisticMovieFilter(arrayOfWatchedMovies).length;
 
   if (numberOfWatchedMovies < 1) {
-    return {
-      'selectedPeriod': selectedPeriod,
-      yourRank: 0,
-      isRank: false,
-      htmlTimeLine: 0,
-      favoriteGenre: '',
-      numberWatched: 0,
-    };
+    return emptyState;
   }
 
   const getRankData = () => {
     const title = () => {
       switch (true){
-        case (numberOfWatchedMovies >= 1 && numberOfWatchedMovies <= 10):
+        case (arrayOfWatchedMovies.length >= 1 && arrayOfWatchedMovies.length <= 10):
           return 'Novice';
-        case (numberOfWatchedMovies >= 11 && numberOfWatchedMovies <= 20):
+        case (arrayOfWatchedMovies.length >= 11 && arrayOfWatchedMovies.length <= 20):
           return 'Fan';
-        case (numberOfWatchedMovies >= 21):
+        case (arrayOfWatchedMovies.length >= 21):
           return 'Movie buff';
       }
     };
@@ -92,7 +87,8 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
 
     return {
       favoriteGenre: nameOfGenres[0],
-
+      listOfGenres: nameOfGenres,
+      'watchCount': watchCount,
     };
   };
 

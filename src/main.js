@@ -25,14 +25,12 @@ const api = new Api(END_POINT, AUTHORIZATION);
 const filmsModel = new FilmsModel();
 const filterModel = new FilterModel();
 
-render(headerOfBody, new AvatarView(), RenderPosition.BEFOREEND);
-render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
-
 const movieBoardPresenter = new MovieBoardPresenter(mainOfBody, filmsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel, movieBoardPresenter);
 
-// movieBoardPresenter.init();
+movieBoardPresenter.init();
 filterPresenter.init();
+
 
 
 api.getGeneralData()
@@ -43,6 +41,8 @@ api.getGeneralData()
     filmsModel.setMovies(UpdateType.INIT, []);
   });
 
+  render(headerOfBody, new AvatarView(filmsModel), RenderPosition.BEFOREEND);
+  render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
 
 // const nonOperationalStateLoading = () => {
 //   render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);
