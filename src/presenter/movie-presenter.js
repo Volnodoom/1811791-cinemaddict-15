@@ -106,7 +106,7 @@ class Movie {
         this._popupCommentsWrap.shake(resetFormState);
         break;
       case State.ABORTING_COMMENT:
-        this._popupCard.setAborting();
+        this._popupCommentsList.setAborting();
         break;
     }
   }

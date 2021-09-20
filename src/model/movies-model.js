@@ -32,17 +32,22 @@ class FilmsModel extends AbstractObserver {
     this._notify(UpdateType, update);
   }
 
-  updateComments(UpdateType, update) {
+  deleteComments(UpdateType, update, commentId) {
     const index = this._films.findIndex((film) => film.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting task');
     }
+    debugger;
+    const indexForRemoval = this._films[index].comments.findIndex((object) => object.id === commentId);
 
-    this._films[index] = [
-      delete this._films[index].comments,
-      update,
-      ...this._films.slice(index + 1),
+    if (indexForRemoval === -1) {
+      throw new Error('Can\'t remove unexisting comment');
+    }
+
+    this._films[index].comments = [
+      ... this._films[index].comments.slice(0, indexForRemoval),
+      ... this._films[index].comments.slice(indexForRemoval + 1),
     ];
 
     this._notify(UpdateType, update);

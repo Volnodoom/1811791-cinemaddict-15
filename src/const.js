@@ -1,3 +1,5 @@
+export const SHAKE_ANIMATION_TIMEOUT = 600;
+
 export const UserAction = {
   UPDATE_MOVIE: 'UPDATE_MOVIE',
   ADD_COMMENT: 'ADD_COMMENT',

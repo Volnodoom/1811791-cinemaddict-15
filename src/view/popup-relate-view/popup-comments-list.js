@@ -1,6 +1,7 @@
 import { dateYearMonthDayTime, EmojiUrl } from '../../utils/card-utils';
 import he from 'he';
 import Smart from '../smart.js';
+import { SHAKE_ANIMATION_TIMEOUT } from '../../const.js';
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
@@ -15,10 +16,10 @@ const getUsersCommentsTemplate = (film) => {
       comAuthor,
       comDayTime,
       emotion,
-      isDisabled,
-      isDeleting} = film.comments[ind];
+      id,
+    } = film.comments[ind];
 
-    filmComments += `<li class="film-details__comment">
+    filmComments += `<li class="film-details__comment" data-id= "${id}">
       <span class="film-details__comment-emoji">
         <img src="${EmojiUrl[emotion.toUpperCase()]}" width="55" height="55" alt="${emotion}">
       </span>
@@ -27,7 +28,7 @@ const getUsersCommentsTemplate = (film) => {
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comAuthor}</span>
         <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>
-        <button class="film-details__comment-delete" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting ...' : 'Delete'}</button>
+        <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
   </li>`;
@@ -43,6 +44,9 @@ class PopupCommentsList extends Smart {
     super();
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
+
+    this._eventTarget= null;
+    this._deletedCommentId = null;
   }
 
   getTemplate () {
@@ -53,17 +57,28 @@ class PopupCommentsList extends Smart {
     evt.preventDefault();
 
     if (evt.target.tagName === 'BUTTON') {
+      this._eventTarget = evt.target;
+
       const index = this._film.comments.findIndex((line) => line.commentItself === evt.target.parentElement.previousElementSibling.textContent);
-      const removedComment = this._film.comments.splice(index, 1);
-      const helper = removedComment[0].id;
-      // debugger;
-      // const idDeletedComment = this._film.comments[index].id;
 
-      // evt.target.innerText = 'Deleting...';
-      // evt.target.disabled = true;
+      const deletedCommentId = this._film.comments[index].id;
+      this._deletedCommentId = this._film.comments[index].id;
 
-      this._callback.clickOnDeleteCommentButton(helper);
+      evt.target.innerText = 'Deleting...';
+      evt.target.disabled = true;
+
+      this._callback.clickOnDeleteCommentButton(deletedCommentId);
     }
+  }
+
+  setAborting() {
+    this._eventTarget.innerText = 'Delete';
+    this._eventTarget.disabled = false;
+
+    this._eventTarget.closest('li').style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this._eventTarget.closest('li').style.animation = '';
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   setClickHandler(callback) {
