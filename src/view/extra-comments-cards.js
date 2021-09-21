@@ -7,10 +7,10 @@ const createFrameworkForExtraMostComments = () => (
   </section>`
 );
 
-class TopComments extends AbstractView{
+class ExtraTopCommentsWrap extends AbstractView{
   getTemplate () {
     return createFrameworkForExtraMostComments();
   }
 }
 
-export default TopComments;
+export default ExtraTopCommentsWrap;

@@ -16,9 +16,9 @@ export default class Api {
   }
 
   getGeneralData() {
-    return this._getMovies()
+    return this.getMovies()
       .then((movies) => {
-        const promisifyArrayComments = movies.map((film) => this._getComments(film));
+        const promisifyArrayComments = movies.map((film) => this.getComments(film));
 
         return Promise.allSettled(promisifyArrayComments)
           .then((comments) => movies
@@ -43,13 +43,13 @@ export default class Api {
       });
   }
 
-  _getMovies() {
+  getMovies() {
     return this._load ({url: UrlTo.MOVIES})
       .then(Api.parsJSONtoObject)
       .then((films) => films.map(FilmsModel.adaptToClientMovie));
   }
 
-  _getComments(film) {
+  getComments(film) {
     return this._load ({url: `${UrlTo.COMMENTS}/${film.id}`})
       .then(Api.parsJSONtoObject)
       .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientUnionComments))
@@ -69,7 +69,7 @@ export default class Api {
       .then(FilmsModel.adaptToClientMovie)
       // eslint-disable-next-line arrow-body-style
       .then((receive) => {
-        return this._getComments(film).then((comments) => {
+        return this.getComments(film).then((comments) => {
           if (comments.filmId) {
             delete comments.filmId;
           }

@@ -38,7 +38,7 @@ class FilmsModel extends AbstractObserver {
     if (index === -1) {
       throw new Error('Can\'t update unexisting task');
     }
-    debugger;
+
     const indexForRemoval = this._films[index].comments.findIndex((object) => object.id === commentId);
 
     if (indexForRemoval === -1) {

@@ -1,12 +1,9 @@
 /* eslint-disable no-use-before-define */
 import AvatarView from './view/avatar';
-// import EmptyConditionView from './model/empty-condition';
 import FooterView from './view/footer';
 import MovieBoardPresenter from './presenter/board-presenter';
 import FilmsModel from './model/movies-model.js';
-import { render, RenderPosition, // EmptyStatement,
-  FooterCondition
-} from './utils/render.js';
+import { render, RenderPosition, FooterCondition} from './utils/render.js';
 import FilterModel from './model/filter-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import Api from './api.js';
@@ -42,10 +39,4 @@ api.getGeneralData()
     filmsModel.setMovies(UpdateType.INIT, []);
   });
 
-// const nonOperationalStateLoading = () => {
-//   render(mainOfBody, new FilterView(filter), RenderPosition.BEFOREEND);
-//   render(mainOfBody, new EmptyConditionView(EmptyStatement.LOADING), RenderPosition.BEFOREEND);
-//   render(footerPart, new FooterView(FooterCondition.empty), RenderPosition.BEFOREEND);
-// };
 
-// nonOperationalStateLoading();
