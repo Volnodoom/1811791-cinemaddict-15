@@ -6,6 +6,7 @@ const Method = {
   PUT: 'PUT',
   PATCH: 'PATCH',
   DELETE: 'DELETE',
+  POST: 'POST',
 };
 
 export default class Api {
@@ -15,9 +16,9 @@ export default class Api {
   }
 
   getGeneralData() {
-    return this._getMovies()
+    return this.getMovies()
       .then((movies) => {
-        const promisifyArrayComments = movies.map((film) => this._getComments(film));
+        const promisifyArrayComments = movies.map((film) => this.getComments(film));
 
         return Promise.allSettled(promisifyArrayComments)
           .then((comments) => movies
@@ -32,25 +33,26 @@ export default class Api {
                 'comments': correctedFormOfResults,
               };
 
-              delete results.comments[0].filmId;
+              if (results.comments.length > 0) {
+                delete results.comments[0].filmId;
+              }
 
               return results;
-
             }),
           );
       });
   }
 
-  _getMovies() {
+  getMovies() {
     return this._load ({url: UrlTo.MOVIES})
       .then(Api.parsJSONtoObject)
       .then((films) => films.map(FilmsModel.adaptToClientMovie));
   }
 
-  _getComments(film) {
+  getComments(film) {
     return this._load ({url: `${UrlTo.COMMENTS}/${film.id}`})
       .then(Api.parsJSONtoObject)
-      .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientComments))
+      .then((commentsForOneFilm) => commentsForOneFilm.map(FilmsModel.adaptToClientUnionComments))
       .then((commentsForOneFilm) => ({
         filmId: film.id,
         ...commentsForOneFilm}));
@@ -64,19 +66,21 @@ export default class Api {
       headers: new Headers({'Content-Type': 'application/json'}),
     })
       .then(Api.parsJSONtoObject)
-      .then(FilmsModel.adaptToClientMovie);
-  }
+      .then(FilmsModel.adaptToClientMovie)
+      // eslint-disable-next-line arrow-body-style
+      .then((receive) => {
+        return this.getComments(film).then((comments) => {
+          if (comments.filmId) {
+            delete comments.filmId;
+          }
+          const framedComments = Object.values(comments);
+          const results = {
+            ...receive,
+            'comments': framedComments,
+          };
 
-  updateComments(film) {
-    return this._load({
-      url: `${UrlTo.COMMENTS}/${film.id}`,
-      method: Method.PUT,
-      body: JSON.stringify(FilmsModel.adaptToServerComments(film)),
-      headers: new Headers({'Content-Type': 'application/json'}),
-    })
-      .then(Api.parsJSONtoObject)
-      .then(FilmsModel.adaptToClientComments);
-
+          return results;
+        });});
   }
 
   _load({
@@ -95,9 +99,27 @@ export default class Api {
       .catch(Api.catchError);
   }
 
+  addComment(film) {
+    return this._load({
+      url: `${UrlTo.COMMENTS}/${film.id}`,
+      method: Method.POST,
+      body: JSON.stringify(FilmsModel.adaptToServerComments(film)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.parsJSONtoObject)
+      .then(FilmsModel.adaptToClientResponseFromCommentUpdate);
+  }
+
+  deleteComment(id) {
+    return this._load({
+      url: `${UrlTo.COMMENTS}/${id}`,
+      method: Method.DELETE,
+    });
+  }
+
   static checkStatus(response) {
     if(!response.ok) {
-      throw new Error(`${response.status}: :${response.statusText}`);
+      throw new Error(`${response.status}:${response.statusText}`);
     }
 
     return response;

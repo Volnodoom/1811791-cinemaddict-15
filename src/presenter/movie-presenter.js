@@ -13,6 +13,14 @@ const Mode = {
   POPUP: 'POPUP',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  ADDITION: 'ADDITION',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING',
+  ABORTING_COMMENT: 'ABORTING COMMENT',
+};
+
 class Movie {
   constructor(movieListContainer, changeData, changeMode) {
     this._movieListContainer = movieListContainer;
@@ -63,6 +71,46 @@ class Movie {
 
     remove(prevFilmComponent);
   }
+
+  setViewState(state) {
+    if (this._mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this._popupCommentsList.updateData({
+        isDisabled: false,
+        isDeleting: false,
+      }, true);
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this._filmComponent.updateData({
+          isSaving: true,
+        });
+        break;
+      case State.ADDITION:
+        this._filmComponent.updateData({
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this._filmComponent.updateData({
+          isDeleting: true,
+          isDisabled: true,
+        });
+        break;
+      case State.ABORTING:
+        this._popupCommentsList.shake(resetFormState);
+        this._popupCommentsWrap.shake(resetFormState);
+        break;
+      case State.ABORTING_COMMENT:
+        this._popupCommentsList.setAborting();
+        break;
+    }
+  }
+
 
   _processFavoriteClick() {
     this._changeData(
@@ -122,6 +170,15 @@ class Movie {
     document.addEventListener('keydown', this._keyCancelHandler);
   }
 
+  _processDeleteComments(helper) {
+    return this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      this._film,
+      helper,
+    );
+  }
+
   _setEventListenersThumbnails() {
     this._filmComponent.setClickHandler(CardsEventsOn.POSTER, this._processClickPopup);
     this._filmComponent.setClickHandler(CardsEventsOn.TITLE, this._processClickPopup);
@@ -139,22 +196,33 @@ class Movie {
     }
   }
 
+  resetPopup(chosenMovie) {
+    if (this._mode === Mode.POPUP) {
+      remove(this._popupCard);
+      this._bodyPart.classList.remove('hide-overflow');
+      this._mode = Mode.DEFAULT;
+      this._bodyPart.classList.add('hide-overflow');
+      this._renderPopup(chosenMovie);
+      document.addEventListener('keydown', this._keyCancelHandler);
+    }
+  }
+
   _renderPopup(chosenMovie) {
     this._mode = Mode.POPUP;
 
     this._popupCard = new PopupMovieView(chosenMovie);
     this._popupCommentsTitle = new PopupCommentsTitleView(chosenMovie);
     this._popupCommentsList = new PopupCommentsListView(chosenMovie);
-    this._PopupCommentsWrap = new PopupCommentsWrap();
-    this._popupCommentsNew = new CommentNewPresenter (this._PopupCommentsWrap, chosenMovie, this._changeData);
+    this._popupCommentsWrap = new PopupCommentsWrap();
+    this._popupCommentsNew = new CommentNewPresenter (this._popupCommentsWrap, chosenMovie, this._changeData);
 
     render (this._bodyPart, this._popupCard, RenderPosition.BEFOREEND);
 
     this.popupCommentsContainer = this._bodyPart.querySelector('.film-details__bottom-container');
 
-    render (this.popupCommentsContainer, this._PopupCommentsWrap, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
-    render (this._PopupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
+    render (this.popupCommentsContainer, this._popupCommentsWrap, RenderPosition.BEFOREEND);
+    render (this._popupCommentsWrap, this._popupCommentsTitle, RenderPosition.BEFOREEND);
+    render (this._popupCommentsWrap, this._popupCommentsList, RenderPosition.BEFOREEND);
     this._popupCommentsNew.init();
 
     this._setEventListenersPopup();
@@ -168,14 +236,6 @@ class Movie {
     this._popupCard.setKeyDownHandler(this._closePopup);
 
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
-  }
-
-  _processDeleteComments() {
-    return this._changeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.MINOR,
-      this._film,
-    );
   }
 
   _closePopup() {

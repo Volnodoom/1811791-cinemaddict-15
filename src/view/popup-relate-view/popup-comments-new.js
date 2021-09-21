@@ -1,12 +1,14 @@
 import SmartView from '../smart';
 import he from 'he';
 
-const createPopupCommentsNew = () => (
-  `<div class="film-details__new-comment">
+const createPopupCommentsNew = (film) => {
+  const isSaving = film.isSaving;
+
+  return (`<div class="film-details__new-comment">
           <div class="film-details__add-emoji-label"></div>
 
           <label class="film-details__comment-label">
-            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" required ${isSaving ? 'disabled' : ''}></textarea>
           </label>
 
     <div class="film-details__emoji-list">
@@ -30,8 +32,8 @@ const createPopupCommentsNew = () => (
               <img src="images/emoji/angry.png" width="30" height="30" alt="emoji">
             </label>
     </div>
-  </div>`
-);
+  </div>`);
+};
 
 class PopupCommentsNew extends SmartView {
   constructor(film) {
@@ -56,7 +58,12 @@ class PopupCommentsNew extends SmartView {
   }
 
   getTemplate () {
-    return createPopupCommentsNew();
+    return createPopupCommentsNew(this._data);
+  }
+
+  _setInnerHandler() {
+    this.getElement().addEventListener('click', this._innerClickHandler);
+    this.getElement().addEventListener('input', this._innerInputHandler);
   }
 
   _innerClickHandler(evt) {
@@ -71,11 +78,6 @@ class PopupCommentsNew extends SmartView {
     }
   }
 
-  _setInnerHandler() {
-    this.getElement().addEventListener('click', this._innerClickHandler);
-    this.getElement().addEventListener('input', this._innerInputHandler);
-  }
-
   _innerInputHandler (evt) {
     if (evt.target.tagName === 'TEXTAREA') {
       this.updateData({
@@ -84,12 +86,10 @@ class PopupCommentsNew extends SmartView {
     }
   }
 
-
   _formSubmitHandler (evt) {
     if (evt.ctrlKey && (evt.key === 'Enter' || evt.key === 'Enter')) {
       evt.preventDefault();
-      this._callback.formSubmit();
-      document.querySelector('form').submit();
+      this._callback.formSubmit(this._data);
     }
   }
 
@@ -100,6 +100,7 @@ class PopupCommentsNew extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandler();
+    this.setOuterHandler(this._callback.formSubmit);
   }
 }
 

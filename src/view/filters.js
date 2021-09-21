@@ -6,14 +6,14 @@ const createSingleFilterItemTemplate = (filterData, currentFilterType) => {
   ${name}<span class="main-navigation__item-count">${count}</span></a>`);
 };
 
-const createFiltersTemplate = (filtersData, currentFilterType) => {
+const createNavigationTemplate = (filtersData, currentFilterType) => {
   const filterItemsTemplate = filtersData.map((filter) => createSingleFilterItemTemplate(filter, currentFilterType)).join(' ');
 
   return (`<nav class="main-navigation">
       <div class="main-navigation__items">
         ${filterItemsTemplate}
       </div>
-      <a href="#stats" class="main-navigation__additional">Stats</a>
+      <a href="#stats" class="main-navigation__additional ${currentFilterType === 'stats' ? 'main-navigation__item--active' : ''}">Stats</a>
     </nav>`);
 };
 
@@ -24,10 +24,11 @@ class FilterView extends AbstractView{
     this._currentFilter = currentFilterType;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
+    this._menuClickHandler = this._menuClickHandler.bind(this);
   }
 
   getTemplate () {
-    return createFiltersTemplate(this._filter, this._currentFilter);
+    return createNavigationTemplate(this._filter, this._currentFilter);
   }
 
   _filterTypeChangeHandler(evt) {
@@ -39,15 +40,26 @@ class FilterView extends AbstractView{
       case 'history':
       case 'favorites':
         this._callback.filterTypeChange(evt.target.hash.slice(1));
+        document.querySelector('.main-navigation__additional').classList.remove('main-navigation__item--active');
         break;
       case 'stats':
-        break;
+        document.querySelector('.main-navigation__additional').classList.add('main-navigation__item--active');
     }
   }
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement().addEventListener('click', this._filterTypeChangeHandler);
+  }
+
+  _menuClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.MovieStatisticSwitch(evt.target.hash.slice(1));
+  }
+
+  setMovieStatisticSwitch(callback) {
+    this._callback.MovieStatisticSwitch = callback;
+    this.getElement().addEventListener('click', this._menuClickHandler);
   }
 }
 

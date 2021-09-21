@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { UpdateType, UserAction } from '../const.js';
 import { remove, render, RenderPosition } from '../utils/render.js';
 import PopupCommentsNew from '../view/popup-relate-view/popup-comments-new.js';
@@ -38,18 +37,29 @@ export default class CommentNewPresenter {
     document.removeEventListener('keydown', this._escKeyDownHandler);
   }
 
-  _processFormSubmit() {
+  setSaving() {
+    this._commentNewComponent.updateData({
+      isSaving: true,
+    }, true);
+  }
+
+  setAborting() {
+    const resetCommentState = () => {
+      this._commentNewComponent.updateData({
+        isSaving: false,
+        isDisabled: false,
+      });
+    };
+
+    this._commentNewComponent.shake(resetCommentState);
+  }
+
+  _processFormSubmit(updatedFilm) {
     this._changeData(
       UserAction.ADD_COMMENT,
-      UpdateType.MINOR,
-      Object.assign( {},
-        {
-          localId: nanoid(),
-        },
-        this._chosenMovie,
-      ),
+      UpdateType.PATCH,
+      updatedFilm,
     );
-    this.destroy();
   }
 
   _escKeyDownHandler(evt) {

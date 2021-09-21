@@ -1,6 +1,7 @@
-import { dateYearMonthDayTime, EmojiUrl, KeyType } from '../../utils/card-utils';
-import AbstractView from '../abstract';
+import { dateYearMonthDayTime, EmojiUrl } from '../../utils/card-utils';
 import he from 'he';
+import Smart from '../smart.js';
+import { SHAKE_ANIMATION_TIMEOUT } from '../../const.js';
 
 const getUsersCommentsTemplate = (film) => {
   // eslint-disable-next-line quotes
@@ -14,9 +15,11 @@ const getUsersCommentsTemplate = (film) => {
     const {commentItself,
       comAuthor,
       comDayTime,
-      emotion} = film.comments[ind];
+      emotion,
+      id,
+    } = film.comments[ind];
 
-    filmComments += `<li class="film-details__comment">
+    filmComments += `<li class="film-details__comment" data-id= "${id}">
       <span class="film-details__comment-emoji">
         <img src="${EmojiUrl[emotion.toUpperCase()]}" width="55" height="55" alt="${emotion}">
       </span>
@@ -36,12 +39,14 @@ const getUsersCommentsTemplate = (film) => {
   return allComments;
 };
 
-class PopupCommentsList extends AbstractView{
+class PopupCommentsList extends Smart {
   constructor (film) {
     super();
     this._film = film;
     this._clickHandler = this._clickHandler.bind(this);
-    this._keyHandler = this._keyHandler.bind(this);
+
+    this._eventTarget= null;
+    this._deletedCommentId = null;
   }
 
   getTemplate () {
@@ -52,10 +57,28 @@ class PopupCommentsList extends AbstractView{
     evt.preventDefault();
 
     if (evt.target.tagName === 'BUTTON') {
+      this._eventTarget = evt.target;
+
       const index = this._film.comments.findIndex((line) => line.commentItself === evt.target.parentElement.previousElementSibling.textContent);
-      this._film.comments.splice(index, 1);
-      this._callback.clickOnDeleteCommentButton();
+
+      const deletedCommentId = this._film.comments[index].id;
+      this._deletedCommentId = this._film.comments[index].id;
+
+      evt.target.innerText = 'Deleting...';
+      evt.target.disabled = true;
+
+      this._callback.clickOnDeleteCommentButton(deletedCommentId);
     }
+  }
+
+  setAborting() {
+    this._eventTarget.innerText = 'Delete';
+    this._eventTarget.disabled = false;
+
+    this._eventTarget.closest('li').style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this._eventTarget.closest('li').style.animation = '';
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   setClickHandler(callback) {
@@ -63,31 +86,8 @@ class PopupCommentsList extends AbstractView{
     this.getElement().addEventListener('click', this._clickHandler);
   }
 
-  _keyHandler(evt) {
-    evt.preventDefault();
-
-    switch (true) {
-      case (evt.key === 'Escape'):
-        this._callback.keyOnCancel();
-        break;
-      case (evt.key === 'ControlLeft' && 'Enter'):
-      case (evt.key === 'ControlRight' && 'Enter'):
-        this._callback.keyOnSubmit();
-        break;
-    }
-  }
-
-  setKeyHandler(keyType, callback) {
-    switch (keyType) {
-      case KeyType.SUBMIT:
-        this._callback.keyOnSubmit = callback;
-        break;
-      case KeyType.CANCEL:
-        this._callback.keyOnCancel = callback;
-        break;
-    }
-
-    this.getElement().addEventListener('keydown', this._keyHandler);
+  restoreHandlers() {
+    this.setClickHandler(this._callback.clickOnDeleteCommentButton);
   }
 }
 
