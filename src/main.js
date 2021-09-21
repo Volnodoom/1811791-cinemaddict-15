@@ -28,7 +28,7 @@ const filterPresenter = new FilterPresenter(mainOfBody, filterModel, filmsModel,
 movieBoardPresenter.init();
 filterPresenter.init();
 
-render(headerOfBody, new AvatarView(filmsModel), RenderPosition.BEFOREEND);
+render(headerOfBody, new AvatarView(filmsModel, api), RenderPosition.BEFOREEND);
 render(footerPart, new FooterView(FooterCondition.upToDate), RenderPosition.BEFOREEND);
 
 api.getGeneralData()

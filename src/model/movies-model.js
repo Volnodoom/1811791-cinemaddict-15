@@ -9,7 +9,7 @@ class FilmsModel extends AbstractObserver {
   setMovies(updateType, films) {
     this._films = films.slice();
 
-    this._notify(updateType);
+    this._notify(updateType, this._films);
   }
 
   getMovies() {
