@@ -1,21 +1,28 @@
-import { FooterCondition } from '../utils/render.js';
-import AbstractView from './abstract.js';
 
-const footerTemplateForBlankWithoutMovie = `<p>${FooterCondition.empty}</p>`;
-const footerTemplateForUpToDate = `<p>${FooterCondition.upToDate}</p>`;
+import Smart from './smart.js';
 
-class Footer extends AbstractView{
-  constructor(message) {
+class Footer extends Smart{
+  constructor(filmsModel) {
     super();
-    this.message = message;
+    this._filmsModel = filmsModel;
+    this._filmsCount = null;
+
+    this._processModelUpdateForFooter = this._processModelUpdateForFooter.bind(this);
+    this._filmsModel.addObserver(this._processModelUpdateForFooter);
   }
 
   getTemplate () {
-    if (this.message === FooterCondition.empty) {
-      return footerTemplateForBlankWithoutMovie;
-    } else {
-      return footerTemplateForUpToDate;
-    }
+    return `<p>${this._filmsCount} movies inside</p>`;
+  }
+
+  _processModelUpdateForFooter() {
+    this._filmsCount = this._filmsModel.getMovies().length;
+
+    this.updateData({number: this._filmsCount});
+  }
+
+  restoreHandlers() {
+
   }
 }
 

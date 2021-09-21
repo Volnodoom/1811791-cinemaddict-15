@@ -19,53 +19,26 @@ const avatarTemplate = (title) => {
 };
 
 class Avatar extends Smart {
-  constructor(filmsModel, api) {
+  constructor(filmsModel) {
     super();
     this._filmsModel = filmsModel;
-    this._api = api;
     this._rank = null;
-    this._processModelEvent = this._processModelEvent1.bind(this);
-    this._filmsModel.addObserver(this._processModelEvent1);
+
+    this._processModelEventInAvatar = this._processModelEventInAvatar.bind(this);
+    this._filmsModel.addObserver(this._processModelEventInAvatar);
   }
 
   getTemplate () {
     return avatarTemplate(this._rank);
   }
 
-  _processModelEvent1(fer, films) {
-    debugger;
-
-    // this._api.getGeneralData()
-    // .then(() => {
-    //   this._rank = rankTitle(this._filmsModel.getMovies());
-    //   this.removeElement();
-    //   this.getElement();
-    // })
-    // .catch(() => {
-    //   // this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING);
-    //   throw new Error('Could not update avatar state');
-    // });
-    if (films.length === 0) {
-      return;
-    }
+  _processModelEventInAvatar() {
+    const films = this._filmsModel.getMovies();
     this._rank = rankTitle(films);
-    // const films = this._filmsModel.getMovies();
-    // this._rank = rankTitle(this._filmsModel.getMovies());
-    Avatar.removeElement();
-    Avatar.getElement();
-    // this._rank = rankTitle(this._films);
 
-    // this._clearAvatar();
-    // this._renderAvatar();
-
-  }
-
-  _clearAvatar() {
-    Avatar.removeElement();
-  }
-
-  _renderAvatar() {
-    Avatar.getElement();
+    this.updateData({
+      title: this._rank,
+    });
   }
 
   restoreHandlers() {

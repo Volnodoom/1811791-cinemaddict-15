@@ -1,5 +1,5 @@
 import { dateDayMonthYear, calculateTime, PopupCardEventOn } from '../../utils/card-utils';
-import AbstractView from '../abstract';
+import Smart from '../smart.js';
 
 const ACTIVE_STATE_CLASS = 'film-details__control-button--active';
 
@@ -96,7 +96,7 @@ const createPopupTemplate = (film) => {
 </section>`;
 };
 
-class PopupMovie extends AbstractView {
+class PopupMovie extends Smart {
   constructor(film) {
     super();
     this._film = film;
@@ -161,6 +161,10 @@ class PopupMovie extends AbstractView {
   setKeyDownHandler(callback) {
     this._callback.keydownEsc = callback;
     document.addEventListener('keydown', this._keydownHandler);
+  }
+
+  restoreHandlers() {
+
   }
 }
 

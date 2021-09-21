@@ -6,11 +6,6 @@ const RenderPosition = {
   AFTER_ELEMENT: 'afterElement',
 };
 
-const FooterCondition = {
-  empty: '0 movies inside',
-  upToDate: '130 291 movies inside',
-};
-
 const render = (container, child, place) => {
   if (container instanceof Abstract) {
     container = container.getElement();
@@ -70,4 +65,4 @@ const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export {render, remove, replace, createElement, RenderPosition, FooterCondition};
+export {render, remove, replace, createElement, RenderPosition};
