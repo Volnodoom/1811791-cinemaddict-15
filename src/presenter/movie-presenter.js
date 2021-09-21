@@ -22,10 +22,11 @@ export const State = {
 };
 
 class Movie {
-  constructor(movieListContainer, changeData, changeMode) {
+  constructor(movieListContainer, changeData, changeMode, filmsModel) {
     this._movieListContainer = movieListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._filmsModel = filmsModel;
 
     this._bodyPart = document.body;
 
@@ -115,7 +116,7 @@ class Movie {
   _processFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -132,7 +133,7 @@ class Movie {
   _processWatchedClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -149,7 +150,7 @@ class Movie {
   _processWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -193,17 +194,6 @@ class Movie {
     if (this._mode !== Mode.DEFAULT) {
       remove(this._popupCard);
       this._mode = Mode.DEFAULT;
-    }
-  }
-
-  resetPopup(chosenMovie) {
-    if (this._mode === Mode.POPUP) {
-      remove(this._popupCard);
-      this._bodyPart.classList.remove('hide-overflow');
-      this._mode = Mode.DEFAULT;
-      this._bodyPart.classList.add('hide-overflow');
-      this._renderPopup(chosenMovie);
-      document.addEventListener('keydown', this._keyCancelHandler);
     }
   }
 

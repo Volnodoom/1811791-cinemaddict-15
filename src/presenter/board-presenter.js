@@ -185,7 +185,6 @@ class MovieBoard {
         break;
       case UpdateType.MINOR:
         this._refreshLinesContent(data);
-        this._filmPresenterMain.get(data.id).resetPopup(data);
         this._clearBoard();
         this._renderBoard();
         break;
