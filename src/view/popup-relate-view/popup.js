@@ -287,7 +287,7 @@ export default class PopupMovieView extends Smart {
     this._setInnerHandler();
   }
 
-  setAbortingComment() {
+  setAbortingDeletingComment() {
     this._deleteButton.innerText = 'Delete';
     this._deleteButton.disabled = false;
 
@@ -297,7 +297,24 @@ export default class PopupMovieView extends Smart {
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
+  setAbortingSavingComment() {
+    this.getElement().updateData({
+      isSaving: false,
+    }, true);
 
 
+    this.getElement().querySelector('.film-details__bottom-container')
+      .style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this.getElement().querySelector('.film-details__bottom-container')
+        .style.animation = '';
+    }, SHAKE_ANIMATION_TIMEOUT);
+  }
+
+  setSavingComment() {
+    this.getElement().updateData({
+      isSaving: true,
+    }, true);
+  }
 }
 
