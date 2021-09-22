@@ -37,3 +37,4 @@ export const StatisticsPeriodValue = {
   MONTH: 'month',
   YEAR: 'year',
 };
+

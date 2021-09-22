@@ -22,10 +22,11 @@ export const State = {
 };
 
 class Movie {
-  constructor(movieListContainer, changeData, changeMode) {
+  constructor(movieListContainer, changeData, changeMode, filmsModel) {
     this._movieListContainer = movieListContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._filmsModel = filmsModel;
 
     this._bodyPart = document.body;
 
@@ -111,11 +112,10 @@ class Movie {
     }
   }
 
-
   _processFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -132,7 +132,7 @@ class Movie {
   _processWatchedClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -149,7 +149,7 @@ class Movie {
   _processWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         this._film,
@@ -168,6 +168,16 @@ class Movie {
     this._renderPopup(this._film);
     this._bodyPart.classList.add('hide-overflow');
     document.addEventListener('keydown', this._keyCancelHandler);
+  }
+
+  _closePopup() {
+    remove(this._popupCard);
+    remove(this._popupCommentsTitle);
+    remove(this._popupCommentsList);
+    this._popupCommentsNew.destroy();
+    this._bodyPart.classList.remove('hide-overflow');
+    this._mode = Mode.DEFAULT;
+    this._filmsModel.updateData(UpdateType.MINOR, null);
   }
 
   _processDeleteComments(helper) {
@@ -193,17 +203,6 @@ class Movie {
     if (this._mode !== Mode.DEFAULT) {
       remove(this._popupCard);
       this._mode = Mode.DEFAULT;
-    }
-  }
-
-  resetPopup(chosenMovie) {
-    if (this._mode === Mode.POPUP) {
-      remove(this._popupCard);
-      this._bodyPart.classList.remove('hide-overflow');
-      this._mode = Mode.DEFAULT;
-      this._bodyPart.classList.add('hide-overflow');
-      this._renderPopup(chosenMovie);
-      document.addEventListener('keydown', this._keyCancelHandler);
     }
   }
 
@@ -236,15 +235,6 @@ class Movie {
     this._popupCard.setKeyDownHandler(this._closePopup);
 
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
-  }
-
-  _closePopup() {
-    remove(this._popupCard);
-    remove(this._popupCommentsTitle);
-    remove(this._popupCommentsList);
-    this._popupCommentsNew.destroy();
-    this._bodyPart.classList.remove('hide-overflow');
-    this._mode = Mode.DEFAULT;
   }
 
   destroy() {
