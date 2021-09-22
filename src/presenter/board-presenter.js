@@ -131,6 +131,18 @@ class MovieBoard {
     }
   }
 
+  _searchForPresenter(film) {
+    if(this._filmPresenterMain.has(`${film.id}`)) {
+      return this._filmPresenterMain.get(film.id);
+    }
+    if(this._filmPresenterExtra1.has(`${film.id}`)) {
+      return this._filmPresenterExtra1.get(film.id);
+    }
+    if(this._filmPresenterExtra2.has(`${film.id}`)) {
+      return this._filmPresenterExtra2.get(film.id);
+    }
+  }
+
   _processViewAction(actionType, updateType, update, commentId = null) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
@@ -140,64 +152,40 @@ class MovieBoard {
             this._filmsModel.updateMovie(updateType, response);
           })
           .catch(() => {
-            this._filmPresenterMain.get(update.id).shake(()=>{});
+            this._searchForPresenter(update).shake(()=>{});
           });
         break;
       case UserAction.ADD_COMMENT:
-        this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ADDITION);
+        this._searchForPresenter(update).setViewState(MoviePresenterViewState.ADDITION);
         this._api.addComment(update)
           .then((response) => {
             this._filmsModel.updateMovie(updateType, response);
           })
           .catch(() => {
-            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COM_UPD);
+            this._searchForPresenter(update).setViewState(MoviePresenterViewState.ABORTING_COM_UPD);
           });
         break;
       case UserAction.DELETE_COMMENT:
-        this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.DELETING);
+        this._searchForPresenter(update).setViewState(MoviePresenterViewState.DELETING);
         this._api.deleteComment(commentId)
           .then(() => {
             this._filmsModel.deleteComments(updateType, update, commentId);
           })
           .catch(() => {
-            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COM_DEL);
+            this._searchForPresenter(update).setViewState(MoviePresenterViewState.ABORTING_COM_DEL);
           });
         break;
-    }
-  }
-
-  _refreshLinesContent(film) {
-    if(this._filmPresenterMain.has(`${film.id}`)) {
-      this._filmPresenterMain.get(film.id).initM(film);
-    }
-    if(this._filmPresenterExtra1.has(`${film.id}`)) {
-      this._filmPresenterExtra1.get(film.id).initM(film);
-    }
-    if(this._filmPresenterExtra2.has(`${film.id}`)) {
-      this._filmPresenterExtra2.get(film.id).initM(film);
-    }
-  }
-
-  _refreshPopupContent(film) {
-    if(this._filmPresenterMain.has(`${film.id}`)) {
-      this._filmPresenterMain.get(film.id).resetPopup(film);
-    }
-    if(this._filmPresenterExtra1.has(`${film.id}`)) {
-      this._filmPresenterExtra1.get(film.id).resetPopup(film);
-    }
-    if(this._filmPresenterExtra2.has(`${film.id}`)) {
-      this._filmPresenterExtra2.get(film.id).resetPopup(film);
     }
   }
 
   _processModelEvent(updateType, data) {
     switch(updateType) {
       case UpdateType.PATCH:
-        this._refreshLinesContent(data);
+        this._searchForPresenter(data).initM(data);
         break;
       case UpdateType.MINOR:
-        this._refreshPopupContent(data);
-        this._refreshLinesContent(data);
+        this._searchForPresenter(data).initM(data);
+        this._searchForPresenter(data).resetPopup(data);
         this._clearBoard();
         this._renderBoard();
         break;

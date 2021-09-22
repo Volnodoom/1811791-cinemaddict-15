@@ -81,21 +81,21 @@ class Movie {
       //   });
       //   break;
       case State.ADDITION:
-        this._popupComponent.updateData({
+        this._filmComponent.updateData({
           isSaving: true,
-        });
+        }, 'true');
         break;
       case State.DELETING:
-        this._popupComponent.updateData({
+        this._filmComponent.updateData({
           isDeleting: true,
           isDisabled: true,
-        });
+        }, 'true');
         break;
       case State.ABORTING_COM_DEL:
         this._popupComponent.setAbortingDeletingComment();
         break;
       case State.ABORTING_COM_UPD:
-        this._popupComponent.setAbortingDeletingComment();
+        this._popupComponent.setAbortingSavingComment(this._filmComponent);
         break;
     }
   }
@@ -191,6 +191,13 @@ class Movie {
     this._filmComponent.setClickHandler(CardsEventsOn.FAVORITE,  this._processFavoriteClick);
     this._filmComponent.setClickHandler(CardsEventsOn.WATCHED, this._processWatchedClick);
     this._filmComponent.setClickHandler(CardsEventsOn.WATCHLIST, this._processWatchlistClick);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      remove(this._popupCard);
+      this._mode = Mode.DEFAULT;
+    }
   }
 
   resetPopup(filmUpdate) {

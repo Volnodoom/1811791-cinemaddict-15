@@ -7,10 +7,10 @@ import he from 'he';
 const ACTIVE_STATE_CLASS = 'film-details__control-button--active';
 
 const createGenreHtmlLine = (genreList) => genreList.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(' ');
-const createEmojiCommentHtmlLine = ({idEmj, valueEmj, imgUrlEmj}) => (`<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="${idEmj}" value="${valueEmj}">
+const createEmojiCommentHtmlLine = ({idEmj, valueEmj, imgUrlEmj}) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="${idEmj}" value="${valueEmj}">
 <label class="film-details__emoji-label" for="${idEmj}">
   <img src="${imgUrlEmj}" width="30" height="30" alt="${idEmj}">
-</label>`);
+</label>`;
 
 const createPopupTemplate = (film) => {
   const {
@@ -149,7 +149,7 @@ export default class PopupMovieView extends Smart {
     this._filmsModel = filmsModel;
     this._film = film;
 
-    this._deleteButton = null;
+    // this._deleteButton = null;
     this._deletedCommentId = null;
 
     this._clickPopupHandler = this._clickPopupHandler.bind(this);
@@ -237,7 +237,13 @@ export default class PopupMovieView extends Smart {
     }
     if (evt.ctrlKey && (evt.key === 'Enter' || evt.key === 'Enter')) {
       evt.preventDefault();
-      this._callback.formSubmit(this._localCommentUpdate);
+      this._callback.formSubmit(
+        Object.assign(
+          {},
+          this._film,
+          this._localCommentUpdate,
+        ),
+      );
     }
   }
 
@@ -301,10 +307,10 @@ export default class PopupMovieView extends Smart {
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
-  setAbortingSavingComment() {
-    this.getElement().updateData({
+  setAbortingSavingComment(presenter) {
+    presenter.updateData({
       isSaving: false,
-    }, true);
+    }, 'true');
 
 
     this.getElement().querySelector('.film-details__bottom-container')

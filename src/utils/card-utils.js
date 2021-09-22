@@ -23,24 +23,24 @@ export const CardsEventsOn = {
 
 export const EmojiContent = {
   SMILE: {
-    id: 'emoji-smile',
-    value: 'smile',
-    imgUrl: './images/emoji/smile.png',
+    idEmj: 'emoji-smile',
+    valueEmj: 'smile',
+    imgUrlEmj: './images/emoji/smile.png',
   },
   SLEEPING: {
-    id: 'emoji-sleeping',
-    value: 'sleeping',
-    imgUrl: './images/emoji/sleeping.png',
+    idEmj: 'emoji-sleeping',
+    valueEmj: 'sleeping',
+    imgUrlEmj: './images/emoji/sleeping.png',
   },
   PUKE: {
-    id: 'emoji-puke',
-    value: 'puke',
-    imgUrl: './images/emoji/puke.png',
+    idEmj: 'emoji-puke',
+    valueEmj: 'puke',
+    imgUrlEmj: './images/emoji/puke.png',
   },
   ANGRY: {
-    id: 'emoji-angry',
-    value: 'angry',
-    imgUrl: './images/emoji/angry.png',
+    idEmj: 'emoji-angry',
+    valueEmj: 'angry',
+    imgUrlEmj: './images/emoji/angry.png',
   },
 };
 
