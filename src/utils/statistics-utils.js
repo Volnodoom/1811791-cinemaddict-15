@@ -156,18 +156,15 @@ export const rankTitle = (films) => {
     }
     return acc;
   }, []);
-  const title = () => {
-    switch (true){
-      case (watchedFilmCount.length === 0):
-        return 0;
-      case (watchedFilmCount.length >= 1 && watchedFilmCount.length <= 10):
-        return 'Novice';
-      case (watchedFilmCount.length >= 11 && watchedFilmCount.length <= 20):
-        return 'Fan';
-      case (watchedFilmCount.length >= 21):
-        return 'Movie buff';
-    }
-  };
 
-  return title();
+  switch (true){
+    case (watchedFilmCount.length === 0):
+      return 0;
+    case (watchedFilmCount.length >= 1 && watchedFilmCount.length <= 10):
+      return 'Novice';
+    case (watchedFilmCount.length >= 11 && watchedFilmCount.length <= 20):
+      return 'Fan';
+    case (watchedFilmCount.length >= 21):
+      return 'Movie buff';
+  }
 };

@@ -21,6 +21,30 @@ export const CardsEventsOn = {
   WATCHLIST: 'film-card__controls-item--add-to-watchlist',
 };
 
+export const EmojiContent = {
+  SMILE: {
+    id: 'emoji-smile',
+    value: 'smile',
+    imgUrl: './images/emoji/smile.png',
+  },
+  SLEEPING: {
+    id: 'emoji-sleeping',
+    value: 'sleeping',
+    imgUrl: './images/emoji/sleeping.png',
+  },
+  PUKE: {
+    id: 'emoji-puke',
+    value: 'puke',
+    imgUrl: './images/emoji/puke.png',
+  },
+  ANGRY: {
+    id: 'emoji-angry',
+    value: 'angry',
+    imgUrl: './images/emoji/angry.png',
+  },
+};
+
+
 export const EmojiUrl = {
   SMILE: 'images/emoji/smile.png ',
   SLEEPING: 'images/emoji/sleeping.png ',
@@ -45,6 +69,9 @@ export const PopupCardEventOn = {
   FAVORITE: 'favorite',
   WATCHED: 'watched',
   WATCHLIST: 'watchlist',
+  DELETE_CMT: 'film-details__comment-delete',
+  ESC_KEY: 'escape',
+  ENTER_KEY: 'enter + ctr',
 };
 
 export const PopupCommentsState = {
