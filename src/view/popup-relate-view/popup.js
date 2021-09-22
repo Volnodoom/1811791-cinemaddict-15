@@ -287,6 +287,10 @@ export default class PopupMovieView extends Smart {
     this._setInnerHandler();
   }
 
+  cleanLocalComment() {
+    this._localCommentUpdate = {};
+  }
+
   setAbortingDeletingComment() {
     this._deleteButton.innerText = 'Delete';
     this._deleteButton.disabled = false;

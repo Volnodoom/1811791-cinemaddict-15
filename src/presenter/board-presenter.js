@@ -134,13 +134,13 @@ class MovieBoard {
   _processViewAction(actionType, updateType, update, commentId = null) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.SAVING);
+        // this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.SAVING);
         this._api.updateMovie(update)
           .then((response) => {
             this._filmsModel.updateMovie(updateType, response);
           })
           .catch(() => {
-            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING);
+            this._filmPresenterMain.get(update.id).shake(()=>{});
           });
         break;
       case UserAction.ADD_COMMENT:
@@ -150,7 +150,7 @@ class MovieBoard {
             this._filmsModel.updateMovie(updateType, response);
           })
           .catch(() => {
-            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING);
+            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COM_UPD);
           });
         break;
       case UserAction.DELETE_COMMENT:
@@ -160,7 +160,7 @@ class MovieBoard {
             this._filmsModel.deleteComments(updateType, update, commentId);
           })
           .catch(() => {
-            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COMMENT);
+            this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.ABORTING_COM_DEL);
           });
         break;
     }
@@ -178,13 +178,26 @@ class MovieBoard {
     }
   }
 
-  _processModelEvent(updateType, data) {
+  _refreshPopupContent(film) {
+    if(this._filmPresenterMain.has(`${film.id}`)) {
+      this._filmPresenterMain.get(film.id).resetPopup(film);
+    }
+    if(this._filmPresenterExtra1.has(`${film.id}`)) {
+      this._filmPresenterExtra1.get(film.id).resetPopup(film);
+    }
+    if(this._filmPresenterExtra2.has(`${film.id}`)) {
+      this._filmPresenterExtra2.get(film.id).resetPopup(film);
+    }
+  }
 
+  _processModelEvent(updateType, data) {
     switch(updateType) {
       case UpdateType.PATCH:
         this._refreshLinesContent(data);
         break;
       case UpdateType.MINOR:
+        this._refreshPopupContent(data);
+        this._refreshLinesContent(data);
         this._clearBoard();
         this._renderBoard();
         break;
@@ -298,7 +311,6 @@ class MovieBoard {
     this._filterType = this._filterModel.getFilter();
     const films = this._filmsModel.getMovies();
     const filteredMovies = filter[this._filterType](films);
-
 
     switch (this._currentSortType) {
       case SortType.DATE:
