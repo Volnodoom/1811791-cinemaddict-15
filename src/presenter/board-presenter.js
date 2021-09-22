@@ -179,12 +179,12 @@ class MovieBoard {
   }
 
   _processModelEvent(updateType, data) {
+
     switch(updateType) {
       case UpdateType.PATCH:
         this._refreshLinesContent(data);
         break;
       case UpdateType.MINOR:
-        this._refreshLinesContent(data);
         this._clearBoard();
         this._renderBoard();
         break;

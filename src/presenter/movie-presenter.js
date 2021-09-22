@@ -112,7 +112,6 @@ class Movie {
     }
   }
 
-
   _processFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
@@ -171,6 +170,16 @@ class Movie {
     document.addEventListener('keydown', this._keyCancelHandler);
   }
 
+  _closePopup() {
+    remove(this._popupCard);
+    remove(this._popupCommentsTitle);
+    remove(this._popupCommentsList);
+    this._popupCommentsNew.destroy();
+    this._bodyPart.classList.remove('hide-overflow');
+    this._mode = Mode.DEFAULT;
+    this._filmsModel.updateData(UpdateType.MINOR, null);
+  }
+
   _processDeleteComments(helper) {
     return this._changeData(
       UserAction.DELETE_COMMENT,
@@ -226,15 +235,6 @@ class Movie {
     this._popupCard.setKeyDownHandler(this._closePopup);
 
     this._popupCommentsList.setClickHandler(this._processDeleteComments);
-  }
-
-  _closePopup() {
-    remove(this._popupCard);
-    remove(this._popupCommentsTitle);
-    remove(this._popupCommentsList);
-    this._popupCommentsNew.destroy();
-    this._bodyPart.classList.remove('hide-overflow');
-    this._mode = Mode.DEFAULT;
   }
 
   destroy() {
