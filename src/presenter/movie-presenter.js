@@ -103,7 +103,7 @@ class Movie {
   _processFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -120,7 +120,7 @@ class Movie {
   _processWatchedClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -137,7 +137,7 @@ class Movie {
   _processWatchlistClick() {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._film,
@@ -177,7 +177,7 @@ class Movie {
   _processDeleteComments(commentID) {
     return this._changeData(
       UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       this._film,
       commentID,
     );
