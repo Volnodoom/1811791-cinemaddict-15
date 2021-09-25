@@ -89,9 +89,9 @@ export const UrlTo = {
   COMMENTS: 'comments',
 };
 
-export const dateYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
-export const dateDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
-export const dateYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
+export const getYearMonthDayTime = (timeInfo) => dayjs(timeInfo).format('YYYY/MM/DD HH:mm');
+export const getDayMonthYear = (timeInfo) => dayjs(timeInfo).format('DD MMMM YYYY');
+export const getYear = (timeInfo) => dayjs(timeInfo).format('YYYY');
 
 export const isTodayDate = (date) => dayjs(date).isToday();
 

@@ -18,7 +18,7 @@ import ExtraTopCommentsWrap from '../view/extra-comments-cards.js';
 
 const FILMS_CARDS_PER_STEP = 5;
 
-class MovieBoard {
+class Board {
   constructor (boardContainer, model, filterModel, api) {
     this._filmsModel = model;
     this._filterModel = filterModel;
@@ -332,4 +332,4 @@ class MovieBoard {
   }
 }
 
-export default MovieBoard;
+export default Board;

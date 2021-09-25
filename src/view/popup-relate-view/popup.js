@@ -1,5 +1,5 @@
-import { SHAKE_ANIMATION_TIMEOUT } from '../../const.js';
-import { calculateTime, dateDayMonthYear, EmojiContent, PopupCardEventOn } from '../../utils/card-utils.js';
+import { MILLISECONDS, SHAKE_ANIMATION_TIMEOUT } from '../../const.js';
+import { calculateTime, getDayMonthYear, EmojiContent, PopupCardEventOn } from '../../utils/card-utils.js';
 import Smart from '../smart.js';
 import { createCommentListHtmlLine } from './comment-list-template.js';
 import he from 'he';
@@ -84,7 +84,7 @@ const createPopupTemplate = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${dateDayMonthYear(data)}</td>
+              <td class="film-details__cell">${getDayMonthYear(data)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
@@ -301,7 +301,7 @@ export default class PopupMovieView extends Smart {
     this._deleteButton.innerText = 'Delete';
     this._deleteButton.disabled = false;
 
-    this._deleteButton.closest('li').style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    this._deleteButton.closest('li').style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS}s`;
     setTimeout(() => {
       this._deleteButton.closest('li').style.animation = '';
     }, SHAKE_ANIMATION_TIMEOUT);
@@ -314,7 +314,7 @@ export default class PopupMovieView extends Smart {
 
 
     this.getElement().querySelector('.film-details__bottom-container')
-      .style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+      .style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / MILLISECONDS}s`;
     setTimeout(() => {
       this.getElement().querySelector('.film-details__bottom-container')
         .style.animation = '';

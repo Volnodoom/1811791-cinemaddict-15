@@ -1,4 +1,4 @@
-import { dateYear, calculateTime, CardsEventsOn } from '../utils/card-utils';
+import { getYear, calculateTime, CardsEventsOn } from '../utils/card-utils';
 import Smart from './smart.js';
 
 const creatCardTemplate = (film) => {
@@ -27,7 +27,7 @@ const creatCardTemplate = (film) => {
   <h3 class="film-card__title">${title}</h3>
   <p class="film-card__rating">${totalRating}</p>
   <p class="film-card__info">
-    <span class="film-card__year">${dateYear(date)}</span>
+    <span class="film-card__year">${getYear(date)}</span>
     <span class="film-card__duration">${calculateTime(runtime)}</span>
     <span class="film-card__genre">${genreLine}</span>
   </p>

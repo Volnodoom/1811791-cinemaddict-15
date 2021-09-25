@@ -1,5 +1,5 @@
 import he from 'he';
-import { dateYearMonthDayTime, EmojiUrl } from '../../utils/card-utils.js';
+import { getYearMonthDayTime, EmojiUrl } from '../../utils/card-utils.js';
 
 const creatOneCommentTemplate = (singleComment) => {
   const {
@@ -18,7 +18,7 @@ const creatOneCommentTemplate = (singleComment) => {
         <p class="film-details__comment-text">${he.encode(commentItself)}</p>
         <p class="film-details__comment-info">
         <span class="film-details__comment-author">${comAuthor}</span>
-        <span class="film-details__comment-day">${dateYearMonthDayTime(comDayTime)}</span>
+        <span class="film-details__comment-day">${getYearMonthDayTime(comDayTime)}</span>
         <button class="film-details__comment-delete">Delete</button>
         </p>
       </div>

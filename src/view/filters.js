@@ -1,3 +1,4 @@
+import { FilterType } from '../const.js';
 import AbstractView from './abstract.js';
 
 const createSingleFilterItemTemplate = (filterData, currentFilterType) => {
@@ -33,12 +34,15 @@ class FilterView extends AbstractView{
 
   _filterTypeChangeHandler(evt) {
     evt.preventDefault();
+    if (evt.target.hash === undefined) {
+      return;
+    }
 
     switch (evt.target.hash.slice(1)) {
-      case 'all':
-      case 'watchlist':
-      case 'history':
-      case 'favorites':
+      case FilterType.ALL:
+      case FilterType.WATCHLIST:
+      case FilterType.HISTORY:
+      case FilterType.FAVORITES:
         this._callback.filterTypeChange(evt.target.hash.slice(1));
         document.querySelector('.main-navigation__additional').classList.remove('main-navigation__item--active');
         break;
@@ -54,7 +58,18 @@ class FilterView extends AbstractView{
 
   _menuClickHandler(evt) {
     evt.preventDefault();
-    this._callback.MovieStatisticSwitch(evt.target.hash.slice(1));
+    if (evt.target.hash === undefined) {
+      return;
+    }
+
+    switch (evt.target.hash.slice(1)) {
+      case FilterType.ALL:
+      case FilterType.WATCHLIST:
+      case FilterType.HISTORY:
+      case FilterType.FAVORITES:
+        this._callback.MovieStatisticSwitch(evt.target.hash.slice(1));
+        break;
+    }
   }
 
   setMovieStatisticSwitch(callback) {
