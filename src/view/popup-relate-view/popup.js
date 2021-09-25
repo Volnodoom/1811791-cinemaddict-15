@@ -237,6 +237,10 @@ export default class PopupMovieView extends Smart {
     }
     if (evt.ctrlKey && (evt.key === 'Enter' || evt.key === 'Enter')) {
       evt.preventDefault();
+
+      if (this._localCommentUpdate.localComments === undefined ) {
+        return;
+      }
       this._callback.formSubmit(
         Object.assign(
           {},
@@ -244,6 +248,9 @@ export default class PopupMovieView extends Smart {
           this._localCommentUpdate,
         ),
       );
+
+      delete this._localCommentUpdate.localComments;
+      delete this._localCommentUpdate.localEmoji;
     }
   }
 
