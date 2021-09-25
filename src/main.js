@@ -1,4 +1,3 @@
-/* eslint-disable no-use-before-define */
 import AvatarView from './view/avatar';
 import FooterView from './view/footer';
 import BoardPresenter from './presenter/board-presenter';
@@ -9,7 +8,7 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import Api from './api.js';
 import { UpdateType } from './const.js';
 
-const AUTHORIZATION = 'Basic kTyYUz389rD';
+const AUTHORIZATION = 'Basic kTyYIz389rD';
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const bodyPart = document.body;
 

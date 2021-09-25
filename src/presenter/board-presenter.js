@@ -146,7 +146,6 @@ class Board {
   _processViewAction(actionType, updateType, update, commentId = null) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        // this._filmPresenterMain.get(update.id).setViewState(MoviePresenterViewState.SAVING);
         this._api.updateMovie(update)
           .then((response) => {
             this._filmsModel.updateMovie(updateType, response);

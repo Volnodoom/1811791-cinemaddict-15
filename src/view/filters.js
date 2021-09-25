@@ -46,7 +46,7 @@ class FilterView extends AbstractView{
         this._callback.filterTypeChange(evt.target.hash.slice(1));
         document.querySelector('.main-navigation__additional').classList.remove('main-navigation__item--active');
         break;
-      case 'stats':
+      case FilterType.STATISTICS:
         document.querySelector('.main-navigation__additional').classList.add('main-navigation__item--active');
     }
   }
@@ -67,6 +67,7 @@ class FilterView extends AbstractView{
       case FilterType.WATCHLIST:
       case FilterType.HISTORY:
       case FilterType.FAVORITES:
+      case FilterType.STATISTICS:
         this._callback.MovieStatisticSwitch(evt.target.hash.slice(1));
         break;
     }

@@ -60,7 +60,6 @@ class Movie {
     }
 
     this._mode = Mode.DEFAULT;
-    //rethink about conditions below:
     if (this._popupComponent) {
       this._closePopup ();
       this._processClickPopup();
@@ -75,11 +74,6 @@ class Movie {
     }
 
     switch (state) {
-      // case State.SAVING:
-      //   this._filmComponent.updateData({
-      //     isSaving: true,
-      //   });
-      //   break;
       case State.ADDITION:
         this._filmComponent.updateData({
           isSaving: true,
@@ -162,8 +156,6 @@ class Movie {
 
     this._bodyPart.classList.remove('hide-overflow');
     this._mode = Mode.DEFAULT;
-
-    // this._popupCommentsNew.destroy();
   }
 
   _processSubmitComment(localComments) {
@@ -195,7 +187,7 @@ class Movie {
 
   resetView() {
     if (this._mode !== Mode.DEFAULT) {
-      remove(this._popupCard);
+      remove(this._popupComponent);
       this._mode = Mode.DEFAULT;
     }
   }

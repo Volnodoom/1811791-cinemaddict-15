@@ -43,8 +43,6 @@ class FilterPresenter {
   }
 
   _processMovieStatisticSwitch (menuItem) {
-
-
     switch (menuItem) {
       case MenuItem.MOVIES:
       case MenuItem.LIST:

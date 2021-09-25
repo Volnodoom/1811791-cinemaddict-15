@@ -33,11 +33,11 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
       case StatisticsPeriodValue.TODAY:
         return watchedFilms.filter((watchedFilm) => dayjs(watchedFilm.userDetails.watchingDate).isSame(dayjs(), 'day'));
       case StatisticsPeriodValue.WEEK:
-        return watchedFilms.filter((watchedFilm) => dayjs(watchedFilm.userDetails.watchingDate).isBetween(dayjs().add(-7, 'day'), dayjs(), 'day'));
+        return watchedFilms.filter((watchedFilm) => dayjs(watchedFilm.userDetails.watchingDate).isBetween(dayjs().add(-6, 'day'), dayjs(), 'day', '[]'));
       case StatisticsPeriodValue.MONTH:
-        return watchedFilms.filter((watchedFilm) => dayjs(watchedFilm.userDetails.watchingDate).isBetween(dayjs().add(-30, 'day'), dayjs(), 'day'));
+        return watchedFilms.filter((watchedFilm) => dayjs(watchedFilm.userDetails.watchingDate).isBetween(dayjs().add(-29, 'day'), dayjs(), 'day', '[]'));
       case StatisticsPeriodValue.YEAR:
-        return watchedFilms.filter((watchedFilm) => dayjs(watchedFilm.userDetails.watchingDate).isBetween(dayjs().add(-365, 'day'), dayjs(), 'day'));
+        return watchedFilms.filter((watchedFilm) => dayjs(watchedFilm.userDetails.watchingDate).isBetween(dayjs().add(-364, 'day'), dayjs(), 'day', '[]'));
     }
   };
 
@@ -96,7 +96,6 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
     const time = [];
 
     statisticMovieFilter(arrayOfWatchedMovies).slice().forEach((film) => time.push(film.runtime));
-
     const resultedTimeMinutes = time.reduce((acc, item) => acc + item);
 
     const calculateTimeToHandM = (totalTimeMinutes) => {
