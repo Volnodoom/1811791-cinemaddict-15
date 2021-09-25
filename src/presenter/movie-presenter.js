@@ -159,7 +159,6 @@ class Movie {
   }
 
   _processSubmitComment(localComments) {
-    debugger
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.PATCH,
