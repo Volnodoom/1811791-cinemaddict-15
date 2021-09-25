@@ -8,7 +8,7 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import Api from './api.js';
 import { UpdateType } from './const.js';
 
-const AUTHORIZATION = 'Basic kTyYIz389rD';
+const AUTHORIZATION = 'Basic kTyYIzR389rD';
 const END_POINT = 'https://15.ecmascript.pages.academy/cinemaddict';
 const bodyPart = document.body;
 

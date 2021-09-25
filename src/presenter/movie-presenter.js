@@ -169,7 +169,7 @@ class Movie {
   _processDeleteComments(commentID) {
     return this._changeData(
       UserAction.DELETE_COMMENT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       this._film,
       commentID,
     );
