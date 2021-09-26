@@ -2,9 +2,9 @@ import AbstractView from './abstract.js';
 
 const createBoardTemplate = () => '<section class="films"></section>';
 
-class Board extends AbstractView {
+class BoardView extends AbstractView {
   getTemplate() {
     return createBoardTemplate();
   }
 }
-export default Board;
+export default BoardView;

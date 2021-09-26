@@ -10,7 +10,7 @@ const createForAllCardsTemplate = () => (
   </section>`
 );
 
-class CardsContainer extends AbstractView{
+class CardsContainerView extends AbstractView{
   constructor() {
     super();
     this._element = null;
@@ -21,4 +21,4 @@ class CardsContainer extends AbstractView{
   }
 }
 
-export default CardsContainer;
+export default CardsContainerView;

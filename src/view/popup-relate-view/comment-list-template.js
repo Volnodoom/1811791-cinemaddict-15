@@ -1,5 +1,5 @@
 import he from 'he';
-import { getYearMonthDayTime, EmojiUrl } from '../../utils/card-utils.js';
+import { getYearMonthDayTime, EmojiUrl, NO_COMMENTS } from '../../utils/card-utils.js';
 
 const creatOneCommentTemplate = (singleComment) => {
   const {
@@ -29,7 +29,7 @@ export const createCommentListHtmlLine = (film) => {
   const {comments} = film;
 
   switch (comments.length) {
-    case 0:
+    case NO_COMMENTS:
       return '<ul class="film-details__comments-list"></ul>';
     default:
       return `<ul class="film-details__comments-list">

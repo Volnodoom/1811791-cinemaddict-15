@@ -1,5 +1,5 @@
 import { MILLISECONDS, SHAKE_ANIMATION_TIMEOUT } from '../../const.js';
-import { calculateTime, getDayMonthYear, EmojiContent, PopupCardEventOn } from '../../utils/card-utils.js';
+import { calculateTime, getDayMonthYear, EmojiContent, PopupCardEventOn, MORE_THEN_ONE_GENRE } from '../../utils/card-utils.js';
 import Smart from '../smart.js';
 import { createCommentListHtmlLine } from './comment-list-template.js';
 import he from 'he';
@@ -95,7 +95,7 @@ const createPopupTemplate = (film) => {
               <td class="film-details__cell">${releaseCountry}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">${genre.length >= 2 ? 'Genres' : 'Genre'}</td>
+              <td class="film-details__term">${genre.length >= MORE_THEN_ONE_GENRE ? 'Genres' : 'Genre'}</td>
               <td class="film-details__cell">
                 ${createGenreHtmlLine(genre)}
             </tr>

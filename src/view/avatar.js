@@ -1,12 +1,13 @@
-import { rankTitle } from '../utils/statistics-utils.js';
+import { NO_WATCHED_MOVIES } from '../utils/card-utils.js';
+import { selectTitleRank } from '../utils/statistics-utils.js';
 import Smart from './smart.js';
 
 const USER = {
   avatarUrl: 'images/bitmap@2x.png',
 };
 
-const avatarTemplate = (title) => {
-  if (title === 0 || title === null) {
+const createAvatarTemplate = (title) => {
+  if (title === NO_WATCHED_MOVIES || title === null) {
     return `<section class="header__profile profile">
      <img class="profile__avatar" src="${USER.avatarUrl}" alt="Avatar" width="35" height="35">
   </section>`;
@@ -18,7 +19,7 @@ const avatarTemplate = (title) => {
   </section>`;}
 };
 
-class Avatar extends Smart {
+class AvatarView extends Smart {
   constructor(filmsModel) {
     super();
     this._filmsModel = filmsModel;
@@ -29,12 +30,12 @@ class Avatar extends Smart {
   }
 
   getTemplate () {
-    return avatarTemplate(this._rank);
+    return createAvatarTemplate(this._rank);
   }
 
   _processModelEventInAvatar() {
     const films = this._filmsModel.getMovies();
-    this._rank = rankTitle(films);
+    this._rank = selectTitleRank(films);
 
     this.updateData({
       title: this._rank,
@@ -46,4 +47,4 @@ class Avatar extends Smart {
   }
 }
 
-export default Avatar;
+export default AvatarView;

@@ -3,6 +3,7 @@ import { parseInfoToStatisticData } from '../utils/statistics-utils.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import Smart from './smart.js';
+import { NO_WATCHED_MOVIES } from '../utils/card-utils.js';
 
 const BAR_HEIGHT = 50;
 
@@ -55,7 +56,7 @@ const createStatisticsTemplate = ({
       </li>
     </ul>
 
-    ${numberWatched !== 0 ? creatChartTemplate : ''}
+    ${numberWatched !== NO_WATCHED_MOVIES ? creatChartTemplate : ''}
 
   </section>`;
 
@@ -155,7 +156,7 @@ export default class StatisticsView extends Smart {
       this._chart = null;
     }
 
-    if (this._data.numberWatched !== 0) {
+    if (this._data.numberWatched !== NO_WATCHED_MOVIES) {
       const statisticCtx = this.getElement().querySelector('.statistic__chart');
       this._chart = createChartTemplate(this._data, statisticCtx);
     }

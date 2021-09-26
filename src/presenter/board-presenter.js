@@ -13,12 +13,15 @@ import { SortType, sortRating, sortReleaseDate } from '../utils/card-utils.js';
 import { FilterType, UpdateType, UserAction } from '../const.js';
 import { filter } from '../utils/filter-utils.js';
 import NoMovieView from '../view/no-movie.js';
-import ExtraTopRatingWrap from '../view/extra-top-cards.js';
-import ExtraTopCommentsWrap from '../view/extra-comments-cards.js';
+import ExtraTopRatingWrapView from '../view/extra-top-cards.js';
+import ExtraTopCommentsWrapView from '../view/extra-comments-cards.js';
 
 const FILMS_CARDS_PER_STEP = 5;
+const NO_RATING = 0;
+const NO_COMMENTS = 0;
+const NO_MOVIES = 0;
 
-class Board {
+class BoardPresenter {
   constructor (boardContainer, model, filterModel, api) {
     this._filmsModel = model;
     this._filterModel = filterModel;
@@ -151,7 +154,7 @@ class Board {
             this._filmsModel.updateMovie(updateType, response);
           })
           .catch(() => {
-            this._searchForPresenter(update).shake(()=>{});
+            throw new Error ('Some problems with proper update of the movie card');
           });
         break;
       case UserAction.ADD_COMMENT:
@@ -209,11 +212,11 @@ class Board {
   _renderExtraTopRating(films) {
     const topRatingMovies = films.slice().sort((aInd, bInd) => bInd.totalRating - aInd.totalRating);
 
-    if (topRatingMovies[0].totalRating === 0 ) {
+    if (topRatingMovies[0].totalRating === NO_RATING ) {
       return;
     }
 
-    this._extraTopRatingWrap =  new ExtraTopRatingWrap();
+    this._extraTopRatingWrap =  new ExtraTopRatingWrapView();
 
     this._renderMovie(topRatingMovies[0], this._filmListContainerExtraTopRating);
     this._renderMovie(topRatingMovies[1], this._filmListContainerExtraTopRating);
@@ -225,11 +228,11 @@ class Board {
   _renderExtraTopCommented(films) {
     const topCommentedMovies = films.slice().sort((aInd, bInd) => bInd.comments.length - aInd.comments.length);
 
-    if (topCommentedMovies[0].comments.length === 0 ) {
+    if (topCommentedMovies[0].comments.length === NO_COMMENTS ) {
       return;
     }
 
-    this._extraTopCommentedWrap =  new ExtraTopCommentsWrap();
+    this._extraTopCommentedWrap =  new ExtraTopCommentsWrapView();
 
     this._renderMovie(topCommentedMovies[0], this._filmListContainerExtraTopComment);
     this._renderMovie(topCommentedMovies[1], this._filmListContainerExtraTopComment);
@@ -278,7 +281,7 @@ class Board {
     const films = this._getMovies();
     const filmCount = films.length;
 
-    if (filmCount === 0) {
+    if (filmCount === NO_MOVIES) {
       this._renderNoMovies();
       return;
     }
@@ -331,4 +334,4 @@ class Board {
   }
 }
 
-export default Board;
+export default BoardPresenter;

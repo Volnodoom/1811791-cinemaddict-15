@@ -1,7 +1,7 @@
 
 import Smart from './smart.js';
 
-class Footer extends Smart{
+class FooterView extends Smart{
   constructor(filmsModel) {
     super();
     this._filmsModel = filmsModel;
@@ -26,4 +26,4 @@ class Footer extends Smart{
   }
 }
 
-export default Footer;
+export default FooterView;

@@ -9,7 +9,7 @@ const createSortMoviesTemplate = (currentSortType) => (
   </ul>`
 );
 
-class Sort extends AbstractView {
+class SortView extends AbstractView {
   constructor(currentSortType) {
     super();
 
@@ -36,4 +36,4 @@ class Sort extends AbstractView {
   }
 }
 
-export default Sort;
+export default SortView;

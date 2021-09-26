@@ -1,8 +1,8 @@
 import { createElement } from '../utils/render';
 
-class Abstract {
+class AbstractView {
   constructor () {
-    if (new.target === Abstract) {
+    if (new.target === AbstractView) {
       throw new Error('Can\'t instantiate Abstract class, only concrete one.');
     }
 
@@ -27,4 +27,4 @@ class Abstract {
   }
 }
 
-export default Abstract;
+export default AbstractView;

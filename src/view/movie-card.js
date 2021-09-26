@@ -1,4 +1,4 @@
-import { getYear, calculateTime, CardsEventsOn } from '../utils/card-utils';
+import { getYear, calculateTime, CardsEventsOn, MESSAGE_LIMITS } from '../utils/card-utils';
 import Smart from './smart.js';
 
 const creatCardTemplate = (film) => {
@@ -10,7 +10,7 @@ const creatCardTemplate = (film) => {
   const altPoster = title;
 
   let descriptionLine = '';
-  if (description.length >= 140) {
+  if (description.length >= MESSAGE_LIMITS) {
     descriptionLine += description.slice().substring(0, 139);
     descriptionLine += '...';
   } else {descriptionLine = description;}
@@ -42,7 +42,7 @@ const creatCardTemplate = (film) => {
 </article>`;
 };
 
-class MovieCard extends Smart{
+class MovieCardView extends Smart{
   constructor (film) {
     super();
     this._film = film;
@@ -115,4 +115,4 @@ class MovieCard extends Smart{
 
 }
 
-export default MovieCard;
+export default MovieCardView;

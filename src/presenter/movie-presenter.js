@@ -17,7 +17,7 @@ export const State = {
   ABORTING_COM_UPD: 'aborting comment sending to server',
 };
 
-class Movie {
+class MoviePresenter {
   constructor(movieListContainer, changeData, changeMode, filmsModel) {
     this._movieListContainer = movieListContainer;
     this._changeData = changeData;
@@ -230,4 +230,4 @@ class Movie {
   }
 }
 
-export default Movie;
+export default MoviePresenter;

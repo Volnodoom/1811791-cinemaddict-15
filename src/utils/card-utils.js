@@ -12,6 +12,13 @@ const TimeLength = {
   YEAR: 1,
 };
 
+export const NO_COMMENTS = 0;
+export const NO_WATCHED_MOVIES = 0;
+export const MESSAGE_LIMITS = 140;
+export const MORE_THEN_ONE_GENRE = 2;
+// export const
+// export const
+
 export const CardsEventsOn = {
   POSTER: 'film-card__poster',
   TITLE: 'film-card__title',

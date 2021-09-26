@@ -7,10 +7,10 @@ const createFrameworkForExtraTop = () => (
   </section>`
 );
 
-class ExtraTopRatingWrap extends AbstractView{
+class ExtraTopRatingWrapView extends AbstractView{
   getTemplate () {
     return createFrameworkForExtraTop();
   }
 }
 
-export default ExtraTopRatingWrap;
+export default ExtraTopRatingWrapView;

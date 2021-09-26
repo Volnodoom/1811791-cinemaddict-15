@@ -1,18 +1,20 @@
 import { StatisticsPeriodValue } from '../const.js';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
+import { NO_WATCHED_MOVIES } from './card-utils.js';
 dayjs.extend(isBetween);
 
 const MINUTES = 60;
+const zeroRank = 0;
 
 export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPeriodValue.ALL) => {
   const emptyState = {
     'selectedPeriod': selectedPeriod,
-    yourRank: 0,
+    yourRank: zeroRank,
     isRank: false,
     htmlTimeLine:  '0 <span class="statistic__item-description">h</span> 0 <span class="statistic__item-description">m</span>',
     favoriteGenre: '',
-    numberWatched: 0,
+    numberWatched: NO_WATCHED_MOVIES,
   };
 
   const arrayOfWatchedMovies = films.slice().reduce((acc, item) => {
@@ -22,7 +24,7 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
     return acc;
   }, []);
 
-  if (arrayOfWatchedMovies.length < 1 || arrayOfWatchedMovies.length === null) {
+  if (arrayOfWatchedMovies.length === NO_WATCHED_MOVIES || arrayOfWatchedMovies.length === null) {
     return emptyState;
   }
 
@@ -43,7 +45,7 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
 
   const numberOfWatchedMovies = statisticMovieFilter(arrayOfWatchedMovies).length;
 
-  if (numberOfWatchedMovies < 1) {
+  if (numberOfWatchedMovies === NO_WATCHED_MOVIES) {
     return emptyState;
   }
 
@@ -60,7 +62,7 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
     };
 
     return {
-      isRank: numberOfWatchedMovies > 0,
+      isRank: numberOfWatchedMovies > NO_WATCHED_MOVIES,
       yourRank: title(),
     };
   };
@@ -148,7 +150,7 @@ export const parseInfoToStatisticData = (films, selectedPeriod = StatisticsPerio
   );
 };
 
-export const rankTitle = (films) => {
+export const selectTitleRank = (films) => {
   const watchedFilmCount = films.slice().reduce((acc, item) => {
     if(item.userDetails.alreadyWatched) {
       acc.push(item);
@@ -157,7 +159,7 @@ export const rankTitle = (films) => {
   }, []);
 
   switch (true){
-    case (watchedFilmCount.length === 0):
+    case (watchedFilmCount.length === NO_WATCHED_MOVIES):
       return 0;
     case (watchedFilmCount.length >= 1 && watchedFilmCount.length <= 10):
       return 'Novice';
